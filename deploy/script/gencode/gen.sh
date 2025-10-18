@@ -21,3 +21,7 @@
 #    去除proto中的json的omitempty
 #    mac: sed -i "" 's/,omitempty//g'  ./rpc/pb/*.pb.go
 #    linux: sed -i 's/,omitempty//g'  ./rpc/pb/*.pb.go
+
+
+ # 3）goctl >= 1.3 进入"/app/*/model"目录下，执行下面命令
+goctl model pg datasource -url="postgres://zhang:epoch2025zhang@localhost:5432/postgres?sslmode=disable" -table="user" -dir="." --cache=true --style=goZero

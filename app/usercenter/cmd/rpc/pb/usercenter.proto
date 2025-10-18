@@ -17,9 +17,9 @@ option go_package="./pb";
 
 message User {
   string id = 1;
-  string name = 2;
   string email = 3;
-  string password = 4;
+  string nickname = 2;
+  string sex = 4;
   string avatar = 5;
   string info = 6;
 }
@@ -32,7 +32,7 @@ message UserAuth {
 }
 
 message RegisterReq {
-  string mobile = 1;
+  string email = 1;
   string nickname = 2;
   string password = 3;
   string authKey = 4;

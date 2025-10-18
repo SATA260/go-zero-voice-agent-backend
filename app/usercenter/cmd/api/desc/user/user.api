@@ -9,9 +9,10 @@ info (
 
 type User {
 	Id       int64  `json:"id"`
-	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	NickName string `json:"nickname"`
+    Sex	     int64  `json`
 	Avatar   string `json:"avatar"`
 	Info     string `json:"info"`
 }
