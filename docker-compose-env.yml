@@ -4,11 +4,28 @@ services:
   pgsql:
     image: pgvector/pgvector:pg16
     container_name: pgvector-db
-      environment:
-        POSTGRES_USER: myuser
-        POSTGRES_PASSWORD: mypassword
-        POSTGRES_DB: mydb
-      ports:
-        - "5432:5432"
-      volumes:
-        - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: zhang
+      POSTGRES_PASSWORD: epoch2025zhang
+      POSTGRES_DB: gzvg
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mysql:
+    image: mysql:8.0.43
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_USER: zhang
+      MYSQL_PASSWORD: epoch2025zhang
+      MYSQL_DATABASE: gzvg
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+
+volumes:
+  pgdata:
+  mysqldata:
