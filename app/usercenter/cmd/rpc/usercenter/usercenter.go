@@ -26,6 +26,10 @@ type (
 	LoginResp                = pb.LoginResp
 	RegisterReq              = pb.RegisterReq
 	RegisterResp             = pb.RegisterResp
+	SendEmailReq             = pb.SendEmailReq
+	SendEmailResp            = pb.SendEmailResp
+	SendVerifyCodeReq        = pb.SendVerifyCodeReq
+	SendVerifyCodeResp       = pb.SendVerifyCodeResp
 	User                     = pb.User
 	UserAuth                 = pb.UserAuth
 
@@ -36,6 +40,8 @@ type (
 		GetUserAuthByAuthKey(ctx context.Context, in *GetUserAuthByAuthKeyReq, opts ...grpc.CallOption) (*GetUserAuthByAuthKeyResp, error)
 		GetUserAuthByUserId(ctx context.Context, in *GetUserAuthByUserIdReq, opts ...grpc.CallOption) (*GetUserAuthByUserIdResp, error)
 		GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error)
+		SendEmail(ctx context.Context, in *SendEmailReq, opts ...grpc.CallOption) (*SendEmailResp, error)
+		SendVerifyCode(ctx context.Context, in *SendVerifyCodeReq, opts ...grpc.CallOption) (*SendVerifyCodeResp, error)
 	}
 
 	defaultUsercenter struct {
@@ -77,4 +83,14 @@ func (m *defaultUsercenter) GetUserAuthByUserId(ctx context.Context, in *GetUser
 func (m *defaultUsercenter) GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error) {
 	client := pb.NewUsercenterClient(m.cli.Conn())
 	return client.GenerateToken(ctx, in, opts...)
+}
+
+func (m *defaultUsercenter) SendEmail(ctx context.Context, in *SendEmailReq, opts ...grpc.CallOption) (*SendEmailResp, error) {
+	client := pb.NewUsercenterClient(m.cli.Conn())
+	return client.SendEmail(ctx, in, opts...)
+}
+
+func (m *defaultUsercenter) SendVerifyCode(ctx context.Context, in *SendVerifyCodeReq, opts ...grpc.CallOption) (*SendVerifyCodeResp, error) {
+	client := pb.NewUsercenterClient(m.cli.Conn())
+	return client.SendVerifyCode(ctx, in, opts...)
 }

@@ -52,3 +52,13 @@ func (s *UsercenterServer) GenerateToken(ctx context.Context, in *pb.GenerateTok
 	l := logic.NewGenerateTokenLogic(ctx, s.svcCtx)
 	return l.GenerateToken(in)
 }
+
+func (s *UsercenterServer) SendEmail(ctx context.Context, in *pb.SendEmailReq) (*pb.SendEmailResp, error) {
+	l := logic.NewSendEmailLogic(ctx, s.svcCtx)
+	return l.SendEmail(in)
+}
+
+func (s *UsercenterServer) SendVerifyCode(ctx context.Context, in *pb.SendVerifyCodeReq) (*pb.SendVerifyCodeResp, error) {
+	l := logic.NewSendVerifyCodeLogic(ctx, s.svcCtx)
+	return l.SendVerifyCode(in)
+}

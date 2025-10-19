@@ -3,18 +3,6 @@ syntax = "proto3";
 package pb;
 option go_package="./pb";
 
-//message Request {
-//  string ping = 1;
-//}
-//
-//message Response {
-//  string pong = 1;
-//}
-//
-//service Usercenter {
-//  rpc Ping(Request) returns(Response);
-//}
-
 message User {
   string id = 1;
   string email = 3;
@@ -37,6 +25,7 @@ message RegisterReq {
   string password = 3;
   string authKey = 4;
   string authType = 5;
+  string verifyCode = 6;
 }
 message RegisterResp {
   string accessToken = 1;
@@ -87,6 +76,25 @@ message GenerateTokenResp {
   int64 refreshAfter = 3;
 }
 
+message SendEmailReq {
+  string from = 1;
+  string to = 2;
+  string subject = 3;
+  string text = 4;
+  string html = 5;
+}
+message SendEmailResp {
+  int64 sendAt = 1;
+}
+
+message SendVerifyCodeReq {
+  string email = 1;
+  int64 accessExpire = 2;
+}
+message SendVerifyCodeResp {
+  int64 sendAt = 1;
+}
+
 service Usercenter {
   rpc Register(RegisterReq) returns (RegisterResp);
   rpc Login(LoginReq) returns (LoginResp);
@@ -94,4 +102,6 @@ service Usercenter {
   rpc GetUserAuthByAuthKey(GetUserAuthByAuthKeyReq) returns (GetUserAuthByAuthKeyResp);
   rpc GetUserAuthByUserId(GetUserAuthByUserIdReq) returns (GetUserAuthByUserIdResp);
   rpc GenerateToken(GenerateTokenReq) returns (GenerateTokenResp);
+  rpc SendEmail(SendEmailReq) returns (SendEmailResp);
+  rpc SendVerifyCode(SendVerifyCodeReq) returns (SendVerifyCodeResp);
 }
