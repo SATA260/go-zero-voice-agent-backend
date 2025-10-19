@@ -175,11 +175,12 @@ func (x *UserAuth) GetAuthKey() string {
 
 type RegisterReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Mobile        string                 `protobuf:"bytes,1,opt,name=mobile,proto3" json:"mobile,omitempty"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
 	Nickname      string                 `protobuf:"bytes,2,opt,name=nickname,proto3" json:"nickname,omitempty"`
 	Password      string                 `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
 	AuthKey       string                 `protobuf:"bytes,4,opt,name=authKey,proto3" json:"authKey,omitempty"`
 	AuthType      string                 `protobuf:"bytes,5,opt,name=authType,proto3" json:"authType,omitempty"`
+	VerifyCode    string                 `protobuf:"bytes,6,opt,name=verifyCode,proto3" json:"verifyCode,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -214,9 +215,9 @@ func (*RegisterReq) Descriptor() ([]byte, []int) {
 	return file_usercenter_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *RegisterReq) GetMobile() string {
+func (x *RegisterReq) GetEmail() string {
 	if x != nil {
-		return x.Mobile
+		return x.Email
 	}
 	return ""
 }
@@ -245,6 +246,13 @@ func (x *RegisterReq) GetAuthKey() string {
 func (x *RegisterReq) GetAuthType() string {
 	if x != nil {
 		return x.AuthType
+	}
+	return ""
+}
+
+func (x *RegisterReq) GetVerifyCode() string {
+	if x != nil {
+		return x.VerifyCode
 	}
 	return ""
 }
@@ -813,6 +821,222 @@ func (x *GenerateTokenResp) GetRefreshAfter() int64 {
 	return 0
 }
 
+type SendEmailReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	From          string                 `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
+	To            string                 `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
+	Subject       string                 `protobuf:"bytes,3,opt,name=subject,proto3" json:"subject,omitempty"`
+	Text          string                 `protobuf:"bytes,4,opt,name=text,proto3" json:"text,omitempty"`
+	Html          string                 `protobuf:"bytes,5,opt,name=html,proto3" json:"html,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendEmailReq) Reset() {
+	*x = SendEmailReq{}
+	mi := &file_usercenter_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendEmailReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendEmailReq) ProtoMessage() {}
+
+func (x *SendEmailReq) ProtoReflect() protoreflect.Message {
+	mi := &file_usercenter_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendEmailReq.ProtoReflect.Descriptor instead.
+func (*SendEmailReq) Descriptor() ([]byte, []int) {
+	return file_usercenter_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *SendEmailReq) GetFrom() string {
+	if x != nil {
+		return x.From
+	}
+	return ""
+}
+
+func (x *SendEmailReq) GetTo() string {
+	if x != nil {
+		return x.To
+	}
+	return ""
+}
+
+func (x *SendEmailReq) GetSubject() string {
+	if x != nil {
+		return x.Subject
+	}
+	return ""
+}
+
+func (x *SendEmailReq) GetText() string {
+	if x != nil {
+		return x.Text
+	}
+	return ""
+}
+
+func (x *SendEmailReq) GetHtml() string {
+	if x != nil {
+		return x.Html
+	}
+	return ""
+}
+
+type SendEmailResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SendAt        int64                  `protobuf:"varint,1,opt,name=sendAt,proto3" json:"sendAt,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendEmailResp) Reset() {
+	*x = SendEmailResp{}
+	mi := &file_usercenter_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendEmailResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendEmailResp) ProtoMessage() {}
+
+func (x *SendEmailResp) ProtoReflect() protoreflect.Message {
+	mi := &file_usercenter_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendEmailResp.ProtoReflect.Descriptor instead.
+func (*SendEmailResp) Descriptor() ([]byte, []int) {
+	return file_usercenter_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *SendEmailResp) GetSendAt() int64 {
+	if x != nil {
+		return x.SendAt
+	}
+	return 0
+}
+
+type SendVerifyCodeReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	AccessExpire  int64                  `protobuf:"varint,2,opt,name=accessExpire,proto3" json:"accessExpire,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendVerifyCodeReq) Reset() {
+	*x = SendVerifyCodeReq{}
+	mi := &file_usercenter_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendVerifyCodeReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendVerifyCodeReq) ProtoMessage() {}
+
+func (x *SendVerifyCodeReq) ProtoReflect() protoreflect.Message {
+	mi := &file_usercenter_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendVerifyCodeReq.ProtoReflect.Descriptor instead.
+func (*SendVerifyCodeReq) Descriptor() ([]byte, []int) {
+	return file_usercenter_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *SendVerifyCodeReq) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *SendVerifyCodeReq) GetAccessExpire() int64 {
+	if x != nil {
+		return x.AccessExpire
+	}
+	return 0
+}
+
+type SendVerifyCodeResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SendAt        int64                  `protobuf:"varint,1,opt,name=sendAt,proto3" json:"sendAt,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendVerifyCodeResp) Reset() {
+	*x = SendVerifyCodeResp{}
+	mi := &file_usercenter_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendVerifyCodeResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendVerifyCodeResp) ProtoMessage() {}
+
+func (x *SendVerifyCodeResp) ProtoReflect() protoreflect.Message {
+	mi := &file_usercenter_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendVerifyCodeResp.ProtoReflect.Descriptor instead.
+func (*SendVerifyCodeResp) Descriptor() ([]byte, []int) {
+	return file_usercenter_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *SendVerifyCodeResp) GetSendAt() int64 {
+	if x != nil {
+		return x.SendAt
+	}
+	return 0
+}
+
 var File_usercenter_proto protoreflect.FileDescriptor
 
 const file_usercenter_proto_rawDesc = "" +
@@ -829,13 +1053,16 @@ const file_usercenter_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06userId\x18\x02 \x01(\tR\x06userId\x12\x1a\n" +
 	"\bauthType\x18\x03 \x01(\tR\bauthType\x12\x18\n" +
-	"\aauthKey\x18\x04 \x01(\tR\aauthKey\"\x93\x01\n" +
-	"\vRegisterReq\x12\x16\n" +
-	"\x06mobile\x18\x01 \x01(\tR\x06mobile\x12\x1a\n" +
+	"\aauthKey\x18\x04 \x01(\tR\aauthKey\"\xb1\x01\n" +
+	"\vRegisterReq\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bnickname\x18\x02 \x01(\tR\bnickname\x12\x1a\n" +
 	"\bpassword\x18\x03 \x01(\tR\bpassword\x12\x18\n" +
 	"\aauthKey\x18\x04 \x01(\tR\aauthKey\x12\x1a\n" +
-	"\bauthType\x18\x05 \x01(\tR\bauthType\"x\n" +
+	"\bauthType\x18\x05 \x01(\tR\bauthType\x12\x1e\n" +
+	"\n" +
+	"verifyCode\x18\x06 \x01(\tR\n" +
+	"verifyCode\"x\n" +
 	"\fRegisterResp\x12 \n" +
 	"\vaccessToken\x18\x01 \x01(\tR\vaccessToken\x12\"\n" +
 	"\faccessExpire\x18\x02 \x01(\x03R\faccessExpire\x12\"\n" +
@@ -867,7 +1094,20 @@ const file_usercenter_proto_rawDesc = "" +
 	"\x11GenerateTokenResp\x12 \n" +
 	"\vaccessToken\x18\x01 \x01(\tR\vaccessToken\x12\"\n" +
 	"\faccessExpire\x18\x02 \x01(\x03R\faccessExpire\x12\"\n" +
-	"\frefreshAfter\x18\x03 \x01(\x03R\frefreshAfter2\xfa\x02\n" +
+	"\frefreshAfter\x18\x03 \x01(\x03R\frefreshAfter\"t\n" +
+	"\fSendEmailReq\x12\x12\n" +
+	"\x04from\x18\x01 \x01(\tR\x04from\x12\x0e\n" +
+	"\x02to\x18\x02 \x01(\tR\x02to\x12\x18\n" +
+	"\asubject\x18\x03 \x01(\tR\asubject\x12\x12\n" +
+	"\x04text\x18\x04 \x01(\tR\x04text\x12\x12\n" +
+	"\x04html\x18\x05 \x01(\tR\x04html\"'\n" +
+	"\rSendEmailResp\x12\x16\n" +
+	"\x06sendAt\x18\x01 \x01(\x03R\x06sendAt\"M\n" +
+	"\x11SendVerifyCodeReq\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\"\n" +
+	"\faccessExpire\x18\x02 \x01(\x03R\faccessExpire\",\n" +
+	"\x12SendVerifyCodeResp\x12\x16\n" +
+	"\x06sendAt\x18\x01 \x01(\x03R\x06sendAt2\xed\x03\n" +
 	"\n" +
 	"Usercenter\x12-\n" +
 	"\bRegister\x12\x0f.pb.RegisterReq\x1a\x10.pb.RegisterResp\x12$\n" +
@@ -875,7 +1115,9 @@ const file_usercenter_proto_rawDesc = "" +
 	"\vGetUserInfo\x12\x12.pb.GetUserInfoReq\x1a\x13.pb.GetUserInfoResp\x12Q\n" +
 	"\x14GetUserAuthByAuthKey\x12\x1b.pb.GetUserAuthByAuthKeyReq\x1a\x1c.pb.GetUserAuthByAuthKeyResp\x12N\n" +
 	"\x13GetUserAuthByUserId\x12\x1a.pb.GetUserAuthByUserIdReq\x1a\x1b.pb.GetUserAuthByUserIdResp\x12<\n" +
-	"\rGenerateToken\x12\x14.pb.GenerateTokenReq\x1a\x15.pb.GenerateTokenRespB\x06Z\x04./pbb\x06proto3"
+	"\rGenerateToken\x12\x14.pb.GenerateTokenReq\x1a\x15.pb.GenerateTokenResp\x120\n" +
+	"\tSendEmail\x12\x10.pb.SendEmailReq\x1a\x11.pb.SendEmailResp\x12?\n" +
+	"\x0eSendVerifyCode\x12\x15.pb.SendVerifyCodeReq\x1a\x16.pb.SendVerifyCodeRespB\x06Z\x04./pbb\x06proto3"
 
 var (
 	file_usercenter_proto_rawDescOnce sync.Once
@@ -889,7 +1131,7 @@ func file_usercenter_proto_rawDescGZIP() []byte {
 	return file_usercenter_proto_rawDescData
 }
 
-var file_usercenter_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_usercenter_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_usercenter_proto_goTypes = []any{
 	(*User)(nil),                     // 0: pb.User
 	(*UserAuth)(nil),                 // 1: pb.UserAuth
@@ -905,6 +1147,10 @@ var file_usercenter_proto_goTypes = []any{
 	(*GetUserAuthByUserIdResp)(nil),  // 11: pb.GetUserAuthByUserIdResp
 	(*GenerateTokenReq)(nil),         // 12: pb.GenerateTokenReq
 	(*GenerateTokenResp)(nil),        // 13: pb.GenerateTokenResp
+	(*SendEmailReq)(nil),             // 14: pb.SendEmailReq
+	(*SendEmailResp)(nil),            // 15: pb.SendEmailResp
+	(*SendVerifyCodeReq)(nil),        // 16: pb.SendVerifyCodeReq
+	(*SendVerifyCodeResp)(nil),       // 17: pb.SendVerifyCodeResp
 }
 var file_usercenter_proto_depIdxs = []int32{
 	0,  // 0: pb.GetUserInfoResp.user:type_name -> pb.User
@@ -916,14 +1162,18 @@ var file_usercenter_proto_depIdxs = []int32{
 	8,  // 6: pb.Usercenter.GetUserAuthByAuthKey:input_type -> pb.GetUserAuthByAuthKeyReq
 	10, // 7: pb.Usercenter.GetUserAuthByUserId:input_type -> pb.GetUserAuthByUserIdReq
 	12, // 8: pb.Usercenter.GenerateToken:input_type -> pb.GenerateTokenReq
-	3,  // 9: pb.Usercenter.Register:output_type -> pb.RegisterResp
-	5,  // 10: pb.Usercenter.Login:output_type -> pb.LoginResp
-	7,  // 11: pb.Usercenter.GetUserInfo:output_type -> pb.GetUserInfoResp
-	9,  // 12: pb.Usercenter.GetUserAuthByAuthKey:output_type -> pb.GetUserAuthByAuthKeyResp
-	11, // 13: pb.Usercenter.GetUserAuthByUserId:output_type -> pb.GetUserAuthByUserIdResp
-	13, // 14: pb.Usercenter.GenerateToken:output_type -> pb.GenerateTokenResp
-	9,  // [9:15] is the sub-list for method output_type
-	3,  // [3:9] is the sub-list for method input_type
+	14, // 9: pb.Usercenter.SendEmail:input_type -> pb.SendEmailReq
+	16, // 10: pb.Usercenter.SendVerifyCode:input_type -> pb.SendVerifyCodeReq
+	3,  // 11: pb.Usercenter.Register:output_type -> pb.RegisterResp
+	5,  // 12: pb.Usercenter.Login:output_type -> pb.LoginResp
+	7,  // 13: pb.Usercenter.GetUserInfo:output_type -> pb.GetUserInfoResp
+	9,  // 14: pb.Usercenter.GetUserAuthByAuthKey:output_type -> pb.GetUserAuthByAuthKeyResp
+	11, // 15: pb.Usercenter.GetUserAuthByUserId:output_type -> pb.GetUserAuthByUserIdResp
+	13, // 16: pb.Usercenter.GenerateToken:output_type -> pb.GenerateTokenResp
+	15, // 17: pb.Usercenter.SendEmail:output_type -> pb.SendEmailResp
+	17, // 18: pb.Usercenter.SendVerifyCode:output_type -> pb.SendVerifyCodeResp
+	11, // [11:19] is the sub-list for method output_type
+	3,  // [3:11] is the sub-list for method input_type
 	3,  // [3:3] is the sub-list for extension type_name
 	3,  // [3:3] is the sub-list for extension extendee
 	0,  // [0:3] is the sub-list for field type_name
@@ -940,7 +1190,7 @@ func file_usercenter_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_usercenter_proto_rawDesc), len(file_usercenter_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

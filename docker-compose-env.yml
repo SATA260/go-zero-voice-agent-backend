@@ -11,7 +11,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./data/pgsql/data:/var/lib/postgresql/data
+    networks:
+      - gzva_net
 
   mysql:
     image: mysql:8.0.43
@@ -24,8 +26,30 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mysqldata:/var/lib/mysql
+      - ./data/mysql/data:/var/lib/mysql
+    networks:
+      - gzva_net
+  
+  redis:
+    image: redis:7.4.6-alpine
+    container_name: redis
+    ports:
+      - 6379:6379
+    environment:
+      # 时区上海 - Time zone Shanghai (Change if needed)
+      TZ: Asia/Shanghai
+    volumes:
+      # 数据文件 - data files
+      - ./data/redis/data:/data:rw
+    command: "redis-server --requirepass G62m50oigInC30sf  --appendonly yes"
+    privileged: true
+    restart: always
+    networks:
+      - gzva_net
 
-volumes:
-  pgdata:
-  mysqldata:
+networks:
+  gzva_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.0.0/16

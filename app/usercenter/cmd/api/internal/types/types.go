@@ -17,12 +17,21 @@ type LoginResp struct {
 type RegisterReq struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Code     string `json:"code"`
 }
 
 type RegisterResp struct {
 	AccessToken  string `json:"accessToken"`
 	AccessExpire int64  `json:"accessExpire"`
 	RefreshAfter int64  `json:"refreshAfter"`
+}
+
+type SendCodeReq struct {
+	Email string `json:"email"`
+}
+
+type SendCodeResp struct {
+	IsSuccess bool `json:"isSuccess"`
 }
 
 type User struct {

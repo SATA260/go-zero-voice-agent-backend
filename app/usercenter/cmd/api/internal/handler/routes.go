@@ -16,6 +16,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				// get rpc info
+				Method:  http.MethodGet,
+				Path:    "/user/info",
+				Handler: user.DetailHandler(serverCtx),
+			},
+			{
 				// login
 				Method:  http.MethodPost,
 				Path:    "/user/login",
@@ -27,17 +33,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/user/register",
 				Handler: user.RegisterHandler(serverCtx),
 			},
-		},
-		rest.WithPrefix("/usercenter/v1"),
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
 			{
-				// get rpc info
-				Method:  http.MethodGet,
-				Path:    "/user/info",
-				Handler: user.DetailHandler(serverCtx),
+				// send code
+				Method:  http.MethodPost,
+				Path:    "/user/sendCode",
+				Handler: user.SendCodeHandler(serverCtx),
 			},
 			{
 				// wechat mini auth
@@ -46,7 +46,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: user.WxMiniAuthHandler(serverCtx),
 			},
 		},
-		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
 		rest.WithPrefix("/usercenter/v1"),
 	)
 }

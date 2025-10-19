@@ -18,9 +18,19 @@ type User {
 }
 
 type (
+	SendCodeReq {
+		Email string `json:"email"`
+	}
+	SendCodeResp {
+		isSuccess bool `json:"isSuccess"`
+	}
+)
+
+type (
 	RegisterReq {
 		Email    string `json:"email"`
 		Password string `json:"password"`
+		Code     string `json:"code"`
 	}
 	RegisterResp {
 		AccessToken  string `json:"accessToken"`

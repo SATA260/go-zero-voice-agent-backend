@@ -15,4 +15,11 @@ type Config struct {
 		DataSource string
 	}
 	Cache cache.CacheConf
+
+	Email struct {
+		Host	 string
+		Port	 int
+		Username string
+		Password string
+	}
 }

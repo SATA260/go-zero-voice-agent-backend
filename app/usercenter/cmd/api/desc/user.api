@@ -17,6 +17,10 @@ import (
 	group:  user
 )
 service usercenter {
+	@doc "send code"
+	@handler sendCode
+	post /user/sendCode (SendCodeReq) returns (SendCodeResp)
+
 	@doc "register"
 	@handler register
 	post /user/register (RegisterReq) returns (RegisterResp)
@@ -24,14 +28,7 @@ service usercenter {
 	@doc "login"
 	@handler login
 	post /user/login (LoginReq) returns (LoginResp)
-}
 
-@server (
-	prefix: usercenter/v1
-	group:  user
-	jwt:    JwtAuth
-)
-service usercenter {
 	@doc "get rpc info"
 	@handler detail
 	get /user/info (UserInfoReq) returns (UserInfoResp)
