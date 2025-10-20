@@ -39,12 +39,14 @@ func (l *SendVerifyCodeLogic) SendVerifyCode(in *pb.SendVerifyCodeReq) (*pb.Send
 		Subject: "【用户注册】验证码",
 		Text:    fmt.Sprintf("您的验证码是：%s", codeStr),
 	}
-	_, err := sendEmailLogic.SendEmail(sendEmailReq)
+	sendEmailResp, err := sendEmailLogic.SendEmail(sendEmailReq)
 	if err != nil {
 		return nil, err
 	}
 
 	logx.Infof("send verify code %s to email %s", codeStr, in.Email)
 
-	return &pb.SendVerifyCodeResp{}, nil
+	return &pb.SendVerifyCodeResp{
+		SendAt: sendEmailResp.SendAt,
+	}, nil
 }
