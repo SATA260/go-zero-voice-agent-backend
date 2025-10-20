@@ -8,7 +8,9 @@ import (
 
 	"go-zero-voice-agent/app/usercenter/cmd/api/internal/svc"
 	"go-zero-voice-agent/app/usercenter/cmd/api/internal/types"
+	"go-zero-voice-agent/app/usercenter/cmd/rpc/usercenter"
 
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -28,7 +30,18 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterResp, err error) {
-	// todo: add your logic here and delete this line
+	registerResp, err := l.svcCtx.UsercenterRpc.Register(l.ctx, &usercenter.RegisterReq{
+		Email:      req.Email,
+		Password:   req.Password,
+		VerifyCode: req.Code,
+	}) 
+	if err != nil {
+		return nil, errors.Wrapf(err, "Fail to register user, email:%s", req.Email)
+	}
 
-	return
+	return &types.RegisterResp{
+		AccessToken: registerResp.AccessToken,
+		AccessExpire: registerResp.AccessExpire,
+		RefreshAfter: registerResp.RefreshAfter,
+	}, nil
 }

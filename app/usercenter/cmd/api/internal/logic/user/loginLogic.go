@@ -8,7 +8,10 @@ import (
 
 	"go-zero-voice-agent/app/usercenter/cmd/api/internal/svc"
 	"go-zero-voice-agent/app/usercenter/cmd/api/internal/types"
+	"go-zero-voice-agent/app/usercenter/cmd/rpc/usercenter"
+	"go-zero-voice-agent/app/usercenter/model"
 
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -28,7 +31,19 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err error) {
-	// todo: add your logic here and delete this line
+	loginResp, err := l.svcCtx.UsercenterRpc.Login(l.ctx, &usercenter.LoginReq{
+		AuthType: model.UserAuthTypeSystem,
+		AuthKey: req.Email,
+		Password: req.Password,
+	})
 
-	return
+	if err != nil {
+		return nil, errors.Wrapf(err, "Failed to login user, email:%s", req.Email)
+	}
+
+	return &types.LoginResp{
+		AccessToken: loginResp.AccessToken,
+		AccessExpire: loginResp.AccessExpire,
+		RefreshAfter: loginResp.RefreshAfter,
+	}, nil
 }
