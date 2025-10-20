@@ -1,11 +1,25 @@
 Name: usercenter.rpc
-ListenOn: 0.0.0.0:8080
+ListenOn: 0.0.0.0:4081
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+  - etcd:2379
   Key: usercenter.rpc
+DB:
+  DataSource: root:f4FMhWc6FdzuBCHf@tcp(mysql:3306)/gzva_usercenter?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 RedisConf:
-  Host:
+  Host: redis:6379
   Type: node
-  Pass: 
+  Pass: GwAGt4UmTwcMhjun
   Tls: false
+  NonBlock: true
+  PingTimeout: 1 # seconds
+
+JwtAuth:
+  AccessSecret: ${JWT_ACCESS_SECRET}
+  AccessExpire: 604800 # seconds
+
+Email:
+  Host: smtp.qq.com
+  Port: 587
+  Username: ${EMAIL_USERNAME}
+  Password: ${EMAIL_PASSWORD}

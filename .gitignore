@@ -16,3 +16,7 @@ data/*
 #vscode
 .vscode
 .vscode/
+
+#env
+.env
+.env.*
