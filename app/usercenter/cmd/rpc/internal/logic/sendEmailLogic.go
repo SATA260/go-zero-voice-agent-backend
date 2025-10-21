@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"net/smtp"
 	"net/textproto"
@@ -11,6 +12,7 @@ import (
 	"go-zero-voice-agent/app/usercenter/cmd/rpc/pb"
 
 	"github.com/jordan-wright/email"
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -45,11 +47,15 @@ func (l *SendEmailLogic) SendEmail(in *pb.SendEmailReq) (*pb.SendEmailResp, erro
 	password := l.svcCtx.Config.Email.Password
 
 	logx.Infof("%s start to send email to %s", in.From, in.To)
-	err := e.Send(addr, smtp.PlainAuth("", username, password, host))
-
-	if err != nil {
-		return nil, err
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: true,
+		ServerName:         host,
 	}
+	err := e.SendWithTLS(addr, smtp.PlainAuth("", username, password, host), tlsConfig)
+		if err != nil {
+			return nil, errors.Wrapf(err, "Failed to send email to %s", in.To)
+		}
+		logx.Infof("Successfully sent email to %s", in.To)
 
 	return &pb.SendEmailResp{
 		SendAt: time.Now().Unix(),
