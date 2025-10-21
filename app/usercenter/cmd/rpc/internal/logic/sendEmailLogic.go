@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"net/smtp"
 	"net/textproto"
 	"time"
@@ -39,10 +40,11 @@ func (l *SendEmailLogic) SendEmail(in *pb.SendEmailReq) (*pb.SendEmailResp, erro
 
 	host := l.svcCtx.Config.Email.Host
 	port := l.svcCtx.Config.Email.Port
-	addr :=  host + ":" +  string(rune(port))
+	addr :=  fmt.Sprintf("%s:%d", host, port)
 	username := l.svcCtx.Config.Email.Username
 	password := l.svcCtx.Config.Email.Password
 
+	logx.Infof("%s start to send email to %s", in.From, in.To)
 	err := e.Send(addr, smtp.PlainAuth("", username, password, host))
 
 	if err != nil {

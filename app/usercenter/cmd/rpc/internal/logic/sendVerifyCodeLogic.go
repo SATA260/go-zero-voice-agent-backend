@@ -39,6 +39,9 @@ func (l *SendVerifyCodeLogic) SendVerifyCode(in *pb.SendVerifyCodeReq) (*pb.Send
 		Subject: "【用户注册】验证码",
 		Text:    fmt.Sprintf("您的验证码是：%s", codeStr),
 	}
+	logx.Infof("Store verify code %s for email %s in redis", codeStr, in.Email)
+
+
 	sendEmailResp, err := sendEmailLogic.SendEmail(sendEmailReq)
 	if err != nil {
 		return nil, err
