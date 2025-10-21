@@ -2,17 +2,21 @@ Name: usercenter.rpc
 ListenOn: 0.0.0.0:4081
 Etcd:
   Hosts:
-  - etcd:2379
+  - localhost:2379
   Key: usercenter.rpc
 DB:
-  DataSource: root:f4FMhWc6FdzuBCHf@tcp(mysql:3306)/gzva_usercenter?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
-RedisConf:
-  Host: redis:6379
+  DataSource: root:f4FMhWc6FdzuBCHf@tcp(localhost:3306)/gzva_usercenter?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+Cache:
+  - Host: localhost:6379
+    Type: node
+
+Redis:
+  Host: localhost:6379
   Type: node
   Pass: GwAGt4UmTwcMhjun
-  Tls: false
-  NonBlock: true
-  PingTimeout: 1 # seconds
+  Key:  userrcenter:rpc
+  
 
 JwtAuth:
   AccessSecret: ${JWT_ACCESS_SECRET}

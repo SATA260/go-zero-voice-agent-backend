@@ -1,3 +1,9 @@
 Name: usercenter
 Host: 0.0.0.0
-Port: 8888
+Port: 3081
+
+UsercenterRpcConf:
+  Etcd:
+    Hosts:
+    - localhost:2379
+    Key: usercenter.rpc
