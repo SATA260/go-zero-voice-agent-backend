@@ -31,14 +31,12 @@ func NewSendCodeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendCode
 
 func (l *SendCodeLogic) SendCode(req *types.SendCodeReq) (resp *types.SendCodeResp, err error) {
 	// 发送验证码
-	go func() {
-		if _, err := l.svcCtx.UsercenterRpc.SendVerifyCode(context.Background(), &usercenter.SendVerifyCodeReq{
-			Email:        req.Email,
-			AccessExpire: 30 * 60, // 30分钟
-		}); err != nil {
-			logx.Error(errors.Wrapf(err, "Failed to send verify code to email:%s", req.Email))
-		}
-	}()
+	if _, err := l.svcCtx.UsercenterRpc.SendVerifyCode(context.Background(), &usercenter.SendVerifyCodeReq{
+		Email:        req.Email,
+		AccessExpire: 30 * 60, // 30分钟
+	}); err != nil {
+		logx.Error(errors.Wrapf(err, "Failed to send verify code to email:%s", req.Email))
+	}
 
 	return &types.SendCodeResp{
 		IsSuccess: true,
