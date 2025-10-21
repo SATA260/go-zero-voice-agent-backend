@@ -14,9 +14,9 @@ modeldir=./model
 # 数据库配置
 host=127.0.0.1
 port=3306
-dbname=gzvg
-username=zhang
-passwd=epoch2025zhang
+dbname=gzva_usercenter
+username=root
+passwd=f4FMhWc6FdzuBCHf
 
 
 echo "开始创建库：$dbname 的表：$2"

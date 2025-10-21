@@ -26,8 +26,8 @@ var (
 	userRowsExpectAutoSet   = strings.Join(stringx.Remove(userFieldNames, "`create_time`", "`update_time`"), ",")
 	userRowsWithPlaceHolder = strings.Join(stringx.Remove(userFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
 
-	cacheGzvgUserIdPrefix    = "cache:gzvg:user:id:"
-	cacheGzvgUserEmailPrefix = "cache:gzvg:user:email:"
+	cacheGzvaUsercenterUserIdPrefix    = "cache:gzvaUsercenter:user:id:"
+	cacheGzvaUsercenterUserEmailPrefix = "cache:gzvaUsercenter:user:email:"
 )
 
 type (
@@ -79,23 +79,25 @@ func newUserModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultUserModel {
 }
 
 func (m *defaultUserModel) Insert(ctx context.Context, session sqlx.Session, data *User) (sql.Result, error) {
-	data.DeleteTime = time.Unix(0, 0)
+	data.DeleteTime = time.Now()
+	data.CreateTime = time.Now()
+	data.UpdateTime = time.Now()
 	data.DelState = globalkey.DelStateNo
-	gzvgUserEmailKey := fmt.Sprintf("%s%v", cacheGzvgUserEmailPrefix, data.Email)
-	gzvgUserIdKey := fmt.Sprintf("%s%v", cacheGzvgUserIdPrefix, data.Id)
+	gzvaUsercenterUserEmailKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserEmailPrefix, data.Email)
+	gzvaUsercenterUserIdKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserIdPrefix, data.Id)
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userRowsExpectAutoSet)
 		if session != nil {
 			return session.ExecCtx(ctx, query, data.Id, data.DeleteTime, data.DelState, data.Version, data.Email, data.Password, data.Nickname, data.Sex, data.Avatar, data.Info)
 		}
 		return conn.ExecCtx(ctx, query, data.Id, data.DeleteTime, data.DelState, data.Version, data.Email, data.Password, data.Nickname, data.Sex, data.Avatar, data.Info)
-	}, gzvgUserEmailKey, gzvgUserIdKey)
+	}, gzvaUsercenterUserEmailKey, gzvaUsercenterUserIdKey)
 }
 
 func (m *defaultUserModel) FindOne(ctx context.Context, id int64) (*User, error) {
-	gzvgUserIdKey := fmt.Sprintf("%s%v", cacheGzvgUserIdPrefix, id)
+	gzvaUsercenterUserIdKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserIdPrefix, id)
 	var resp User
-	err := m.QueryRowCtx(ctx, &resp, gzvgUserIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
+	err := m.QueryRowCtx(ctx, &resp, gzvaUsercenterUserIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `id` = ? and del_state = ? limit 1", userRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, id, globalkey.DelStateNo)
 	})
@@ -110,9 +112,9 @@ func (m *defaultUserModel) FindOne(ctx context.Context, id int64) (*User, error)
 }
 
 func (m *defaultUserModel) FindOneByEmail(ctx context.Context, email string) (*User, error) {
-	gzvgUserEmailKey := fmt.Sprintf("%s%v", cacheGzvgUserEmailPrefix, email)
+	gzvaUsercenterUserEmailKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserEmailPrefix, email)
 	var resp User
-	err := m.QueryRowIndexCtx(ctx, &resp, gzvgUserEmailKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+	err := m.QueryRowIndexCtx(ctx, &resp, gzvaUsercenterUserEmailKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
 		query := fmt.Sprintf("select %s from %s where `email` = ? and del_state = ? limit 1", userRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, email, globalkey.DelStateNo); err != nil {
 			return nil, err
@@ -134,15 +136,15 @@ func (m *defaultUserModel) Update(ctx context.Context, session sqlx.Session, new
 	if err != nil {
 		return nil, err
 	}
-	gzvgUserEmailKey := fmt.Sprintf("%s%v", cacheGzvgUserEmailPrefix, data.Email)
-	gzvgUserIdKey := fmt.Sprintf("%s%v", cacheGzvgUserIdPrefix, data.Id)
+	gzvaUsercenterUserEmailKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserEmailPrefix, data.Email)
+	gzvaUsercenterUserIdKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserIdPrefix, data.Id)
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, userRowsWithPlaceHolder)
 		if session != nil {
 			return session.ExecCtx(ctx, query, newData.DeleteTime, newData.DelState, newData.Version, newData.Email, newData.Password, newData.Nickname, newData.Sex, newData.Avatar, newData.Info, newData.Id)
 		}
 		return conn.ExecCtx(ctx, query, newData.DeleteTime, newData.DelState, newData.Version, newData.Email, newData.Password, newData.Nickname, newData.Sex, newData.Avatar, newData.Info, newData.Id)
-	}, gzvgUserEmailKey, gzvgUserIdKey)
+	}, gzvaUsercenterUserEmailKey, gzvaUsercenterUserIdKey)
 }
 
 func (m *defaultUserModel) UpdateWithVersion(ctx context.Context, session sqlx.Session, newData *User) error {
@@ -157,15 +159,15 @@ func (m *defaultUserModel) UpdateWithVersion(ctx context.Context, session sqlx.S
 	if err != nil {
 		return err
 	}
-	gzvgUserEmailKey := fmt.Sprintf("%s%v", cacheGzvgUserEmailPrefix, data.Email)
-	gzvgUserIdKey := fmt.Sprintf("%s%v", cacheGzvgUserIdPrefix, data.Id)
+	gzvaUsercenterUserEmailKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserEmailPrefix, data.Email)
+	gzvaUsercenterUserIdKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserIdPrefix, data.Id)
 	sqlResult, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ? and version = ? ", m.table, userRowsWithPlaceHolder)
 		if session != nil {
 			return session.ExecCtx(ctx, query, newData.DeleteTime, newData.DelState, newData.Version, newData.Email, newData.Password, newData.Nickname, newData.Sex, newData.Avatar, newData.Info, newData.Id, oldVersion)
 		}
 		return conn.ExecCtx(ctx, query, newData.DeleteTime, newData.DelState, newData.Version, newData.Email, newData.Password, newData.Nickname, newData.Sex, newData.Avatar, newData.Info, newData.Id, oldVersion)
-	}, gzvgUserEmailKey, gzvgUserIdKey)
+	}, gzvaUsercenterUserEmailKey, gzvaUsercenterUserIdKey)
 	if err != nil {
 		return err
 	}
@@ -388,19 +390,19 @@ func (m *defaultUserModel) Delete(ctx context.Context, session sqlx.Session, id 
 		return err
 	}
 
-	gzvgUserEmailKey := fmt.Sprintf("%s%v", cacheGzvgUserEmailPrefix, data.Email)
-	gzvgUserIdKey := fmt.Sprintf("%s%v", cacheGzvgUserIdPrefix, id)
+	gzvaUsercenterUserEmailKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserEmailPrefix, data.Email)
+	gzvaUsercenterUserIdKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserIdPrefix, id)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 		if session != nil {
 			return session.ExecCtx(ctx, query, id)
 		}
 		return conn.ExecCtx(ctx, query, id)
-	}, gzvgUserEmailKey, gzvgUserIdKey)
+	}, gzvaUsercenterUserEmailKey, gzvaUsercenterUserIdKey)
 	return err
 }
 func (m *defaultUserModel) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", cacheGzvgUserIdPrefix, primary)
+	return fmt.Sprintf("%s%v", cacheGzvaUsercenterUserIdPrefix, primary)
 }
 func (m *defaultUserModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
 	query := fmt.Sprintf("select %s from %s where `id` = ? and del_state = ? limit 1", userRows, m.table)

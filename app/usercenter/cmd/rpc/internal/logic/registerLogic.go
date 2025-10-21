@@ -41,17 +41,38 @@ func (l *RegisterLogic) Register(in *pb.RegisterReq) (*pb.RegisterResp, error) {
 		return nil, errors.Wrapf(ErrUserAlreadyRegisterError, "Register user exists email:%s, err:%v", in.Email, err)
 	}
 
-	// 验证验证码
-	verifyCodeKey := consts.GetRegisterVerifyCodeCacheKey(in.Email)
-	cachedCode, err := l.svcCtx.RedisClient.Get(verifyCodeKey)
-	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "get verify code from redis err:%v", err)
+	// 创建用户
+	var userId int64
+	switch in.AuthType {
+	case model.UserAuthTypeEmail:
+		// 邮箱注册
+		userId, err := l.registerByEmail(in)
+		if err != nil {
+			return nil, err
+		}
+		logx.Infof("用户注册成功, userId: %d, email: %s", userId, in.Email)
+	default:
+		return nil, xerr.NewErrCode(xerr.SERVER_COMMON_ERROR)
 	}
-	if cachedCode != in.VerifyCode {
-		return nil, errors.Wrapf(xerr.NewErrMsg("verify code error"), "email:%s, input code:%s, cache code:%s", in.Email, in.VerifyCode, cachedCode)
+	
+
+	generateTokenLogic := NewGenerateTokenLogic(l.ctx, l.svcCtx)
+	tokenResp, err := generateTokenLogic.GenerateToken(&usercenter.GenerateTokenReq{
+		UserId: userId,
+	})
+	if err != nil {
+		return nil, errors.Wrapf(ErrGenerateTokenError, "GenerateToken userId : %d", userId)
 	}
 
-	// 创建用户
+	return &usercenter.RegisterResp{
+		AccessToken:  tokenResp.AccessToken,
+		AccessExpire: tokenResp.AccessExpire,
+		RefreshAfter: tokenResp.RefreshAfter,
+	}, nil
+}
+
+func (l *RegisterLogic) createUserAuth(in *pb.RegisterReq) (int64, error) {
+	// 创建用户和用户认证信息
 	var userId int64
 	if err := l.svcCtx.UserModel.Trans(l.ctx, func(context context.Context, session sqlx.Session) error {
 		user := new(model.User)
@@ -82,20 +103,23 @@ func (l *RegisterLogic) Register(in *pb.RegisterReq) (*pb.RegisterResp, error) {
 		}
 		return nil
 	}); err != nil {
-		return nil, err
+		return -1, err
 	}
 
-	generateTokenLogic := NewGenerateTokenLogic(l.ctx, l.svcCtx)
-	tokenResp, err := generateTokenLogic.GenerateToken(&usercenter.GenerateTokenReq{
-		UserId: userId,
-	})
+	return userId, nil
+}
+
+func (l *RegisterLogic) registerByEmail(in *pb.RegisterReq) (int64, error) {
+	// 检查验证码是否正确
+	// 验证验证码
+	verifyCodeKey := consts.GetRegisterVerifyCodeCacheKey(in.Email)
+	cachedCode, err := l.svcCtx.RedisClient.Get(verifyCodeKey)
 	if err != nil {
-		return nil, errors.Wrapf(ErrGenerateTokenError, "GenerateToken userId : %d", userId)
+		return -1, errors.Wrapf(xerr.NewErrCode(xerr.SERVER_COMMON_ERROR), "email:%s, get verify code from redis failed, err:%v", in.Email, err)
+	}
+	if cachedCode != in.VerifyCode {
+		return -1, errors.Wrapf(xerr.NewErrMsg("verify code error"), "email:%s, input code:%s, cache code:%s", in.Email, in.VerifyCode, cachedCode)
 	}
 
-	return &usercenter.RegisterResp{
-		AccessToken:  tokenResp.AccessToken,
-		AccessExpire: tokenResp.AccessExpire,
-		RefreshAfter: tokenResp.RefreshAfter,
-	}, nil
+	return l.createUserAuth(in)
 }

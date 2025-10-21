@@ -9,6 +9,7 @@ import (
 	"go-zero-voice-agent/app/usercenter/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/usercenter/cmd/rpc/pb"
 
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -31,7 +32,11 @@ func (l *SendVerifyCodeLogic) SendVerifyCode(in *pb.SendVerifyCodeReq) (*pb.Send
 	codeStr := fmt.Sprintf("%06d", code)
 
 
-	l.svcCtx.RedisClient.Setex(consts.GetRegisterVerifyCodeCacheKey(in.Email), codeStr, int(in.AccessExpire))
+	err := l.svcCtx.RedisClient.Setex(consts.GetRegisterVerifyCodeCacheKey(in.Email), codeStr, int(in.AccessExpire))
+	if err != nil {
+		return nil, errors.Wrapf(err, "存储邮箱验证码失败, email: %s", in.Email)
+	}
+
 	sendEmailLogic := NewSendEmailLogic(l.ctx, l.svcCtx)
 	sendEmailReq := &pb.SendEmailReq{
 		To:      in.Email,

@@ -9,6 +9,7 @@ import (
 	"go-zero-voice-agent/app/usercenter/cmd/api/internal/svc"
 	"go-zero-voice-agent/app/usercenter/cmd/api/internal/types"
 	"go-zero-voice-agent/app/usercenter/cmd/rpc/usercenter"
+	"go-zero-voice-agent/app/usercenter/model"
 
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -34,13 +35,15 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		Email:      req.Email,
 		Password:   req.Password,
 		VerifyCode: req.Code,
-	}) 
+		AuthKey:    req.Email,
+		AuthType:   model.UserAuthTypeEmail,
+	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "Fail to register user, email:%s", req.Email)
 	}
 
 	return &types.RegisterResp{
-		AccessToken: registerResp.AccessToken,
+		AccessToken:  registerResp.AccessToken,
 		AccessExpire: registerResp.AccessExpire,
 		RefreshAfter: registerResp.RefreshAfter,
 	}, nil
