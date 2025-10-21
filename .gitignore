@@ -16,6 +16,8 @@ data/*
 #vscode
 .vscode
 .vscode/
+.VSCodeCounter
+.VSCodeCounter/
 
 #env
 .env
