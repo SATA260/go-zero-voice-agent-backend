@@ -43,10 +43,10 @@ services:
       - gzva_net
   
   redis:
-    image: redis:7.4.6-alpine
+    image: redis:6.2.5-alpine
     container_name: redis
     ports:
-      - 6379:6379
+      - 36379:6379
     environment:
       # 时区上海 - Time zone Shanghai (Change if needed)
       TZ: Asia/Shanghai

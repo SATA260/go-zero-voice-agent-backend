@@ -1,7 +1,7 @@
 package consts
 
 const (
-	RegisterVerifyCodeCachePrefix = "reg:verify_code:"
+	RegisterVerifyCodeCachePrefix = "usercenter:reg:verify_code:"
 )
 
 func GetRegisterVerifyCodeCacheKey(email string) string {

@@ -26,9 +26,9 @@ var (
 	userAuthRowsExpectAutoSet   = strings.Join(stringx.Remove(userAuthFieldNames, "`create_time`", "`update_time`"), ",")
 	userAuthRowsWithPlaceHolder = strings.Join(stringx.Remove(userAuthFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
 
-	cacheGzvgUserAuthIdPrefix              = "cache:gzvg:userAuth:id:"
-	cacheGzvgUserAuthAuthTypeAuthKeyPrefix = "cache:gzvg:userAuth:authType:authKey:"
-	cacheGzvgUserAuthUserIdAuthTypePrefix  = "cache:gzvg:userAuth:userId:authType:"
+	cacheGzvaUsercenterUserAuthIdPrefix              = "cache:gzvaUsercenter:userAuth:id:"
+	cacheGzvaUsercenterUserAuthAuthTypeAuthKeyPrefix = "cache:gzvaUsercenter:userAuth:authType:authKey:"
+	cacheGzvaUsercenterUserAuthUserIdAuthTypePrefix  = "cache:gzvaUsercenter:userAuth:userId:authType:"
 )
 
 type (
@@ -78,24 +78,26 @@ func newUserAuthModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultUserAuthMode
 }
 
 func (m *defaultUserAuthModel) Insert(ctx context.Context, session sqlx.Session, data *UserAuth) (sql.Result, error) {
-	data.DeleteTime = time.Unix(0, 0)
+	data.DeleteTime = time.Now()
+	data.CreateTime = time.Now()
+	data.UpdateTime = time.Now()
 	data.DelState = globalkey.DelStateNo
-	gzvgUserAuthAuthTypeAuthKeyKey := fmt.Sprintf("%s%v:%v", cacheGzvgUserAuthAuthTypeAuthKeyPrefix, data.AuthType, data.AuthKey)
-	gzvgUserAuthIdKey := fmt.Sprintf("%s%v", cacheGzvgUserAuthIdPrefix, data.Id)
-	gzvgUserAuthUserIdAuthTypeKey := fmt.Sprintf("%s%v:%v", cacheGzvgUserAuthUserIdAuthTypePrefix, data.UserId, data.AuthType)
+	gzvaUsercenterUserAuthAuthTypeAuthKeyKey := fmt.Sprintf("%s%v:%v", cacheGzvaUsercenterUserAuthAuthTypeAuthKeyPrefix, data.AuthType, data.AuthKey)
+	gzvaUsercenterUserAuthIdKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserAuthIdPrefix, data.Id)
+	gzvaUsercenterUserAuthUserIdAuthTypeKey := fmt.Sprintf("%s%v:%v", cacheGzvaUsercenterUserAuthUserIdAuthTypePrefix, data.UserId, data.AuthType)
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, userAuthRowsExpectAutoSet)
 		if session != nil {
 			return session.ExecCtx(ctx, query, data.Id, data.DeleteTime, data.DelState, data.Version, data.UserId, data.AuthKey, data.AuthType)
 		}
 		return conn.ExecCtx(ctx, query, data.Id, data.DeleteTime, data.DelState, data.Version, data.UserId, data.AuthKey, data.AuthType)
-	}, gzvgUserAuthAuthTypeAuthKeyKey, gzvgUserAuthIdKey, gzvgUserAuthUserIdAuthTypeKey)
+	}, gzvaUsercenterUserAuthAuthTypeAuthKeyKey, gzvaUsercenterUserAuthIdKey, gzvaUsercenterUserAuthUserIdAuthTypeKey)
 }
 
 func (m *defaultUserAuthModel) FindOne(ctx context.Context, id int64) (*UserAuth, error) {
-	gzvgUserAuthIdKey := fmt.Sprintf("%s%v", cacheGzvgUserAuthIdPrefix, id)
+	gzvaUsercenterUserAuthIdKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserAuthIdPrefix, id)
 	var resp UserAuth
-	err := m.QueryRowCtx(ctx, &resp, gzvgUserAuthIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
+	err := m.QueryRowCtx(ctx, &resp, gzvaUsercenterUserAuthIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `id` = ? and del_state = ? limit 1", userAuthRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, id, globalkey.DelStateNo)
 	})
@@ -110,9 +112,9 @@ func (m *defaultUserAuthModel) FindOne(ctx context.Context, id int64) (*UserAuth
 }
 
 func (m *defaultUserAuthModel) FindOneByAuthTypeAuthKey(ctx context.Context, authType string, authKey string) (*UserAuth, error) {
-	gzvgUserAuthAuthTypeAuthKeyKey := fmt.Sprintf("%s%v:%v", cacheGzvgUserAuthAuthTypeAuthKeyPrefix, authType, authKey)
+	gzvaUsercenterUserAuthAuthTypeAuthKeyKey := fmt.Sprintf("%s%v:%v", cacheGzvaUsercenterUserAuthAuthTypeAuthKeyPrefix, authType, authKey)
 	var resp UserAuth
-	err := m.QueryRowIndexCtx(ctx, &resp, gzvgUserAuthAuthTypeAuthKeyKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+	err := m.QueryRowIndexCtx(ctx, &resp, gzvaUsercenterUserAuthAuthTypeAuthKeyKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
 		query := fmt.Sprintf("select %s from %s where `auth_type` = ? and `auth_key` = ? and del_state = ? limit 1", userAuthRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, authType, authKey, globalkey.DelStateNo); err != nil {
 			return nil, err
@@ -130,9 +132,9 @@ func (m *defaultUserAuthModel) FindOneByAuthTypeAuthKey(ctx context.Context, aut
 }
 
 func (m *defaultUserAuthModel) FindOneByUserIdAuthType(ctx context.Context, userId int64, authType string) (*UserAuth, error) {
-	gzvgUserAuthUserIdAuthTypeKey := fmt.Sprintf("%s%v:%v", cacheGzvgUserAuthUserIdAuthTypePrefix, userId, authType)
+	gzvaUsercenterUserAuthUserIdAuthTypeKey := fmt.Sprintf("%s%v:%v", cacheGzvaUsercenterUserAuthUserIdAuthTypePrefix, userId, authType)
 	var resp UserAuth
-	err := m.QueryRowIndexCtx(ctx, &resp, gzvgUserAuthUserIdAuthTypeKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+	err := m.QueryRowIndexCtx(ctx, &resp, gzvaUsercenterUserAuthUserIdAuthTypeKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
 		query := fmt.Sprintf("select %s from %s where `user_id` = ? and `auth_type` = ? and del_state = ? limit 1", userAuthRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, userId, authType, globalkey.DelStateNo); err != nil {
 			return nil, err
@@ -154,16 +156,16 @@ func (m *defaultUserAuthModel) Update(ctx context.Context, session sqlx.Session,
 	if err != nil {
 		return nil, err
 	}
-	gzvgUserAuthAuthTypeAuthKeyKey := fmt.Sprintf("%s%v:%v", cacheGzvgUserAuthAuthTypeAuthKeyPrefix, data.AuthType, data.AuthKey)
-	gzvgUserAuthIdKey := fmt.Sprintf("%s%v", cacheGzvgUserAuthIdPrefix, data.Id)
-	gzvgUserAuthUserIdAuthTypeKey := fmt.Sprintf("%s%v:%v", cacheGzvgUserAuthUserIdAuthTypePrefix, data.UserId, data.AuthType)
+	gzvaUsercenterUserAuthAuthTypeAuthKeyKey := fmt.Sprintf("%s%v:%v", cacheGzvaUsercenterUserAuthAuthTypeAuthKeyPrefix, data.AuthType, data.AuthKey)
+	gzvaUsercenterUserAuthIdKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserAuthIdPrefix, data.Id)
+	gzvaUsercenterUserAuthUserIdAuthTypeKey := fmt.Sprintf("%s%v:%v", cacheGzvaUsercenterUserAuthUserIdAuthTypePrefix, data.UserId, data.AuthType)
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, userAuthRowsWithPlaceHolder)
 		if session != nil {
 			return session.ExecCtx(ctx, query, newData.DeleteTime, newData.DelState, newData.Version, newData.UserId, newData.AuthKey, newData.AuthType, newData.Id)
 		}
 		return conn.ExecCtx(ctx, query, newData.DeleteTime, newData.DelState, newData.Version, newData.UserId, newData.AuthKey, newData.AuthType, newData.Id)
-	}, gzvgUserAuthAuthTypeAuthKeyKey, gzvgUserAuthIdKey, gzvgUserAuthUserIdAuthTypeKey)
+	}, gzvaUsercenterUserAuthAuthTypeAuthKeyKey, gzvaUsercenterUserAuthIdKey, gzvaUsercenterUserAuthUserIdAuthTypeKey)
 }
 
 func (m *defaultUserAuthModel) UpdateWithVersion(ctx context.Context, session sqlx.Session, newData *UserAuth) error {
@@ -178,16 +180,16 @@ func (m *defaultUserAuthModel) UpdateWithVersion(ctx context.Context, session sq
 	if err != nil {
 		return err
 	}
-	gzvgUserAuthAuthTypeAuthKeyKey := fmt.Sprintf("%s%v:%v", cacheGzvgUserAuthAuthTypeAuthKeyPrefix, data.AuthType, data.AuthKey)
-	gzvgUserAuthIdKey := fmt.Sprintf("%s%v", cacheGzvgUserAuthIdPrefix, data.Id)
-	gzvgUserAuthUserIdAuthTypeKey := fmt.Sprintf("%s%v:%v", cacheGzvgUserAuthUserIdAuthTypePrefix, data.UserId, data.AuthType)
+	gzvaUsercenterUserAuthAuthTypeAuthKeyKey := fmt.Sprintf("%s%v:%v", cacheGzvaUsercenterUserAuthAuthTypeAuthKeyPrefix, data.AuthType, data.AuthKey)
+	gzvaUsercenterUserAuthIdKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserAuthIdPrefix, data.Id)
+	gzvaUsercenterUserAuthUserIdAuthTypeKey := fmt.Sprintf("%s%v:%v", cacheGzvaUsercenterUserAuthUserIdAuthTypePrefix, data.UserId, data.AuthType)
 	sqlResult, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ? and version = ? ", m.table, userAuthRowsWithPlaceHolder)
 		if session != nil {
 			return session.ExecCtx(ctx, query, newData.DeleteTime, newData.DelState, newData.Version, newData.UserId, newData.AuthKey, newData.AuthType, newData.Id, oldVersion)
 		}
 		return conn.ExecCtx(ctx, query, newData.DeleteTime, newData.DelState, newData.Version, newData.UserId, newData.AuthKey, newData.AuthType, newData.Id, oldVersion)
-	}, gzvgUserAuthAuthTypeAuthKeyKey, gzvgUserAuthIdKey, gzvgUserAuthUserIdAuthTypeKey)
+	}, gzvaUsercenterUserAuthAuthTypeAuthKeyKey, gzvaUsercenterUserAuthIdKey, gzvaUsercenterUserAuthUserIdAuthTypeKey)
 	if err != nil {
 		return err
 	}
@@ -410,20 +412,20 @@ func (m *defaultUserAuthModel) Delete(ctx context.Context, session sqlx.Session,
 		return err
 	}
 
-	gzvgUserAuthAuthTypeAuthKeyKey := fmt.Sprintf("%s%v:%v", cacheGzvgUserAuthAuthTypeAuthKeyPrefix, data.AuthType, data.AuthKey)
-	gzvgUserAuthIdKey := fmt.Sprintf("%s%v", cacheGzvgUserAuthIdPrefix, id)
-	gzvgUserAuthUserIdAuthTypeKey := fmt.Sprintf("%s%v:%v", cacheGzvgUserAuthUserIdAuthTypePrefix, data.UserId, data.AuthType)
+	gzvaUsercenterUserAuthAuthTypeAuthKeyKey := fmt.Sprintf("%s%v:%v", cacheGzvaUsercenterUserAuthAuthTypeAuthKeyPrefix, data.AuthType, data.AuthKey)
+	gzvaUsercenterUserAuthIdKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserAuthIdPrefix, id)
+	gzvaUsercenterUserAuthUserIdAuthTypeKey := fmt.Sprintf("%s%v:%v", cacheGzvaUsercenterUserAuthUserIdAuthTypePrefix, data.UserId, data.AuthType)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 		if session != nil {
 			return session.ExecCtx(ctx, query, id)
 		}
 		return conn.ExecCtx(ctx, query, id)
-	}, gzvgUserAuthAuthTypeAuthKeyKey, gzvgUserAuthIdKey, gzvgUserAuthUserIdAuthTypeKey)
+	}, gzvaUsercenterUserAuthAuthTypeAuthKeyKey, gzvaUsercenterUserAuthIdKey, gzvaUsercenterUserAuthUserIdAuthTypeKey)
 	return err
 }
 func (m *defaultUserAuthModel) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", cacheGzvgUserAuthIdPrefix, primary)
+	return fmt.Sprintf("%s%v", cacheGzvaUsercenterUserAuthIdPrefix, primary)
 }
 func (m *defaultUserAuthModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
 	query := fmt.Sprintf("select %s from %s where `id` = ? and del_state = ? limit 1", userAuthRows, m.table)
