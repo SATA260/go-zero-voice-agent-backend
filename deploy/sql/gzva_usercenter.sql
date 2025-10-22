@@ -1,33 +1,39 @@
-CREATE TABLE `user`
+create table gzva_usercenter.user
 (
-    `id`          bigint PRIMARY KEY,
-    `create_time` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `update_time` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `delete_time` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `del_state`   smallint     NOT NULL DEFAULT 0,
-    `version`     bigint       NOT NULL DEFAULT 0 COMMENT '版本号',
-    `email`       varchar(255) NOT NULL DEFAULT '',
-    `password`    varchar(255) NOT NULL DEFAULT '',
-    `nickname`    varchar(255) NOT NULL DEFAULT '',
-    `sex`         smallint     NOT NULL DEFAULT 0 COMMENT '性别 0:男 1:女',
-    `avatar`      varchar(255) NOT NULL DEFAULT '',
-    `info`        varchar(255) NOT NULL DEFAULT '',
-    CONSTRAINT `idx_mobile` UNIQUE (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户表';
+    id          bigint auto_increment
+        primary key,
+    create_time timestamp    default CURRENT_TIMESTAMP not null,
+    update_time timestamp    default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+    delete_time timestamp    default CURRENT_TIMESTAMP not null,
+    del_state   smallint     default 0                 not null,
+    version     bigint       default 0                 not null comment '版本号',
+    email       varchar(255) default ''                not null,
+    password    varchar(255) default ''                not null,
+    nickname    varchar(255) default ''                not null,
+    sex         smallint     default 0                 not null comment '性别 0:男 1:女',
+    avatar      varchar(255) default ''                not null,
+    info        varchar(255) default ''                not null,
+    constraint idx_mobile
+        unique (email)
+)
+    comment '用户表';
 
-
-
-CREATE TABLE `user_auth`
+create table gzva_usercenter.user_auth
 (
-    `id`          bigint PRIMARY KEY,
-    `create_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `update_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `delete_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `del_state`   smallint    NOT NULL DEFAULT 0,
-    `version`     bigint      NOT NULL DEFAULT 0 COMMENT '版本号',
-    `user_id`     bigint      NOT NULL DEFAULT 0,
-    `auth_key`    varchar(64) NOT NULL DEFAULT '' COMMENT '平台唯一id',
-    `auth_type`   varchar(12) NOT NULL DEFAULT '' COMMENT '平台类型',
-    CONSTRAINT `idx_type_key` UNIQUE (`auth_type`, `auth_key`),
-    CONSTRAINT `idx_userId_key` UNIQUE (`user_id`, `auth_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户授权表';
+    id          bigint auto_increment
+        primary key,
+    create_time timestamp   default CURRENT_TIMESTAMP not null,
+    update_time timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+    delete_time timestamp   default CURRENT_TIMESTAMP not null,
+    del_state   smallint    default 0                 not null,
+    version     bigint      default 0                 not null comment '版本号',
+    user_id     bigint      default 0                 not null,
+    auth_key    varchar(64) default ''                not null comment '平台唯一id',
+    auth_type   varchar(12) default ''                not null comment '平台类型',
+    constraint idx_type_key
+        unique (auth_type, auth_key),
+    constraint idx_userId_key
+        unique (user_id, auth_type)
+)
+    comment '用户授权表';
+

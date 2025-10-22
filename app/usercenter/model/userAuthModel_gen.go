@@ -23,7 +23,7 @@ import (
 var (
 	userAuthFieldNames          = builder.RawFieldNames(&UserAuth{})
 	userAuthRows                = strings.Join(userAuthFieldNames, ",")
-	userAuthRowsExpectAutoSet   = strings.Join(stringx.Remove(userAuthFieldNames, "`create_time`", "`update_time`"), ",")
+	userAuthRowsExpectAutoSet   = strings.Join(stringx.Remove(userAuthFieldNames, "`id`", "`create_time`", "`update_time`"), ",")
 	userAuthRowsWithPlaceHolder = strings.Join(stringx.Remove(userAuthFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
 
 	cacheGzvaUsercenterUserAuthIdPrefix              = "cache:gzvaUsercenter:userAuth:id:"
@@ -79,18 +79,16 @@ func newUserAuthModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultUserAuthMode
 
 func (m *defaultUserAuthModel) Insert(ctx context.Context, session sqlx.Session, data *UserAuth) (sql.Result, error) {
 	data.DeleteTime = time.Now()
-	data.CreateTime = time.Now()
-	data.UpdateTime = time.Now()
 	data.DelState = globalkey.DelStateNo
 	gzvaUsercenterUserAuthAuthTypeAuthKeyKey := fmt.Sprintf("%s%v:%v", cacheGzvaUsercenterUserAuthAuthTypeAuthKeyPrefix, data.AuthType, data.AuthKey)
 	gzvaUsercenterUserAuthIdKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserAuthIdPrefix, data.Id)
 	gzvaUsercenterUserAuthUserIdAuthTypeKey := fmt.Sprintf("%s%v:%v", cacheGzvaUsercenterUserAuthUserIdAuthTypePrefix, data.UserId, data.AuthType)
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, userAuthRowsExpectAutoSet)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, userAuthRowsExpectAutoSet)
 		if session != nil {
-			return session.ExecCtx(ctx, query, data.Id, data.DeleteTime, data.DelState, data.Version, data.UserId, data.AuthKey, data.AuthType)
+			return session.ExecCtx(ctx, query, data.DeleteTime, data.DelState, data.Version, data.UserId, data.AuthKey, data.AuthType)
 		}
-		return conn.ExecCtx(ctx, query, data.Id, data.DeleteTime, data.DelState, data.Version, data.UserId, data.AuthKey, data.AuthType)
+		return conn.ExecCtx(ctx, query, data.DeleteTime, data.DelState, data.Version, data.UserId, data.AuthKey, data.AuthType)
 	}, gzvaUsercenterUserAuthAuthTypeAuthKeyKey, gzvaUsercenterUserAuthIdKey, gzvaUsercenterUserAuthUserIdAuthTypeKey)
 }
 
