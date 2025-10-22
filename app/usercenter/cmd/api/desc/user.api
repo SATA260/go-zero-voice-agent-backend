@@ -33,6 +33,10 @@ service usercenter {
 	@handler detail
 	get /user/info (UserInfoReq) returns (UserInfoResp)
 
+	@doc "auth by token"
+	@handler verifyToken
+	post /user/auth (verifyTokenReq) returns (verifyTokenResp)
+
 	@doc "wechat mini auth"
 	@handler wxMiniAuth
 	post /user/wxMiniAuth (WXMiniAuthReq) returns (WXMiniAuthResp)

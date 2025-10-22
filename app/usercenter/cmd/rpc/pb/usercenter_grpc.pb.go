@@ -27,6 +27,7 @@ const (
 	Usercenter_GenerateToken_FullMethodName        = "/pb.Usercenter/GenerateToken"
 	Usercenter_SendEmail_FullMethodName            = "/pb.Usercenter/SendEmail"
 	Usercenter_SendVerifyCode_FullMethodName       = "/pb.Usercenter/SendVerifyCode"
+	Usercenter_VerifyToken_FullMethodName          = "/pb.Usercenter/VerifyToken"
 )
 
 // UsercenterClient is the client API for Usercenter service.
@@ -41,6 +42,7 @@ type UsercenterClient interface {
 	GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error)
 	SendEmail(ctx context.Context, in *SendEmailReq, opts ...grpc.CallOption) (*SendEmailResp, error)
 	SendVerifyCode(ctx context.Context, in *SendVerifyCodeReq, opts ...grpc.CallOption) (*SendVerifyCodeResp, error)
+	VerifyToken(ctx context.Context, in *VerifyTokenReq, opts ...grpc.CallOption) (*VerifyTokenResp, error)
 }
 
 type usercenterClient struct {
@@ -131,6 +133,16 @@ func (c *usercenterClient) SendVerifyCode(ctx context.Context, in *SendVerifyCod
 	return out, nil
 }
 
+func (c *usercenterClient) VerifyToken(ctx context.Context, in *VerifyTokenReq, opts ...grpc.CallOption) (*VerifyTokenResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(VerifyTokenResp)
+	err := c.cc.Invoke(ctx, Usercenter_VerifyToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UsercenterServer is the server API for Usercenter service.
 // All implementations must embed UnimplementedUsercenterServer
 // for forward compatibility.
@@ -143,6 +155,7 @@ type UsercenterServer interface {
 	GenerateToken(context.Context, *GenerateTokenReq) (*GenerateTokenResp, error)
 	SendEmail(context.Context, *SendEmailReq) (*SendEmailResp, error)
 	SendVerifyCode(context.Context, *SendVerifyCodeReq) (*SendVerifyCodeResp, error)
+	VerifyToken(context.Context, *VerifyTokenReq) (*VerifyTokenResp, error)
 	mustEmbedUnimplementedUsercenterServer()
 }
 
@@ -176,6 +189,9 @@ func (UnimplementedUsercenterServer) SendEmail(context.Context, *SendEmailReq) (
 }
 func (UnimplementedUsercenterServer) SendVerifyCode(context.Context, *SendVerifyCodeReq) (*SendVerifyCodeResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendVerifyCode not implemented")
+}
+func (UnimplementedUsercenterServer) VerifyToken(context.Context, *VerifyTokenReq) (*VerifyTokenResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyToken not implemented")
 }
 func (UnimplementedUsercenterServer) mustEmbedUnimplementedUsercenterServer() {}
 func (UnimplementedUsercenterServer) testEmbeddedByValue()                    {}
@@ -342,6 +358,24 @@ func _Usercenter_SendVerifyCode_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Usercenter_VerifyToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyTokenReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsercenterServer).VerifyToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Usercenter_VerifyToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsercenterServer).VerifyToken(ctx, req.(*VerifyTokenReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Usercenter_ServiceDesc is the grpc.ServiceDesc for Usercenter service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -380,6 +414,10 @@ var Usercenter_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendVerifyCode",
 			Handler:    _Usercenter_SendVerifyCode_Handler,
+		},
+		{
+			MethodName: "VerifyToken",
+			Handler:    _Usercenter_VerifyToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
