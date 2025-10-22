@@ -71,3 +71,12 @@ type (
 		UserInfo User `json:"userInfo"`
 	}
 )
+
+type (
+	verifyTokenReq {
+		Authorization string `header:"Authorization"`
+	}
+	verifyTokenResp {
+		UserId int64 `json:"userId"`
+	}
+)

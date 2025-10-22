@@ -4,7 +4,7 @@
 package types
 
 type LoginReq struct {
-	Email    string `json:"email"`
+	Email    string `json:"mobile"`
 	Password string `json:"password"`
 }
 
@@ -61,4 +61,12 @@ type WXMiniAuthResp struct {
 	AccessToken  string `json:"accessToken"`
 	AccessExpire int64  `json:"accessExpire"`
 	RefreshAfter int64  `json:"refreshAfter"`
+}
+
+type VerifyTokenReq struct {
+	Authorization string `header:"Authorization"`
+}
+
+type VerifyTokenResp struct {
+	UserId int64 `json:"userId"`
 }

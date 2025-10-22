@@ -25,3 +25,7 @@
 
  # 3）goctl >= 1.3 进入"/app/*/model"目录下，执行下面命令
 goctl model pg datasource -url="postgres://zhang:epoch2025zhang@localhost:5432/postgres?sslmode=disable" -table="user" -dir="." --cache=true --style=goZero
+
+
+# 4）goctl < 1.3 进入"/cmd/api/desc"目录下，执行下面命令
+goctl api swagger --api *.api --dir ../doc/swagger/

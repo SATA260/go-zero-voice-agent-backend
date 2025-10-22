@@ -62,3 +62,8 @@ func (s *UsercenterServer) SendVerifyCode(ctx context.Context, in *pb.SendVerify
 	l := logic.NewSendVerifyCodeLogic(ctx, s.svcCtx)
 	return l.SendVerifyCode(in)
 }
+
+func (s *UsercenterServer) VerifyToken(ctx context.Context, in *pb.VerifyTokenReq) (*pb.VerifyTokenResp, error) {
+	l := logic.NewVerifyTokenLogic(ctx, s.svcCtx)
+	return l.VerifyToken(in)
+}

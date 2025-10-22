@@ -32,6 +32,8 @@ type (
 	SendVerifyCodeResp       = pb.SendVerifyCodeResp
 	User                     = pb.User
 	UserAuth                 = pb.UserAuth
+	VerifyTokenReq           = pb.VerifyTokenReq
+	VerifyTokenResp          = pb.VerifyTokenResp
 
 	Usercenter interface {
 		Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
@@ -42,6 +44,7 @@ type (
 		GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error)
 		SendEmail(ctx context.Context, in *SendEmailReq, opts ...grpc.CallOption) (*SendEmailResp, error)
 		SendVerifyCode(ctx context.Context, in *SendVerifyCodeReq, opts ...grpc.CallOption) (*SendVerifyCodeResp, error)
+		VerifyToken(ctx context.Context, in *VerifyTokenReq, opts ...grpc.CallOption) (*VerifyTokenResp, error)
 	}
 
 	defaultUsercenter struct {
@@ -93,4 +96,9 @@ func (m *defaultUsercenter) SendEmail(ctx context.Context, in *SendEmailReq, opt
 func (m *defaultUsercenter) SendVerifyCode(ctx context.Context, in *SendVerifyCodeReq, opts ...grpc.CallOption) (*SendVerifyCodeResp, error) {
 	client := pb.NewUsercenterClient(m.cli.Conn())
 	return client.SendVerifyCode(ctx, in, opts...)
+}
+
+func (m *defaultUsercenter) VerifyToken(ctx context.Context, in *VerifyTokenReq, opts ...grpc.CallOption) (*VerifyTokenResp, error) {
+	client := pb.NewUsercenterClient(m.cli.Conn())
+	return client.VerifyToken(ctx, in, opts...)
 }

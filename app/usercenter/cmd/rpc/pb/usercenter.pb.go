@@ -1037,6 +1037,94 @@ func (x *SendVerifyCodeResp) GetSendAt() int64 {
 	return 0
 }
 
+type VerifyTokenReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VerifyTokenReq) Reset() {
+	*x = VerifyTokenReq{}
+	mi := &file_usercenter_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VerifyTokenReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyTokenReq) ProtoMessage() {}
+
+func (x *VerifyTokenReq) ProtoReflect() protoreflect.Message {
+	mi := &file_usercenter_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyTokenReq.ProtoReflect.Descriptor instead.
+func (*VerifyTokenReq) Descriptor() ([]byte, []int) {
+	return file_usercenter_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *VerifyTokenReq) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type VerifyTokenResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VerifyTokenResp) Reset() {
+	*x = VerifyTokenResp{}
+	mi := &file_usercenter_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VerifyTokenResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyTokenResp) ProtoMessage() {}
+
+func (x *VerifyTokenResp) ProtoReflect() protoreflect.Message {
+	mi := &file_usercenter_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyTokenResp.ProtoReflect.Descriptor instead.
+func (*VerifyTokenResp) Descriptor() ([]byte, []int) {
+	return file_usercenter_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *VerifyTokenResp) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
 var File_usercenter_proto protoreflect.FileDescriptor
 
 const file_usercenter_proto_rawDesc = "" +
@@ -1107,7 +1195,11 @@ const file_usercenter_proto_rawDesc = "" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\"\n" +
 	"\faccessExpire\x18\x02 \x01(\x03R\faccessExpire\",\n" +
 	"\x12SendVerifyCodeResp\x12\x16\n" +
-	"\x06sendAt\x18\x01 \x01(\x03R\x06sendAt2\xed\x03\n" +
+	"\x06sendAt\x18\x01 \x01(\x03R\x06sendAt\"&\n" +
+	"\x0eVerifyTokenReq\x12\x14\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\")\n" +
+	"\x0fVerifyTokenResp\x12\x16\n" +
+	"\x06userId\x18\x01 \x01(\x03R\x06userId2\xa5\x04\n" +
 	"\n" +
 	"Usercenter\x12-\n" +
 	"\bRegister\x12\x0f.pb.RegisterReq\x1a\x10.pb.RegisterResp\x12$\n" +
@@ -1117,7 +1209,8 @@ const file_usercenter_proto_rawDesc = "" +
 	"\x13GetUserAuthByUserId\x12\x1a.pb.GetUserAuthByUserIdReq\x1a\x1b.pb.GetUserAuthByUserIdResp\x12<\n" +
 	"\rGenerateToken\x12\x14.pb.GenerateTokenReq\x1a\x15.pb.GenerateTokenResp\x120\n" +
 	"\tSendEmail\x12\x10.pb.SendEmailReq\x1a\x11.pb.SendEmailResp\x12?\n" +
-	"\x0eSendVerifyCode\x12\x15.pb.SendVerifyCodeReq\x1a\x16.pb.SendVerifyCodeRespB\x06Z\x04./pbb\x06proto3"
+	"\x0eSendVerifyCode\x12\x15.pb.SendVerifyCodeReq\x1a\x16.pb.SendVerifyCodeResp\x126\n" +
+	"\vVerifyToken\x12\x12.pb.VerifyTokenReq\x1a\x13.pb.VerifyTokenRespB\x06Z\x04./pbb\x06proto3"
 
 var (
 	file_usercenter_proto_rawDescOnce sync.Once
@@ -1131,7 +1224,7 @@ func file_usercenter_proto_rawDescGZIP() []byte {
 	return file_usercenter_proto_rawDescData
 }
 
-var file_usercenter_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_usercenter_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_usercenter_proto_goTypes = []any{
 	(*User)(nil),                     // 0: pb.User
 	(*UserAuth)(nil),                 // 1: pb.UserAuth
@@ -1151,6 +1244,8 @@ var file_usercenter_proto_goTypes = []any{
 	(*SendEmailResp)(nil),            // 15: pb.SendEmailResp
 	(*SendVerifyCodeReq)(nil),        // 16: pb.SendVerifyCodeReq
 	(*SendVerifyCodeResp)(nil),       // 17: pb.SendVerifyCodeResp
+	(*VerifyTokenReq)(nil),           // 18: pb.VerifyTokenReq
+	(*VerifyTokenResp)(nil),          // 19: pb.VerifyTokenResp
 }
 var file_usercenter_proto_depIdxs = []int32{
 	0,  // 0: pb.GetUserInfoResp.user:type_name -> pb.User
@@ -1164,16 +1259,18 @@ var file_usercenter_proto_depIdxs = []int32{
 	12, // 8: pb.Usercenter.GenerateToken:input_type -> pb.GenerateTokenReq
 	14, // 9: pb.Usercenter.SendEmail:input_type -> pb.SendEmailReq
 	16, // 10: pb.Usercenter.SendVerifyCode:input_type -> pb.SendVerifyCodeReq
-	3,  // 11: pb.Usercenter.Register:output_type -> pb.RegisterResp
-	5,  // 12: pb.Usercenter.Login:output_type -> pb.LoginResp
-	7,  // 13: pb.Usercenter.GetUserInfo:output_type -> pb.GetUserInfoResp
-	9,  // 14: pb.Usercenter.GetUserAuthByAuthKey:output_type -> pb.GetUserAuthByAuthKeyResp
-	11, // 15: pb.Usercenter.GetUserAuthByUserId:output_type -> pb.GetUserAuthByUserIdResp
-	13, // 16: pb.Usercenter.GenerateToken:output_type -> pb.GenerateTokenResp
-	15, // 17: pb.Usercenter.SendEmail:output_type -> pb.SendEmailResp
-	17, // 18: pb.Usercenter.SendVerifyCode:output_type -> pb.SendVerifyCodeResp
-	11, // [11:19] is the sub-list for method output_type
-	3,  // [3:11] is the sub-list for method input_type
+	18, // 11: pb.Usercenter.VerifyToken:input_type -> pb.VerifyTokenReq
+	3,  // 12: pb.Usercenter.Register:output_type -> pb.RegisterResp
+	5,  // 13: pb.Usercenter.Login:output_type -> pb.LoginResp
+	7,  // 14: pb.Usercenter.GetUserInfo:output_type -> pb.GetUserInfoResp
+	9,  // 15: pb.Usercenter.GetUserAuthByAuthKey:output_type -> pb.GetUserAuthByAuthKeyResp
+	11, // 16: pb.Usercenter.GetUserAuthByUserId:output_type -> pb.GetUserAuthByUserIdResp
+	13, // 17: pb.Usercenter.GenerateToken:output_type -> pb.GenerateTokenResp
+	15, // 18: pb.Usercenter.SendEmail:output_type -> pb.SendEmailResp
+	17, // 19: pb.Usercenter.SendVerifyCode:output_type -> pb.SendVerifyCodeResp
+	19, // 20: pb.Usercenter.VerifyToken:output_type -> pb.VerifyTokenResp
+	12, // [12:21] is the sub-list for method output_type
+	3,  // [3:12] is the sub-list for method input_type
 	3,  // [3:3] is the sub-list for extension type_name
 	3,  // [3:3] is the sub-list for extension extendee
 	0,  // [0:3] is the sub-list for field type_name
@@ -1190,7 +1287,7 @@ func file_usercenter_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_usercenter_proto_rawDesc), len(file_usercenter_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   18,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

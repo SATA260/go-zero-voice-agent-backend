@@ -95,6 +95,13 @@ message SendVerifyCodeResp {
   int64 sendAt = 1;
 }
 
+message VerifyTokenReq {
+  string token = 1;
+}
+message VerifyTokenResp {
+  int64 userId = 1;
+}
+
 service Usercenter {
   rpc Register(RegisterReq) returns (RegisterResp);
   rpc Login(LoginReq) returns (LoginResp);
@@ -104,4 +111,5 @@ service Usercenter {
   rpc GenerateToken(GenerateTokenReq) returns (GenerateTokenResp);
   rpc SendEmail(SendEmailReq) returns (SendEmailResp);
   rpc SendVerifyCode(SendVerifyCodeReq) returns (SendVerifyCodeResp);
+  rpc VerifyToken(VerifyTokenReq) returns (VerifyTokenResp);
 }
