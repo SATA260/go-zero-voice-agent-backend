@@ -23,7 +23,7 @@ import (
 var (
 	userFieldNames          = builder.RawFieldNames(&User{})
 	userRows                = strings.Join(userFieldNames, ",")
-	userRowsExpectAutoSet   = strings.Join(stringx.Remove(userFieldNames, "`create_time`", "`update_time`"), ",")
+	userRowsExpectAutoSet   = strings.Join(stringx.Remove(userFieldNames, "`id`", "`create_time`", "`update_time`"), ",")
 	userRowsWithPlaceHolder = strings.Join(stringx.Remove(userFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
 
 	cacheGzvaUsercenterUserIdPrefix    = "cache:gzvaUsercenter:user:id:"
@@ -80,17 +80,15 @@ func newUserModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultUserModel {
 
 func (m *defaultUserModel) Insert(ctx context.Context, session sqlx.Session, data *User) (sql.Result, error) {
 	data.DeleteTime = time.Now()
-	data.CreateTime = time.Now()
-	data.UpdateTime = time.Now()
 	data.DelState = globalkey.DelStateNo
 	gzvaUsercenterUserEmailKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserEmailPrefix, data.Email)
 	gzvaUsercenterUserIdKey := fmt.Sprintf("%s%v", cacheGzvaUsercenterUserIdPrefix, data.Id)
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userRowsExpectAutoSet)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userRowsExpectAutoSet)
 		if session != nil {
-			return session.ExecCtx(ctx, query, data.Id, data.DeleteTime, data.DelState, data.Version, data.Email, data.Password, data.Nickname, data.Sex, data.Avatar, data.Info)
+			return session.ExecCtx(ctx, query, data.DeleteTime, data.DelState, data.Version, data.Email, data.Password, data.Nickname, data.Sex, data.Avatar, data.Info)
 		}
-		return conn.ExecCtx(ctx, query, data.Id, data.DeleteTime, data.DelState, data.Version, data.Email, data.Password, data.Nickname, data.Sex, data.Avatar, data.Info)
+		return conn.ExecCtx(ctx, query, data.DeleteTime, data.DelState, data.Version, data.Email, data.Password, data.Nickname, data.Sex, data.Avatar, data.Info)
 	}, gzvaUsercenterUserEmailKey, gzvaUsercenterUserIdKey)
 }
 
