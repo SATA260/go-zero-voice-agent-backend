@@ -4,10 +4,10 @@ package pb;
 option go_package="./pb";
 
 message User {
-  string id = 1;
+  int64 id = 1;
   string email = 3;
   string nickname = 2;
-  string sex = 4;
+  int64 sex = 4;
   string avatar = 5;
   string info = 6;
 }
@@ -45,7 +45,7 @@ message LoginResp {
 }
 
 message GetUserInfoReq {
-  string id = 1;
+  int64 id = 1;
 }
 message GetUserInfoResp {
   User user = 1;

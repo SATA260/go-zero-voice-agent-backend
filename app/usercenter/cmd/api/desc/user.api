@@ -35,7 +35,7 @@ service usercenter {
 
 	@doc "auth by token"
 	@handler verifyToken
-	post /user/auth (verifyTokenReq) returns (verifyTokenResp)
+	get /user/auth (verifyTokenReq) returns (verifyTokenResp)
 
 	@doc "wechat mini auth"
 	@handler wxMiniAuth

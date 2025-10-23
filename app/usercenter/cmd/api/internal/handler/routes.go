@@ -17,7 +17,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				// auth by token
-				Method:  http.MethodPost,
+				Method:  http.MethodGet,
 				Path:    "/user/auth",
 				Handler: user.VerifyTokenHandler(serverCtx),
 			},

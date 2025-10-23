@@ -29,6 +29,8 @@ func NewVerifyTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Verif
 }
 
 func (l *VerifyTokenLogic) VerifyToken(req *types.VerifyTokenReq) (resp *types.VerifyTokenResp, err error) {
+	logx.Infof("VerifyToken req: %+v", req)
+
 	verifyTokenResp, err := l.svcCtx.UsercenterRpc.VerifyToken(context.Background(), &usercenter.VerifyTokenReq{
 		Token: req.Authorization,
 	})
