@@ -39,16 +39,22 @@ type User struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	NickName string `json:"nickname"`
-	Sex      int64  `json`
+	Sex      int64  `json:"sex"`
 	Avatar   string `json:"avatar"`
 	Info     string `json:"info"`
 }
 
 type UserInfoReq struct {
+	UserId string `header:"X-User-Id"`
 }
 
 type UserInfoResp struct {
-	UserInfo User `json:"userInfo"`
+	Id       int64  `json:"id"`
+	Email    string `json:"email"`
+	NickName string `json:"nickname"`
+	Sex      int64  `json:"sex"`
+	Avatar   string `json:"avatar"`
+	Info     string `json:"info"`
 }
 
 type WXMiniAuthReq struct {
@@ -68,5 +74,5 @@ type VerifyTokenReq struct {
 }
 
 type VerifyTokenResp struct {
-	UserId int64 `json:"userId"`
+	UserId int64 `header:"userId"`
 }

@@ -6,6 +6,7 @@ import (
 	"go-zero-voice-agent/app/usercenter/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/usercenter/cmd/rpc/pb"
 
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +25,20 @@ func NewGetUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 }
 
 func (l *GetUserInfoLogic) GetUserInfo(in *pb.GetUserInfoReq) (*pb.GetUserInfoResp, error) {
-	// todo: add your logic here and delete this line
 
-	return &pb.GetUserInfoResp{}, nil
+	user, err := l.svcCtx.UserModel.FindOne(l.ctx, in.Id)
+	if err != nil {
+		return nil, errors.Wrapf(err, "Fail to get user info")
+	}
+	
+	return &pb.GetUserInfoResp{
+		User: &pb.User{
+			Id:       user.Id,
+			Email:    user.Email,
+			Nickname: user.Nickname,
+			Sex:      user.Sex,
+			Avatar:   user.Avatar,
+			Info:     user.Info,
+		},
+	}, nil
 }

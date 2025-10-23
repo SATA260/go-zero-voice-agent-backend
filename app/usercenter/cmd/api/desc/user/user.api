@@ -12,7 +12,7 @@ type User {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	NickName string `json:"nickname"`
-    Sex	     int64  `json`
+	Sex      int64  `json:"sex"`
 	Avatar   string `json:"avatar"`
 	Info     string `json:"info"`
 }
@@ -66,9 +66,15 @@ type (
 
 type (
 	UserInfoReq {
+		UserId string `header:"X-User-Id"`
 	}
 	UserInfoResp {
-		UserInfo User `json:"userInfo"`
+		Id       int64  `json:"id"`
+		Email    string `json:"email"`
+		NickName string `json:"nickname"`
+		Sex      int64  `json:"sex"`
+		Avatar   string `json:"avatar"`
+		Info     string `json:"info"`
 	}
 )
 
@@ -77,6 +83,7 @@ type (
 		Authorization string `header:"Authorization"`
 	}
 	verifyTokenResp {
-		UserId int64 `json:"userId"`
+		UserId int64 `header:"userId"`
 	}
 )
+

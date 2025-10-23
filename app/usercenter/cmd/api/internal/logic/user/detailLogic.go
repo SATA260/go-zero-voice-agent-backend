@@ -5,10 +5,13 @@ package user
 
 import (
 	"context"
+	"strconv"
 
 	"go-zero-voice-agent/app/usercenter/cmd/api/internal/svc"
 	"go-zero-voice-agent/app/usercenter/cmd/api/internal/types"
+	"go-zero-voice-agent/app/usercenter/cmd/rpc/pb"
 
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -28,7 +31,24 @@ func NewDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DetailLogi
 }
 
 func (l *DetailLogic) Detail(req *types.UserInfoReq) (resp *types.UserInfoResp, err error) {
-	// todo: add your logic here and delete this line
+	if req.UserId == "" {
+		return nil, errors.New("user id is empty")
+	}
 
-	return
+	userId, _ := strconv.ParseInt(req.UserId, 10, 64)
+	userInfo, err := l.svcCtx.UsercenterRpc.GetUserInfo(l.ctx, &pb.GetUserInfoReq{
+		Id: userId,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.UserInfoResp{
+		Id:       userInfo.User.Id,
+		Email:    userInfo.User.Email,
+		NickName: userInfo.User.Nickname,
+		Sex:      userInfo.User.Sex,
+		Avatar:   userInfo.User.Avatar,
+		Info:     userInfo.User.Info,
+	}, nil
 }

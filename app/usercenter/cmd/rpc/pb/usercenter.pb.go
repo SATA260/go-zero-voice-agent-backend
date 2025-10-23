@@ -23,10 +23,10 @@ const (
 
 type User struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Email         string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
 	Nickname      string                 `protobuf:"bytes,2,opt,name=nickname,proto3" json:"nickname,omitempty"`
-	Sex           string                 `protobuf:"bytes,4,opt,name=sex,proto3" json:"sex,omitempty"`
+	Sex           int64                  `protobuf:"varint,4,opt,name=sex,proto3" json:"sex,omitempty"`
 	Avatar        string                 `protobuf:"bytes,5,opt,name=avatar,proto3" json:"avatar,omitempty"`
 	Info          string                 `protobuf:"bytes,6,opt,name=info,proto3" json:"info,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -63,11 +63,11 @@ func (*User) Descriptor() ([]byte, []int) {
 	return file_usercenter_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *User) GetId() string {
+func (x *User) GetId() int64 {
 	if x != nil {
 		return x.Id
 	}
-	return ""
+	return 0
 }
 
 func (x *User) GetEmail() string {
@@ -84,11 +84,11 @@ func (x *User) GetNickname() string {
 	return ""
 }
 
-func (x *User) GetSex() string {
+func (x *User) GetSex() int64 {
 	if x != nil {
 		return x.Sex
 	}
-	return ""
+	return 0
 }
 
 func (x *User) GetAvatar() string {
@@ -439,7 +439,7 @@ func (x *LoginResp) GetRefreshAfter() int64 {
 
 type GetUserInfoReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -474,11 +474,11 @@ func (*GetUserInfoReq) Descriptor() ([]byte, []int) {
 	return file_usercenter_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *GetUserInfoReq) GetId() string {
+func (x *GetUserInfoReq) GetId() int64 {
 	if x != nil {
 		return x.Id
 	}
-	return ""
+	return 0
 }
 
 type GetUserInfoResp struct {
@@ -1131,10 +1131,10 @@ const file_usercenter_proto_rawDesc = "" +
 	"\n" +
 	"\x10usercenter.proto\x12\x02pb\"\x86\x01\n" +
 	"\x04User\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x14\n" +
 	"\x05email\x18\x03 \x01(\tR\x05email\x12\x1a\n" +
 	"\bnickname\x18\x02 \x01(\tR\bnickname\x12\x10\n" +
-	"\x03sex\x18\x04 \x01(\tR\x03sex\x12\x16\n" +
+	"\x03sex\x18\x04 \x01(\x03R\x03sex\x12\x16\n" +
 	"\x06avatar\x18\x05 \x01(\tR\x06avatar\x12\x12\n" +
 	"\x04info\x18\x06 \x01(\tR\x04info\"h\n" +
 	"\bUserAuth\x12\x0e\n" +
@@ -1164,7 +1164,7 @@ const file_usercenter_proto_rawDesc = "" +
 	"\faccessExpire\x18\x02 \x01(\x03R\faccessExpire\x12\"\n" +
 	"\frefreshAfter\x18\x03 \x01(\x03R\frefreshAfter\" \n" +
 	"\x0eGetUserInfoReq\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"/\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"/\n" +
 	"\x0fGetUserInfoResp\x12\x1c\n" +
 	"\x04user\x18\x01 \x01(\v2\b.pb.UserR\x04user\"O\n" +
 	"\x17GetUserAuthByAuthKeyReq\x12\x18\n" +
