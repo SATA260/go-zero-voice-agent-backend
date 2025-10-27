@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package pb;
+option go_package="./pb";
+
+import "google/protobuf/struct.proto";
+
+// 流式输出选项
+message StreamOptions {
+    // 是否在输出的最后一行显示所使用的Token数 (可选)
+    bool include_usage = 1;
+}
+
+// 音频输出选项
+message AudioOptions {
+    // 音色 (可选)
+    string voice = 1;
+    // 格式, e.g., "wav", "mp3" (可选)
+    string format = 2;
+}
+
+// 大语言模型配置
+message LlmConfig {
+    // API基础URL (必选)
+    string baseUrl = 1;
+    // API密钥 (必选)
+    string apiKey = 2;
+    // 模型名称 (必选)
+    string model = 3;
+    // 是否流式输出 (可选)
+    bool stream = 4;
+    // 采样温度，控制模型生成文本的多样性 (可选)
+    double temperature = 5;
+    // 核采样的概率阈值 (可选)
+    double top_p = 6;
+    // 生成过程中采样候选集的大小 (可选)
+    int64 top_k = 7;
+    // 是否开启思考模式 (可选)
+    bool enable_thinking = 8;
+    // 控制模型生成文本时的内容重复度（已弃用，请使用presence_penalty）(可选)
+    double repetition_penalty = 9;
+    // 控制模型生成文本时的内容重复度 (可选)
+    double presence_penalty = 10;
+    // 返回内容的格式, e.g., "text", "json_object" (可选)
+    string response_format = 11;
+    // 流式输出特定选项 (可选)
+    StreamOptions stream_options = 12;
+    // 输出数据的模态, e.g., "text", "audio" (可选)
+    repeated string modalities = 13;
+    // 输出音频的音色与格式 (可选)
+    AudioOptions audio = 14;
+    // 本次请求返回的最大 Token 数 (可选)
+    int64 max_tokens = 15;
+    // 随机种子，用于结果可复现 (可选)
+    int64 seed = 16;
+    // 是否启用互联网搜索 (可选)
+    bool enable_search = 17;
+}
+
+// 可供模型调用的工具
+message Tool {
+    // 工具类型，目前仅支持 "function"
+    string type = 1;
+    // 函数定义
+    Function function = 2;
+}
+
+// 函数定义
+message Function {
+    // 函数名称
+    string name = 1;
+    // 函数功能的描述，模型将根据此描述决定何时以及如何调用该函数
+    string description = 2;
+    // 函数接受的参数，以 JSON Schema 格式描述。
+    // 使用 google.protobuf.Struct 可以灵活地表示任意JSON对象结构。
+    google.protobuf.Struct parameters = 3;
+}
+
+message ChatMsg {
+    string role = 1; //System,User,Assistant,tool
+    string content = 2;
+}
+
+// 创建聊天请求
+message CreateChatReq {
+    // 大语言模型配置 (必选)
+    LlmConfig llmConfig = 1;
+    // 可供模型调用的工具列表 (可选)
+    repeated Tool tools = 2;
+    // 消息
+    repeated ChatMsg messages = 3;
+}
+
+message CreateChatResp {
+    string id = 1;
+    ChatMsg respMsg = 2;
+}
+
+service Llmservice {
+    rpc CreateChat(CreateChatReq) returns (CreateChatResp);
+}

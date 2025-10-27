@@ -35,6 +35,7 @@ func (l *GenerateTokenLogic) GenerateToken(in *pb.GenerateTokenReq) (*pb.Generat
 	if err != nil {
 		return nil, errors.Wrapf(ErrGenerateTokenError, "generateJwtToken userId: %d failed, err: %v", in.UserId, err)
 	}
+	
 	return &pb.GenerateTokenResp{
 		AccessToken: accessToken,
 		AccessExpire: now + accessExpire,
