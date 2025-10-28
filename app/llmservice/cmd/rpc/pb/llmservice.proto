@@ -5,19 +5,14 @@ option go_package="./pb";
 
 import "google/protobuf/struct.proto";
 
-// 流式输出选项
-message StreamOptions {
-    // 是否在输出的最后一行显示所使用的Token数 (可选)
-    bool include_usage = 1;
+// 分页查询
+message PageQuery {
+    int64 page = 1;
+    int64 page_size = 2;
+    string order_by = 3;
 }
 
-// 音频输出选项
-message AudioOptions {
-    // 音色 (可选)
-    string voice = 1;
-    // 格式, e.g., "wav", "mp3" (可选)
-    string format = 2;
-}
+
 
 // 大语言模型配置
 message LlmConfig {
@@ -45,16 +40,18 @@ message LlmConfig {
     string response_format = 11;
     // 流式输出特定选项 (可选)
     StreamOptions stream_options = 12;
-    // 输出数据的模态, e.g., "text", "audio" (可选)
-    repeated string modalities = 13;
-    // 输出音频的音色与格式 (可选)
-    AudioOptions audio = 14;
     // 本次请求返回的最大 Token 数 (可选)
-    int64 max_tokens = 15;
+    int64 max_tokens = 13;
     // 随机种子，用于结果可复现 (可选)
-    int64 seed = 16;
+    int64 seed = 14;
     // 是否启用互联网搜索 (可选)
-    bool enable_search = 17;
+    bool enable_search = 15;
+}
+
+// 流式输出选项
+message StreamOptions {
+    // 是否在输出的最后一行显示所使用的Token数 (可选)
+    bool include_usage = 1;
 }
 
 // 可供模型调用的工具
@@ -96,6 +93,126 @@ message CreateChatResp {
     ChatMsg respMsg = 2;
 }
 
+// 继续上文聊天
+message ContinueChatReq {
+    // 会话的唯一标识
+    string id = 1;
+    // 大语言模型配置 (必选)
+    LlmConfig llmConfig = 2;
+    // 可供模型调用的工具列表 (可选)
+    repeated Tool tools = 3;
+}
+
+message ContinueChatResp {
+    string id = 1;
+    ChatMsg respMsg = 2;
+}
+
+
+
+
+// ChatConfig represents the configuration for a chat session.
+message ChatConfig {
+    int64 id = 1;
+    string name = 2;
+    string description = 3;
+    int64 user_id = 4;
+    string base_url = 5;
+    string api_key = 6;
+    string model = 7;
+    int64 stream = 8;
+    double temperature = 9;
+    double top_p = 10;
+    int64 top_k = 11;
+    int64 enable_thinking = 12;
+    double repetition_penalty = 13;
+    double presence_penalty = 14;
+    int64 max_tokens = 15;
+    int64 seed = 16;
+    int64 enable_search = 17;
+}
+
+// --- Config Management ---
+
+// Create
+message CreateConfigReq {
+    string name = 1;
+    string description = 2;
+    int64 user_id = 3;
+    string base_url = 4;
+    string api_key = 5;
+    string model = 6;
+    int64 stream = 7;
+    double temperature = 8;
+    double top_p = 9;
+    int64 top_k = 10;
+    int64 enable_thinking = 11;
+    double repetition_penalty = 12;
+    double presence_penalty = 13;
+    int64 max_tokens = 14;
+    int64 seed = 15;
+    int64 enable_search = 16;
+}
+message CreateConfigResp {
+    int64 id = 1;
+}
+
+// Delete
+message DeleteConfigReq {
+    int64 id = 1;
+}
+message DeleteConfigResp {
+}
+
+// Update
+message UpdateConfigReq {
+    int64 id = 1;
+    string name = 2;
+    string description = 3;
+    int64 user_id = 4;
+    string base_url = 5;
+    string api_key = 6;
+    string model = 7;
+    int64 stream = 8;
+    double temperature = 9;
+    double top_p = 10;
+    int64 top_k = 11;
+    int64 enable_thinking = 12;
+    double repetition_penalty = 13;
+    double presence_penalty = 14;
+    int64 max_tokens = 15;
+    int64 seed = 16;
+    int64 enable_search = 17;
+}
+message UpdateConfigResp {
+}
+
+// Get
+message GetConfigReq {
+    int64 id = 1;
+}
+message GetConfigResp {
+    ChatConfig config = 1;
+}
+
+// List
+message ListConfigReq {
+    PageQuery pageQuery = 1;
+    ChatConfig queryWrapper = 2;
+}
+message ListConfigResp {
+    int64 total = 1;
+    repeated ChatConfig configs = 2;
+}
+
+
 service Llmservice {
     rpc CreateChat(CreateChatReq) returns (CreateChatResp);
+    rpc ContinueChat(ContinueChatReq) returns (ContinueChatResp);
+
+    rpc CreateConfig(CreateConfigReq) returns (CreateConfigResp);
+    rpc DeleteConfig(DeleteConfigReq) returns (DeleteConfigResp);
+    rpc UpdateConfig(UpdateConfigReq) returns (UpdateConfigResp);
+    rpc GetConfig(GetConfigReq) returns (GetConfigResp);
+    rpc ListConfig(ListConfigReq) returns (ListConfigResp);
 }

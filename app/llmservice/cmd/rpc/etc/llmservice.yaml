@@ -2,5 +2,12 @@ Name: llmservice.rpc
 ListenOn: 0.0.0.0:8080
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+  - localhost:2379
   Key: llmservice.rpc
+DB:
+  DataSource: root:f4FMhWc6FdzuBCHf@tcp(localhost:3306)/gzva_llmservice?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+Cache:
+  - Host: localhost:36379
+    Type: node
+    Pass: GwAGt4UmTwcMhjun 

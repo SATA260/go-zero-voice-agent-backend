@@ -19,7 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Llmservice_CreateChat_FullMethodName = "/pb.Llmservice/CreateChat"
+	Llmservice_CreateChat_FullMethodName   = "/pb.Llmservice/CreateChat"
+	Llmservice_ContinueChat_FullMethodName = "/pb.Llmservice/ContinueChat"
+	Llmservice_CreateConfig_FullMethodName = "/pb.Llmservice/CreateConfig"
+	Llmservice_DeleteConfig_FullMethodName = "/pb.Llmservice/DeleteConfig"
+	Llmservice_UpdateConfig_FullMethodName = "/pb.Llmservice/UpdateConfig"
+	Llmservice_GetConfig_FullMethodName    = "/pb.Llmservice/GetConfig"
+	Llmservice_ListConfig_FullMethodName   = "/pb.Llmservice/ListConfig"
 )
 
 // LlmserviceClient is the client API for Llmservice service.
@@ -27,6 +33,12 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LlmserviceClient interface {
 	CreateChat(ctx context.Context, in *CreateChatReq, opts ...grpc.CallOption) (*CreateChatResp, error)
+	ContinueChat(ctx context.Context, in *ContinueChatReq, opts ...grpc.CallOption) (*ContinueChatResp, error)
+	CreateConfig(ctx context.Context, in *CreateConfigReq, opts ...grpc.CallOption) (*CreateConfigResp, error)
+	DeleteConfig(ctx context.Context, in *DeleteConfigReq, opts ...grpc.CallOption) (*DeleteConfigResp, error)
+	UpdateConfig(ctx context.Context, in *UpdateConfigReq, opts ...grpc.CallOption) (*UpdateConfigResp, error)
+	GetConfig(ctx context.Context, in *GetConfigReq, opts ...grpc.CallOption) (*GetConfigResp, error)
+	ListConfig(ctx context.Context, in *ListConfigReq, opts ...grpc.CallOption) (*ListConfigResp, error)
 }
 
 type llmserviceClient struct {
@@ -47,11 +59,77 @@ func (c *llmserviceClient) CreateChat(ctx context.Context, in *CreateChatReq, op
 	return out, nil
 }
 
+func (c *llmserviceClient) ContinueChat(ctx context.Context, in *ContinueChatReq, opts ...grpc.CallOption) (*ContinueChatResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ContinueChatResp)
+	err := c.cc.Invoke(ctx, Llmservice_ContinueChat_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *llmserviceClient) CreateConfig(ctx context.Context, in *CreateConfigReq, opts ...grpc.CallOption) (*CreateConfigResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateConfigResp)
+	err := c.cc.Invoke(ctx, Llmservice_CreateConfig_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *llmserviceClient) DeleteConfig(ctx context.Context, in *DeleteConfigReq, opts ...grpc.CallOption) (*DeleteConfigResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteConfigResp)
+	err := c.cc.Invoke(ctx, Llmservice_DeleteConfig_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *llmserviceClient) UpdateConfig(ctx context.Context, in *UpdateConfigReq, opts ...grpc.CallOption) (*UpdateConfigResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateConfigResp)
+	err := c.cc.Invoke(ctx, Llmservice_UpdateConfig_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *llmserviceClient) GetConfig(ctx context.Context, in *GetConfigReq, opts ...grpc.CallOption) (*GetConfigResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetConfigResp)
+	err := c.cc.Invoke(ctx, Llmservice_GetConfig_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *llmserviceClient) ListConfig(ctx context.Context, in *ListConfigReq, opts ...grpc.CallOption) (*ListConfigResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListConfigResp)
+	err := c.cc.Invoke(ctx, Llmservice_ListConfig_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LlmserviceServer is the server API for Llmservice service.
 // All implementations must embed UnimplementedLlmserviceServer
 // for forward compatibility.
 type LlmserviceServer interface {
 	CreateChat(context.Context, *CreateChatReq) (*CreateChatResp, error)
+	ContinueChat(context.Context, *ContinueChatReq) (*ContinueChatResp, error)
+	CreateConfig(context.Context, *CreateConfigReq) (*CreateConfigResp, error)
+	DeleteConfig(context.Context, *DeleteConfigReq) (*DeleteConfigResp, error)
+	UpdateConfig(context.Context, *UpdateConfigReq) (*UpdateConfigResp, error)
+	GetConfig(context.Context, *GetConfigReq) (*GetConfigResp, error)
+	ListConfig(context.Context, *ListConfigReq) (*ListConfigResp, error)
 	mustEmbedUnimplementedLlmserviceServer()
 }
 
@@ -64,6 +142,24 @@ type UnimplementedLlmserviceServer struct{}
 
 func (UnimplementedLlmserviceServer) CreateChat(context.Context, *CreateChatReq) (*CreateChatResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateChat not implemented")
+}
+func (UnimplementedLlmserviceServer) ContinueChat(context.Context, *ContinueChatReq) (*ContinueChatResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContinueChat not implemented")
+}
+func (UnimplementedLlmserviceServer) CreateConfig(context.Context, *CreateConfigReq) (*CreateConfigResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateConfig not implemented")
+}
+func (UnimplementedLlmserviceServer) DeleteConfig(context.Context, *DeleteConfigReq) (*DeleteConfigResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteConfig not implemented")
+}
+func (UnimplementedLlmserviceServer) UpdateConfig(context.Context, *UpdateConfigReq) (*UpdateConfigResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateConfig not implemented")
+}
+func (UnimplementedLlmserviceServer) GetConfig(context.Context, *GetConfigReq) (*GetConfigResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetConfig not implemented")
+}
+func (UnimplementedLlmserviceServer) ListConfig(context.Context, *ListConfigReq) (*ListConfigResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListConfig not implemented")
 }
 func (UnimplementedLlmserviceServer) mustEmbedUnimplementedLlmserviceServer() {}
 func (UnimplementedLlmserviceServer) testEmbeddedByValue()                    {}
@@ -104,6 +200,114 @@ func _Llmservice_CreateChat_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Llmservice_ContinueChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContinueChatReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LlmserviceServer).ContinueChat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Llmservice_ContinueChat_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LlmserviceServer).ContinueChat(ctx, req.(*ContinueChatReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Llmservice_CreateConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateConfigReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LlmserviceServer).CreateConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Llmservice_CreateConfig_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LlmserviceServer).CreateConfig(ctx, req.(*CreateConfigReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Llmservice_DeleteConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteConfigReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LlmserviceServer).DeleteConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Llmservice_DeleteConfig_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LlmserviceServer).DeleteConfig(ctx, req.(*DeleteConfigReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Llmservice_UpdateConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateConfigReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LlmserviceServer).UpdateConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Llmservice_UpdateConfig_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LlmserviceServer).UpdateConfig(ctx, req.(*UpdateConfigReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Llmservice_GetConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetConfigReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LlmserviceServer).GetConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Llmservice_GetConfig_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LlmserviceServer).GetConfig(ctx, req.(*GetConfigReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Llmservice_ListConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListConfigReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LlmserviceServer).ListConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Llmservice_ListConfig_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LlmserviceServer).ListConfig(ctx, req.(*ListConfigReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Llmservice_ServiceDesc is the grpc.ServiceDesc for Llmservice service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +318,30 @@ var Llmservice_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateChat",
 			Handler:    _Llmservice_CreateChat_Handler,
+		},
+		{
+			MethodName: "ContinueChat",
+			Handler:    _Llmservice_ContinueChat_Handler,
+		},
+		{
+			MethodName: "CreateConfig",
+			Handler:    _Llmservice_CreateConfig_Handler,
+		},
+		{
+			MethodName: "DeleteConfig",
+			Handler:    _Llmservice_DeleteConfig_Handler,
+		},
+		{
+			MethodName: "UpdateConfig",
+			Handler:    _Llmservice_UpdateConfig_Handler,
+		},
+		{
+			MethodName: "GetConfig",
+			Handler:    _Llmservice_GetConfig_Handler,
+		},
+		{
+			MethodName: "ListConfig",
+			Handler:    _Llmservice_ListConfig_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
