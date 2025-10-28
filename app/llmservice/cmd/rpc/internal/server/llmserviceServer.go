@@ -27,3 +27,33 @@ func (s *LlmserviceServer) CreateChat(ctx context.Context, in *pb.CreateChatReq)
 	l := logic.NewCreateChatLogic(ctx, s.svcCtx)
 	return l.CreateChat(in)
 }
+
+func (s *LlmserviceServer) ContinueChat(ctx context.Context, in *pb.ContinueChatReq) (*pb.ContinueChatResp, error) {
+	l := logic.NewContinueChatLogic(ctx, s.svcCtx)
+	return l.ContinueChat(in)
+}
+
+func (s *LlmserviceServer) CreateConfig(ctx context.Context, in *pb.CreateConfigReq) (*pb.CreateConfigResp, error) {
+	l := logic.NewCreateConfigLogic(ctx, s.svcCtx)
+	return l.CreateConfig(in)
+}
+
+func (s *LlmserviceServer) DeleteConfig(ctx context.Context, in *pb.DeleteConfigReq) (*pb.DeleteConfigResp, error) {
+	l := logic.NewDeleteConfigLogic(ctx, s.svcCtx)
+	return l.DeleteConfig(in)
+}
+
+func (s *LlmserviceServer) UpdateConfig(ctx context.Context, in *pb.UpdateConfigReq) (*pb.UpdateConfigResp, error) {
+	l := logic.NewUpdateConfigLogic(ctx, s.svcCtx)
+	return l.UpdateConfig(in)
+}
+
+func (s *LlmserviceServer) GetConfig(ctx context.Context, in *pb.GetConfigReq) (*pb.GetConfigResp, error) {
+	l := logic.NewGetConfigLogic(ctx, s.svcCtx)
+	return l.GetConfig(in)
+}
+
+func (s *LlmserviceServer) ListConfig(ctx context.Context, in *pb.ListConfigReq) (*pb.ListConfigResp, error) {
+	l := logic.NewListConfigLogic(ctx, s.svcCtx)
+	return l.ListConfig(in)
+}

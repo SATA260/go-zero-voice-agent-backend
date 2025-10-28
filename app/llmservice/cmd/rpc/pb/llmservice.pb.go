@@ -22,29 +22,30 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// 流式输出选项
-type StreamOptions struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 是否在输出的最后一行显示所使用的Token数 (可选)
-	IncludeUsage  bool `protobuf:"varint,1,opt,name=include_usage,json=includeUsage,proto3" json:"include_usage,omitempty"`
+// 分页查询
+type PageQuery struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Page          int64                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int64                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	OrderBy       string                 `protobuf:"bytes,3,opt,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StreamOptions) Reset() {
-	*x = StreamOptions{}
+func (x *PageQuery) Reset() {
+	*x = PageQuery{}
 	mi := &file_llmservice_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StreamOptions) String() string {
+func (x *PageQuery) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StreamOptions) ProtoMessage() {}
+func (*PageQuery) ProtoMessage() {}
 
-func (x *StreamOptions) ProtoReflect() protoreflect.Message {
+func (x *PageQuery) ProtoReflect() protoreflect.Message {
 	mi := &file_llmservice_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -56,69 +57,28 @@ func (x *StreamOptions) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StreamOptions.ProtoReflect.Descriptor instead.
-func (*StreamOptions) Descriptor() ([]byte, []int) {
+// Deprecated: Use PageQuery.ProtoReflect.Descriptor instead.
+func (*PageQuery) Descriptor() ([]byte, []int) {
 	return file_llmservice_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StreamOptions) GetIncludeUsage() bool {
+func (x *PageQuery) GetPage() int64 {
 	if x != nil {
-		return x.IncludeUsage
+		return x.Page
 	}
-	return false
+	return 0
 }
 
-// 音频输出选项
-type AudioOptions struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 音色 (可选)
-	Voice string `protobuf:"bytes,1,opt,name=voice,proto3" json:"voice,omitempty"`
-	// 格式, e.g., "wav", "mp3" (可选)
-	Format        string `protobuf:"bytes,2,opt,name=format,proto3" json:"format,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *AudioOptions) Reset() {
-	*x = AudioOptions{}
-	mi := &file_llmservice_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *AudioOptions) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AudioOptions) ProtoMessage() {}
-
-func (x *AudioOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[1]
+func (x *PageQuery) GetPageSize() int64 {
 	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
+		return x.PageSize
 	}
-	return mi.MessageOf(x)
+	return 0
 }
 
-// Deprecated: Use AudioOptions.ProtoReflect.Descriptor instead.
-func (*AudioOptions) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *AudioOptions) GetVoice() string {
+func (x *PageQuery) GetOrderBy() string {
 	if x != nil {
-		return x.Voice
-	}
-	return ""
-}
-
-func (x *AudioOptions) GetFormat() string {
-	if x != nil {
-		return x.Format
+		return x.OrderBy
 	}
 	return ""
 }
@@ -150,23 +110,19 @@ type LlmConfig struct {
 	ResponseFormat string `protobuf:"bytes,11,opt,name=response_format,json=responseFormat,proto3" json:"response_format,omitempty"`
 	// 流式输出特定选项 (可选)
 	StreamOptions *StreamOptions `protobuf:"bytes,12,opt,name=stream_options,json=streamOptions,proto3" json:"stream_options,omitempty"`
-	// 输出数据的模态, e.g., "text", "audio" (可选)
-	Modalities []string `protobuf:"bytes,13,rep,name=modalities,proto3" json:"modalities,omitempty"`
-	// 输出音频的音色与格式 (可选)
-	Audio *AudioOptions `protobuf:"bytes,14,opt,name=audio,proto3" json:"audio,omitempty"`
 	// 本次请求返回的最大 Token 数 (可选)
-	MaxTokens int64 `protobuf:"varint,15,opt,name=max_tokens,json=maxTokens,proto3" json:"max_tokens,omitempty"`
+	MaxTokens int64 `protobuf:"varint,13,opt,name=max_tokens,json=maxTokens,proto3" json:"max_tokens,omitempty"`
 	// 随机种子，用于结果可复现 (可选)
-	Seed int64 `protobuf:"varint,16,opt,name=seed,proto3" json:"seed,omitempty"`
+	Seed int64 `protobuf:"varint,14,opt,name=seed,proto3" json:"seed,omitempty"`
 	// 是否启用互联网搜索 (可选)
-	EnableSearch  bool `protobuf:"varint,17,opt,name=enable_search,json=enableSearch,proto3" json:"enable_search,omitempty"`
+	EnableSearch  bool `protobuf:"varint,15,opt,name=enable_search,json=enableSearch,proto3" json:"enable_search,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *LlmConfig) Reset() {
 	*x = LlmConfig{}
-	mi := &file_llmservice_proto_msgTypes[2]
+	mi := &file_llmservice_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -178,7 +134,7 @@ func (x *LlmConfig) String() string {
 func (*LlmConfig) ProtoMessage() {}
 
 func (x *LlmConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[2]
+	mi := &file_llmservice_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -191,7 +147,7 @@ func (x *LlmConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LlmConfig.ProtoReflect.Descriptor instead.
 func (*LlmConfig) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{2}
+	return file_llmservice_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *LlmConfig) GetBaseUrl() string {
@@ -278,20 +234,6 @@ func (x *LlmConfig) GetStreamOptions() *StreamOptions {
 	return nil
 }
 
-func (x *LlmConfig) GetModalities() []string {
-	if x != nil {
-		return x.Modalities
-	}
-	return nil
-}
-
-func (x *LlmConfig) GetAudio() *AudioOptions {
-	if x != nil {
-		return x.Audio
-	}
-	return nil
-}
-
 func (x *LlmConfig) GetMaxTokens() int64 {
 	if x != nil {
 		return x.MaxTokens
@@ -309,6 +251,52 @@ func (x *LlmConfig) GetSeed() int64 {
 func (x *LlmConfig) GetEnableSearch() bool {
 	if x != nil {
 		return x.EnableSearch
+	}
+	return false
+}
+
+// 流式输出选项
+type StreamOptions struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 是否在输出的最后一行显示所使用的Token数 (可选)
+	IncludeUsage  bool `protobuf:"varint,1,opt,name=include_usage,json=includeUsage,proto3" json:"include_usage,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StreamOptions) Reset() {
+	*x = StreamOptions{}
+	mi := &file_llmservice_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StreamOptions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StreamOptions) ProtoMessage() {}
+
+func (x *StreamOptions) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StreamOptions.ProtoReflect.Descriptor instead.
+func (*StreamOptions) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *StreamOptions) GetIncludeUsage() bool {
+	if x != nil {
+		return x.IncludeUsage
 	}
 	return false
 }
@@ -601,16 +589,997 @@ func (x *CreateChatResp) GetRespMsg() *ChatMsg {
 	return nil
 }
 
+// 继续上文聊天
+type ContinueChatReq struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 会话的唯一标识
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// 大语言模型配置 (必选)
+	LlmConfig *LlmConfig `protobuf:"bytes,2,opt,name=llmConfig,proto3" json:"llmConfig,omitempty"`
+	// 可供模型调用的工具列表 (可选)
+	Tools         []*Tool `protobuf:"bytes,3,rep,name=tools,proto3" json:"tools,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ContinueChatReq) Reset() {
+	*x = ContinueChatReq{}
+	mi := &file_llmservice_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ContinueChatReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ContinueChatReq) ProtoMessage() {}
+
+func (x *ContinueChatReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ContinueChatReq.ProtoReflect.Descriptor instead.
+func (*ContinueChatReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ContinueChatReq) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ContinueChatReq) GetLlmConfig() *LlmConfig {
+	if x != nil {
+		return x.LlmConfig
+	}
+	return nil
+}
+
+func (x *ContinueChatReq) GetTools() []*Tool {
+	if x != nil {
+		return x.Tools
+	}
+	return nil
+}
+
+type ContinueChatResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	RespMsg       *ChatMsg               `protobuf:"bytes,2,opt,name=respMsg,proto3" json:"respMsg,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ContinueChatResp) Reset() {
+	*x = ContinueChatResp{}
+	mi := &file_llmservice_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ContinueChatResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ContinueChatResp) ProtoMessage() {}
+
+func (x *ContinueChatResp) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ContinueChatResp.ProtoReflect.Descriptor instead.
+func (*ContinueChatResp) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ContinueChatResp) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ContinueChatResp) GetRespMsg() *ChatMsg {
+	if x != nil {
+		return x.RespMsg
+	}
+	return nil
+}
+
+// ChatConfig represents the configuration for a chat session.
+type ChatConfig struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	Id                int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name              string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Description       string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	UserId            int64                  `protobuf:"varint,4,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	BaseUrl           string                 `protobuf:"bytes,5,opt,name=base_url,json=baseUrl,proto3" json:"base_url,omitempty"`
+	ApiKey            string                 `protobuf:"bytes,6,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
+	Model             string                 `protobuf:"bytes,7,opt,name=model,proto3" json:"model,omitempty"`
+	Stream            int64                  `protobuf:"varint,8,opt,name=stream,proto3" json:"stream,omitempty"`
+	Temperature       float64                `protobuf:"fixed64,9,opt,name=temperature,proto3" json:"temperature,omitempty"`
+	TopP              float64                `protobuf:"fixed64,10,opt,name=top_p,json=topP,proto3" json:"top_p,omitempty"`
+	TopK              int64                  `protobuf:"varint,11,opt,name=top_k,json=topK,proto3" json:"top_k,omitempty"`
+	EnableThinking    int64                  `protobuf:"varint,12,opt,name=enable_thinking,json=enableThinking,proto3" json:"enable_thinking,omitempty"`
+	RepetitionPenalty float64                `protobuf:"fixed64,13,opt,name=repetition_penalty,json=repetitionPenalty,proto3" json:"repetition_penalty,omitempty"`
+	PresencePenalty   float64                `protobuf:"fixed64,14,opt,name=presence_penalty,json=presencePenalty,proto3" json:"presence_penalty,omitempty"`
+	MaxTokens         int64                  `protobuf:"varint,15,opt,name=max_tokens,json=maxTokens,proto3" json:"max_tokens,omitempty"`
+	Seed              int64                  `protobuf:"varint,16,opt,name=seed,proto3" json:"seed,omitempty"`
+	EnableSearch      int64                  `protobuf:"varint,17,opt,name=enable_search,json=enableSearch,proto3" json:"enable_search,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *ChatConfig) Reset() {
+	*x = ChatConfig{}
+	mi := &file_llmservice_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChatConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChatConfig) ProtoMessage() {}
+
+func (x *ChatConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChatConfig.ProtoReflect.Descriptor instead.
+func (*ChatConfig) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ChatConfig) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *ChatConfig) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ChatConfig) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *ChatConfig) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *ChatConfig) GetBaseUrl() string {
+	if x != nil {
+		return x.BaseUrl
+	}
+	return ""
+}
+
+func (x *ChatConfig) GetApiKey() string {
+	if x != nil {
+		return x.ApiKey
+	}
+	return ""
+}
+
+func (x *ChatConfig) GetModel() string {
+	if x != nil {
+		return x.Model
+	}
+	return ""
+}
+
+func (x *ChatConfig) GetStream() int64 {
+	if x != nil {
+		return x.Stream
+	}
+	return 0
+}
+
+func (x *ChatConfig) GetTemperature() float64 {
+	if x != nil {
+		return x.Temperature
+	}
+	return 0
+}
+
+func (x *ChatConfig) GetTopP() float64 {
+	if x != nil {
+		return x.TopP
+	}
+	return 0
+}
+
+func (x *ChatConfig) GetTopK() int64 {
+	if x != nil {
+		return x.TopK
+	}
+	return 0
+}
+
+func (x *ChatConfig) GetEnableThinking() int64 {
+	if x != nil {
+		return x.EnableThinking
+	}
+	return 0
+}
+
+func (x *ChatConfig) GetRepetitionPenalty() float64 {
+	if x != nil {
+		return x.RepetitionPenalty
+	}
+	return 0
+}
+
+func (x *ChatConfig) GetPresencePenalty() float64 {
+	if x != nil {
+		return x.PresencePenalty
+	}
+	return 0
+}
+
+func (x *ChatConfig) GetMaxTokens() int64 {
+	if x != nil {
+		return x.MaxTokens
+	}
+	return 0
+}
+
+func (x *ChatConfig) GetSeed() int64 {
+	if x != nil {
+		return x.Seed
+	}
+	return 0
+}
+
+func (x *ChatConfig) GetEnableSearch() int64 {
+	if x != nil {
+		return x.EnableSearch
+	}
+	return 0
+}
+
+// Create
+type CreateConfigReq struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	Name              string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Description       string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	UserId            int64                  `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	BaseUrl           string                 `protobuf:"bytes,4,opt,name=base_url,json=baseUrl,proto3" json:"base_url,omitempty"`
+	ApiKey            string                 `protobuf:"bytes,5,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
+	Model             string                 `protobuf:"bytes,6,opt,name=model,proto3" json:"model,omitempty"`
+	Stream            int64                  `protobuf:"varint,7,opt,name=stream,proto3" json:"stream,omitempty"`
+	Temperature       float64                `protobuf:"fixed64,8,opt,name=temperature,proto3" json:"temperature,omitempty"`
+	TopP              float64                `protobuf:"fixed64,9,opt,name=top_p,json=topP,proto3" json:"top_p,omitempty"`
+	TopK              int64                  `protobuf:"varint,10,opt,name=top_k,json=topK,proto3" json:"top_k,omitempty"`
+	EnableThinking    int64                  `protobuf:"varint,11,opt,name=enable_thinking,json=enableThinking,proto3" json:"enable_thinking,omitempty"`
+	RepetitionPenalty float64                `protobuf:"fixed64,12,opt,name=repetition_penalty,json=repetitionPenalty,proto3" json:"repetition_penalty,omitempty"`
+	PresencePenalty   float64                `protobuf:"fixed64,13,opt,name=presence_penalty,json=presencePenalty,proto3" json:"presence_penalty,omitempty"`
+	MaxTokens         int64                  `protobuf:"varint,14,opt,name=max_tokens,json=maxTokens,proto3" json:"max_tokens,omitempty"`
+	Seed              int64                  `protobuf:"varint,15,opt,name=seed,proto3" json:"seed,omitempty"`
+	EnableSearch      int64                  `protobuf:"varint,16,opt,name=enable_search,json=enableSearch,proto3" json:"enable_search,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *CreateConfigReq) Reset() {
+	*x = CreateConfigReq{}
+	mi := &file_llmservice_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateConfigReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateConfigReq) ProtoMessage() {}
+
+func (x *CreateConfigReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateConfigReq.ProtoReflect.Descriptor instead.
+func (*CreateConfigReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *CreateConfigReq) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CreateConfigReq) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *CreateConfigReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *CreateConfigReq) GetBaseUrl() string {
+	if x != nil {
+		return x.BaseUrl
+	}
+	return ""
+}
+
+func (x *CreateConfigReq) GetApiKey() string {
+	if x != nil {
+		return x.ApiKey
+	}
+	return ""
+}
+
+func (x *CreateConfigReq) GetModel() string {
+	if x != nil {
+		return x.Model
+	}
+	return ""
+}
+
+func (x *CreateConfigReq) GetStream() int64 {
+	if x != nil {
+		return x.Stream
+	}
+	return 0
+}
+
+func (x *CreateConfigReq) GetTemperature() float64 {
+	if x != nil {
+		return x.Temperature
+	}
+	return 0
+}
+
+func (x *CreateConfigReq) GetTopP() float64 {
+	if x != nil {
+		return x.TopP
+	}
+	return 0
+}
+
+func (x *CreateConfigReq) GetTopK() int64 {
+	if x != nil {
+		return x.TopK
+	}
+	return 0
+}
+
+func (x *CreateConfigReq) GetEnableThinking() int64 {
+	if x != nil {
+		return x.EnableThinking
+	}
+	return 0
+}
+
+func (x *CreateConfigReq) GetRepetitionPenalty() float64 {
+	if x != nil {
+		return x.RepetitionPenalty
+	}
+	return 0
+}
+
+func (x *CreateConfigReq) GetPresencePenalty() float64 {
+	if x != nil {
+		return x.PresencePenalty
+	}
+	return 0
+}
+
+func (x *CreateConfigReq) GetMaxTokens() int64 {
+	if x != nil {
+		return x.MaxTokens
+	}
+	return 0
+}
+
+func (x *CreateConfigReq) GetSeed() int64 {
+	if x != nil {
+		return x.Seed
+	}
+	return 0
+}
+
+func (x *CreateConfigReq) GetEnableSearch() int64 {
+	if x != nil {
+		return x.EnableSearch
+	}
+	return 0
+}
+
+type CreateConfigResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateConfigResp) Reset() {
+	*x = CreateConfigResp{}
+	mi := &file_llmservice_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateConfigResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateConfigResp) ProtoMessage() {}
+
+func (x *CreateConfigResp) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateConfigResp.ProtoReflect.Descriptor instead.
+func (*CreateConfigResp) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *CreateConfigResp) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+// Delete
+type DeleteConfigReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteConfigReq) Reset() {
+	*x = DeleteConfigReq{}
+	mi := &file_llmservice_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteConfigReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteConfigReq) ProtoMessage() {}
+
+func (x *DeleteConfigReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteConfigReq.ProtoReflect.Descriptor instead.
+func (*DeleteConfigReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *DeleteConfigReq) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type DeleteConfigResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteConfigResp) Reset() {
+	*x = DeleteConfigResp{}
+	mi := &file_llmservice_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteConfigResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteConfigResp) ProtoMessage() {}
+
+func (x *DeleteConfigResp) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteConfigResp.ProtoReflect.Descriptor instead.
+func (*DeleteConfigResp) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{14}
+}
+
+// Update
+type UpdateConfigReq struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	Id                int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name              string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Description       string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	UserId            int64                  `protobuf:"varint,4,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	BaseUrl           string                 `protobuf:"bytes,5,opt,name=base_url,json=baseUrl,proto3" json:"base_url,omitempty"`
+	ApiKey            string                 `protobuf:"bytes,6,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
+	Model             string                 `protobuf:"bytes,7,opt,name=model,proto3" json:"model,omitempty"`
+	Stream            int64                  `protobuf:"varint,8,opt,name=stream,proto3" json:"stream,omitempty"`
+	Temperature       float64                `protobuf:"fixed64,9,opt,name=temperature,proto3" json:"temperature,omitempty"`
+	TopP              float64                `protobuf:"fixed64,10,opt,name=top_p,json=topP,proto3" json:"top_p,omitempty"`
+	TopK              int64                  `protobuf:"varint,11,opt,name=top_k,json=topK,proto3" json:"top_k,omitempty"`
+	EnableThinking    int64                  `protobuf:"varint,12,opt,name=enable_thinking,json=enableThinking,proto3" json:"enable_thinking,omitempty"`
+	RepetitionPenalty float64                `protobuf:"fixed64,13,opt,name=repetition_penalty,json=repetitionPenalty,proto3" json:"repetition_penalty,omitempty"`
+	PresencePenalty   float64                `protobuf:"fixed64,14,opt,name=presence_penalty,json=presencePenalty,proto3" json:"presence_penalty,omitempty"`
+	MaxTokens         int64                  `protobuf:"varint,15,opt,name=max_tokens,json=maxTokens,proto3" json:"max_tokens,omitempty"`
+	Seed              int64                  `protobuf:"varint,16,opt,name=seed,proto3" json:"seed,omitempty"`
+	EnableSearch      int64                  `protobuf:"varint,17,opt,name=enable_search,json=enableSearch,proto3" json:"enable_search,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *UpdateConfigReq) Reset() {
+	*x = UpdateConfigReq{}
+	mi := &file_llmservice_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateConfigReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateConfigReq) ProtoMessage() {}
+
+func (x *UpdateConfigReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateConfigReq.ProtoReflect.Descriptor instead.
+func (*UpdateConfigReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *UpdateConfigReq) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *UpdateConfigReq) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *UpdateConfigReq) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *UpdateConfigReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *UpdateConfigReq) GetBaseUrl() string {
+	if x != nil {
+		return x.BaseUrl
+	}
+	return ""
+}
+
+func (x *UpdateConfigReq) GetApiKey() string {
+	if x != nil {
+		return x.ApiKey
+	}
+	return ""
+}
+
+func (x *UpdateConfigReq) GetModel() string {
+	if x != nil {
+		return x.Model
+	}
+	return ""
+}
+
+func (x *UpdateConfigReq) GetStream() int64 {
+	if x != nil {
+		return x.Stream
+	}
+	return 0
+}
+
+func (x *UpdateConfigReq) GetTemperature() float64 {
+	if x != nil {
+		return x.Temperature
+	}
+	return 0
+}
+
+func (x *UpdateConfigReq) GetTopP() float64 {
+	if x != nil {
+		return x.TopP
+	}
+	return 0
+}
+
+func (x *UpdateConfigReq) GetTopK() int64 {
+	if x != nil {
+		return x.TopK
+	}
+	return 0
+}
+
+func (x *UpdateConfigReq) GetEnableThinking() int64 {
+	if x != nil {
+		return x.EnableThinking
+	}
+	return 0
+}
+
+func (x *UpdateConfigReq) GetRepetitionPenalty() float64 {
+	if x != nil {
+		return x.RepetitionPenalty
+	}
+	return 0
+}
+
+func (x *UpdateConfigReq) GetPresencePenalty() float64 {
+	if x != nil {
+		return x.PresencePenalty
+	}
+	return 0
+}
+
+func (x *UpdateConfigReq) GetMaxTokens() int64 {
+	if x != nil {
+		return x.MaxTokens
+	}
+	return 0
+}
+
+func (x *UpdateConfigReq) GetSeed() int64 {
+	if x != nil {
+		return x.Seed
+	}
+	return 0
+}
+
+func (x *UpdateConfigReq) GetEnableSearch() int64 {
+	if x != nil {
+		return x.EnableSearch
+	}
+	return 0
+}
+
+type UpdateConfigResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateConfigResp) Reset() {
+	*x = UpdateConfigResp{}
+	mi := &file_llmservice_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateConfigResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateConfigResp) ProtoMessage() {}
+
+func (x *UpdateConfigResp) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateConfigResp.ProtoReflect.Descriptor instead.
+func (*UpdateConfigResp) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{16}
+}
+
+// Get
+type GetConfigReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetConfigReq) Reset() {
+	*x = GetConfigReq{}
+	mi := &file_llmservice_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetConfigReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetConfigReq) ProtoMessage() {}
+
+func (x *GetConfigReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetConfigReq.ProtoReflect.Descriptor instead.
+func (*GetConfigReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GetConfigReq) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type GetConfigResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Config        *ChatConfig            `protobuf:"bytes,1,opt,name=config,proto3" json:"config,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetConfigResp) Reset() {
+	*x = GetConfigResp{}
+	mi := &file_llmservice_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetConfigResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetConfigResp) ProtoMessage() {}
+
+func (x *GetConfigResp) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetConfigResp.ProtoReflect.Descriptor instead.
+func (*GetConfigResp) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *GetConfigResp) GetConfig() *ChatConfig {
+	if x != nil {
+		return x.Config
+	}
+	return nil
+}
+
+// List
+type ListConfigReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PageQuery     *PageQuery             `protobuf:"bytes,1,opt,name=pageQuery,proto3" json:"pageQuery,omitempty"`
+	QueryWrapper  *ChatConfig            `protobuf:"bytes,2,opt,name=queryWrapper,proto3" json:"queryWrapper,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListConfigReq) Reset() {
+	*x = ListConfigReq{}
+	mi := &file_llmservice_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListConfigReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListConfigReq) ProtoMessage() {}
+
+func (x *ListConfigReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListConfigReq.ProtoReflect.Descriptor instead.
+func (*ListConfigReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *ListConfigReq) GetPageQuery() *PageQuery {
+	if x != nil {
+		return x.PageQuery
+	}
+	return nil
+}
+
+func (x *ListConfigReq) GetQueryWrapper() *ChatConfig {
+	if x != nil {
+		return x.QueryWrapper
+	}
+	return nil
+}
+
+type ListConfigResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Total         int64                  `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
+	Configs       []*ChatConfig          `protobuf:"bytes,2,rep,name=configs,proto3" json:"configs,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListConfigResp) Reset() {
+	*x = ListConfigResp{}
+	mi := &file_llmservice_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListConfigResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListConfigResp) ProtoMessage() {}
+
+func (x *ListConfigResp) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListConfigResp.ProtoReflect.Descriptor instead.
+func (*ListConfigResp) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *ListConfigResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *ListConfigResp) GetConfigs() []*ChatConfig {
+	if x != nil {
+		return x.Configs
+	}
+	return nil
+}
+
 var File_llmservice_proto protoreflect.FileDescriptor
 
 const file_llmservice_proto_rawDesc = "" +
 	"\n" +
-	"\x10llmservice.proto\x12\x02pb\x1a\x1cgoogle/protobuf/struct.proto\"4\n" +
-	"\rStreamOptions\x12#\n" +
-	"\rinclude_usage\x18\x01 \x01(\bR\fincludeUsage\"<\n" +
-	"\fAudioOptions\x12\x14\n" +
-	"\x05voice\x18\x01 \x01(\tR\x05voice\x12\x16\n" +
-	"\x06format\x18\x02 \x01(\tR\x06format\"\xbd\x04\n" +
+	"\x10llmservice.proto\x12\x02pb\x1a\x1cgoogle/protobuf/struct.proto\"W\n" +
+	"\tPageQuery\x12\x12\n" +
+	"\x04page\x18\x01 \x01(\x03R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\x03R\bpageSize\x12\x19\n" +
+	"\border_by\x18\x03 \x01(\tR\aorderBy\"\xf5\x03\n" +
 	"\tLlmConfig\x12\x18\n" +
 	"\abaseUrl\x18\x01 \x01(\tR\abaseUrl\x12\x16\n" +
 	"\x06apiKey\x18\x02 \x01(\tR\x06apiKey\x12\x14\n" +
@@ -624,15 +1593,13 @@ const file_llmservice_proto_rawDesc = "" +
 	"\x10presence_penalty\x18\n" +
 	" \x01(\x01R\x0fpresencePenalty\x12'\n" +
 	"\x0fresponse_format\x18\v \x01(\tR\x0eresponseFormat\x128\n" +
-	"\x0estream_options\x18\f \x01(\v2\x11.pb.StreamOptionsR\rstreamOptions\x12\x1e\n" +
+	"\x0estream_options\x18\f \x01(\v2\x11.pb.StreamOptionsR\rstreamOptions\x12\x1d\n" +
 	"\n" +
-	"modalities\x18\r \x03(\tR\n" +
-	"modalities\x12&\n" +
-	"\x05audio\x18\x0e \x01(\v2\x10.pb.AudioOptionsR\x05audio\x12\x1d\n" +
-	"\n" +
-	"max_tokens\x18\x0f \x01(\x03R\tmaxTokens\x12\x12\n" +
-	"\x04seed\x18\x10 \x01(\x03R\x04seed\x12#\n" +
-	"\renable_search\x18\x11 \x01(\bR\fenableSearch\"D\n" +
+	"max_tokens\x18\r \x01(\x03R\tmaxTokens\x12\x12\n" +
+	"\x04seed\x18\x0e \x01(\x03R\x04seed\x12#\n" +
+	"\renable_search\x18\x0f \x01(\bR\fenableSearch\"4\n" +
+	"\rStreamOptions\x12#\n" +
+	"\rinclude_usage\x18\x01 \x01(\bR\fincludeUsage\"D\n" +
 	"\x04Tool\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12(\n" +
 	"\bfunction\x18\x02 \x01(\v2\f.pb.FunctionR\bfunction\"y\n" +
@@ -651,11 +1618,101 @@ const file_llmservice_proto_rawDesc = "" +
 	"\bmessages\x18\x03 \x03(\v2\v.pb.ChatMsgR\bmessages\"G\n" +
 	"\x0eCreateChatResp\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
-	"\arespMsg\x18\x02 \x01(\v2\v.pb.ChatMsgR\arespMsg2A\n" +
+	"\arespMsg\x18\x02 \x01(\v2\v.pb.ChatMsgR\arespMsg\"n\n" +
+	"\x0fContinueChatReq\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12+\n" +
+	"\tllmConfig\x18\x02 \x01(\v2\r.pb.LlmConfigR\tllmConfig\x12\x1e\n" +
+	"\x05tools\x18\x03 \x03(\v2\b.pb.ToolR\x05tools\"I\n" +
+	"\x10ContinueChatResp\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
+	"\arespMsg\x18\x02 \x01(\v2\v.pb.ChatMsgR\arespMsg\"\xf4\x03\n" +
+	"\n" +
+	"ChatConfig\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x17\n" +
+	"\auser_id\x18\x04 \x01(\x03R\x06userId\x12\x19\n" +
+	"\bbase_url\x18\x05 \x01(\tR\abaseUrl\x12\x17\n" +
+	"\aapi_key\x18\x06 \x01(\tR\x06apiKey\x12\x14\n" +
+	"\x05model\x18\a \x01(\tR\x05model\x12\x16\n" +
+	"\x06stream\x18\b \x01(\x03R\x06stream\x12 \n" +
+	"\vtemperature\x18\t \x01(\x01R\vtemperature\x12\x13\n" +
+	"\x05top_p\x18\n" +
+	" \x01(\x01R\x04topP\x12\x13\n" +
+	"\x05top_k\x18\v \x01(\x03R\x04topK\x12'\n" +
+	"\x0fenable_thinking\x18\f \x01(\x03R\x0eenableThinking\x12-\n" +
+	"\x12repetition_penalty\x18\r \x01(\x01R\x11repetitionPenalty\x12)\n" +
+	"\x10presence_penalty\x18\x0e \x01(\x01R\x0fpresencePenalty\x12\x1d\n" +
+	"\n" +
+	"max_tokens\x18\x0f \x01(\x03R\tmaxTokens\x12\x12\n" +
+	"\x04seed\x18\x10 \x01(\x03R\x04seed\x12#\n" +
+	"\renable_search\x18\x11 \x01(\x03R\fenableSearch\"\xe9\x03\n" +
+	"\x0fCreateConfigReq\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\x03R\x06userId\x12\x19\n" +
+	"\bbase_url\x18\x04 \x01(\tR\abaseUrl\x12\x17\n" +
+	"\aapi_key\x18\x05 \x01(\tR\x06apiKey\x12\x14\n" +
+	"\x05model\x18\x06 \x01(\tR\x05model\x12\x16\n" +
+	"\x06stream\x18\a \x01(\x03R\x06stream\x12 \n" +
+	"\vtemperature\x18\b \x01(\x01R\vtemperature\x12\x13\n" +
+	"\x05top_p\x18\t \x01(\x01R\x04topP\x12\x13\n" +
+	"\x05top_k\x18\n" +
+	" \x01(\x03R\x04topK\x12'\n" +
+	"\x0fenable_thinking\x18\v \x01(\x03R\x0eenableThinking\x12-\n" +
+	"\x12repetition_penalty\x18\f \x01(\x01R\x11repetitionPenalty\x12)\n" +
+	"\x10presence_penalty\x18\r \x01(\x01R\x0fpresencePenalty\x12\x1d\n" +
+	"\n" +
+	"max_tokens\x18\x0e \x01(\x03R\tmaxTokens\x12\x12\n" +
+	"\x04seed\x18\x0f \x01(\x03R\x04seed\x12#\n" +
+	"\renable_search\x18\x10 \x01(\x03R\fenableSearch\"\"\n" +
+	"\x10CreateConfigResp\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"!\n" +
+	"\x0fDeleteConfigReq\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"\x12\n" +
+	"\x10DeleteConfigResp\"\xf9\x03\n" +
+	"\x0fUpdateConfigReq\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x17\n" +
+	"\auser_id\x18\x04 \x01(\x03R\x06userId\x12\x19\n" +
+	"\bbase_url\x18\x05 \x01(\tR\abaseUrl\x12\x17\n" +
+	"\aapi_key\x18\x06 \x01(\tR\x06apiKey\x12\x14\n" +
+	"\x05model\x18\a \x01(\tR\x05model\x12\x16\n" +
+	"\x06stream\x18\b \x01(\x03R\x06stream\x12 \n" +
+	"\vtemperature\x18\t \x01(\x01R\vtemperature\x12\x13\n" +
+	"\x05top_p\x18\n" +
+	" \x01(\x01R\x04topP\x12\x13\n" +
+	"\x05top_k\x18\v \x01(\x03R\x04topK\x12'\n" +
+	"\x0fenable_thinking\x18\f \x01(\x03R\x0eenableThinking\x12-\n" +
+	"\x12repetition_penalty\x18\r \x01(\x01R\x11repetitionPenalty\x12)\n" +
+	"\x10presence_penalty\x18\x0e \x01(\x01R\x0fpresencePenalty\x12\x1d\n" +
+	"\n" +
+	"max_tokens\x18\x0f \x01(\x03R\tmaxTokens\x12\x12\n" +
+	"\x04seed\x18\x10 \x01(\x03R\x04seed\x12#\n" +
+	"\renable_search\x18\x11 \x01(\x03R\fenableSearch\"\x12\n" +
+	"\x10UpdateConfigResp\"\x1e\n" +
+	"\fGetConfigReq\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"7\n" +
+	"\rGetConfigResp\x12&\n" +
+	"\x06config\x18\x01 \x01(\v2\x0e.pb.ChatConfigR\x06config\"p\n" +
+	"\rListConfigReq\x12+\n" +
+	"\tpageQuery\x18\x01 \x01(\v2\r.pb.PageQueryR\tpageQuery\x122\n" +
+	"\fqueryWrapper\x18\x02 \x01(\v2\x0e.pb.ChatConfigR\fqueryWrapper\"P\n" +
+	"\x0eListConfigResp\x12\x14\n" +
+	"\x05total\x18\x01 \x01(\x03R\x05total\x12(\n" +
+	"\aconfigs\x18\x02 \x03(\v2\x0e.pb.ChatConfigR\aconfigs2\x94\x03\n" +
 	"\n" +
 	"Llmservice\x123\n" +
 	"\n" +
-	"CreateChat\x12\x11.pb.CreateChatReq\x1a\x12.pb.CreateChatRespB\x06Z\x04./pbb\x06proto3"
+	"CreateChat\x12\x11.pb.CreateChatReq\x1a\x12.pb.CreateChatResp\x129\n" +
+	"\fContinueChat\x12\x13.pb.ContinueChatReq\x1a\x14.pb.ContinueChatResp\x129\n" +
+	"\fCreateConfig\x12\x13.pb.CreateConfigReq\x1a\x14.pb.CreateConfigResp\x129\n" +
+	"\fDeleteConfig\x12\x13.pb.DeleteConfigReq\x1a\x14.pb.DeleteConfigResp\x129\n" +
+	"\fUpdateConfig\x12\x13.pb.UpdateConfigReq\x1a\x14.pb.UpdateConfigResp\x120\n" +
+	"\tGetConfig\x12\x10.pb.GetConfigReq\x1a\x11.pb.GetConfigResp\x123\n" +
+	"\n" +
+	"ListConfig\x12\x11.pb.ListConfigReq\x1a\x12.pb.ListConfigRespB\x06Z\x04./pbb\x06proto3"
 
 var (
 	file_llmservice_proto_rawDescOnce sync.Once
@@ -669,34 +1726,65 @@ func file_llmservice_proto_rawDescGZIP() []byte {
 	return file_llmservice_proto_rawDescData
 }
 
-var file_llmservice_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_llmservice_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_llmservice_proto_goTypes = []any{
-	(*StreamOptions)(nil),   // 0: pb.StreamOptions
-	(*AudioOptions)(nil),    // 1: pb.AudioOptions
-	(*LlmConfig)(nil),       // 2: pb.LlmConfig
-	(*Tool)(nil),            // 3: pb.Tool
-	(*Function)(nil),        // 4: pb.Function
-	(*ChatMsg)(nil),         // 5: pb.ChatMsg
-	(*CreateChatReq)(nil),   // 6: pb.CreateChatReq
-	(*CreateChatResp)(nil),  // 7: pb.CreateChatResp
-	(*structpb.Struct)(nil), // 8: google.protobuf.Struct
+	(*PageQuery)(nil),        // 0: pb.PageQuery
+	(*LlmConfig)(nil),        // 1: pb.LlmConfig
+	(*StreamOptions)(nil),    // 2: pb.StreamOptions
+	(*Tool)(nil),             // 3: pb.Tool
+	(*Function)(nil),         // 4: pb.Function
+	(*ChatMsg)(nil),          // 5: pb.ChatMsg
+	(*CreateChatReq)(nil),    // 6: pb.CreateChatReq
+	(*CreateChatResp)(nil),   // 7: pb.CreateChatResp
+	(*ContinueChatReq)(nil),  // 8: pb.ContinueChatReq
+	(*ContinueChatResp)(nil), // 9: pb.ContinueChatResp
+	(*ChatConfig)(nil),       // 10: pb.ChatConfig
+	(*CreateConfigReq)(nil),  // 11: pb.CreateConfigReq
+	(*CreateConfigResp)(nil), // 12: pb.CreateConfigResp
+	(*DeleteConfigReq)(nil),  // 13: pb.DeleteConfigReq
+	(*DeleteConfigResp)(nil), // 14: pb.DeleteConfigResp
+	(*UpdateConfigReq)(nil),  // 15: pb.UpdateConfigReq
+	(*UpdateConfigResp)(nil), // 16: pb.UpdateConfigResp
+	(*GetConfigReq)(nil),     // 17: pb.GetConfigReq
+	(*GetConfigResp)(nil),    // 18: pb.GetConfigResp
+	(*ListConfigReq)(nil),    // 19: pb.ListConfigReq
+	(*ListConfigResp)(nil),   // 20: pb.ListConfigResp
+	(*structpb.Struct)(nil),  // 21: google.protobuf.Struct
 }
 var file_llmservice_proto_depIdxs = []int32{
-	0, // 0: pb.LlmConfig.stream_options:type_name -> pb.StreamOptions
-	1, // 1: pb.LlmConfig.audio:type_name -> pb.AudioOptions
-	4, // 2: pb.Tool.function:type_name -> pb.Function
-	8, // 3: pb.Function.parameters:type_name -> google.protobuf.Struct
-	2, // 4: pb.CreateChatReq.llmConfig:type_name -> pb.LlmConfig
-	3, // 5: pb.CreateChatReq.tools:type_name -> pb.Tool
-	5, // 6: pb.CreateChatReq.messages:type_name -> pb.ChatMsg
-	5, // 7: pb.CreateChatResp.respMsg:type_name -> pb.ChatMsg
-	6, // 8: pb.Llmservice.CreateChat:input_type -> pb.CreateChatReq
-	7, // 9: pb.Llmservice.CreateChat:output_type -> pb.CreateChatResp
-	9, // [9:10] is the sub-list for method output_type
-	8, // [8:9] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	2,  // 0: pb.LlmConfig.stream_options:type_name -> pb.StreamOptions
+	4,  // 1: pb.Tool.function:type_name -> pb.Function
+	21, // 2: pb.Function.parameters:type_name -> google.protobuf.Struct
+	1,  // 3: pb.CreateChatReq.llmConfig:type_name -> pb.LlmConfig
+	3,  // 4: pb.CreateChatReq.tools:type_name -> pb.Tool
+	5,  // 5: pb.CreateChatReq.messages:type_name -> pb.ChatMsg
+	5,  // 6: pb.CreateChatResp.respMsg:type_name -> pb.ChatMsg
+	1,  // 7: pb.ContinueChatReq.llmConfig:type_name -> pb.LlmConfig
+	3,  // 8: pb.ContinueChatReq.tools:type_name -> pb.Tool
+	5,  // 9: pb.ContinueChatResp.respMsg:type_name -> pb.ChatMsg
+	10, // 10: pb.GetConfigResp.config:type_name -> pb.ChatConfig
+	0,  // 11: pb.ListConfigReq.pageQuery:type_name -> pb.PageQuery
+	10, // 12: pb.ListConfigReq.queryWrapper:type_name -> pb.ChatConfig
+	10, // 13: pb.ListConfigResp.configs:type_name -> pb.ChatConfig
+	6,  // 14: pb.Llmservice.CreateChat:input_type -> pb.CreateChatReq
+	8,  // 15: pb.Llmservice.ContinueChat:input_type -> pb.ContinueChatReq
+	11, // 16: pb.Llmservice.CreateConfig:input_type -> pb.CreateConfigReq
+	13, // 17: pb.Llmservice.DeleteConfig:input_type -> pb.DeleteConfigReq
+	15, // 18: pb.Llmservice.UpdateConfig:input_type -> pb.UpdateConfigReq
+	17, // 19: pb.Llmservice.GetConfig:input_type -> pb.GetConfigReq
+	19, // 20: pb.Llmservice.ListConfig:input_type -> pb.ListConfigReq
+	7,  // 21: pb.Llmservice.CreateChat:output_type -> pb.CreateChatResp
+	9,  // 22: pb.Llmservice.ContinueChat:output_type -> pb.ContinueChatResp
+	12, // 23: pb.Llmservice.CreateConfig:output_type -> pb.CreateConfigResp
+	14, // 24: pb.Llmservice.DeleteConfig:output_type -> pb.DeleteConfigResp
+	16, // 25: pb.Llmservice.UpdateConfig:output_type -> pb.UpdateConfigResp
+	18, // 26: pb.Llmservice.GetConfig:output_type -> pb.GetConfigResp
+	20, // 27: pb.Llmservice.ListConfig:output_type -> pb.ListConfigResp
+	21, // [21:28] is the sub-list for method output_type
+	14, // [14:21] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_llmservice_proto_init() }
@@ -710,7 +1798,7 @@ func file_llmservice_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_llmservice_proto_rawDesc), len(file_llmservice_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   21,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

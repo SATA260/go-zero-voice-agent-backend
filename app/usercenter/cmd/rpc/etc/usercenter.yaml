@@ -10,14 +10,7 @@ DB:
 Cache:
   - Host: localhost:36379
     Type: node
-    Pass: GwAGt4UmTwcMhjun
-
-Redis:
-  Host: localhost:36379
-  Type: node
-  Pass: GwAGt4UmTwcMhjun
-  Key:  userrcenter:rpc
-  
+    Pass: GwAGt4UmTwcMhjun 
 
 JwtAuth:
   AccessSecret: ${JWT_ACCESS_SECRET}
