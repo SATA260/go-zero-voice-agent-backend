@@ -1,0 +1,18 @@
+Name: mqueue.job
+Mode: dev
+Log:
+  ServiceName: mqueue.job
+  Mode: console
+  Encoding: plain
+Redis:
+  Host: localhost:36379
+  Type: node
+  Pass: GwAGt4UmTwcMhjun
+  DB: 1
+ChatCache:
+  Host: localhost:36379
+  Type: node
+  Pass: GwAGt4UmTwcMhjun
+  DB: 0
+DB:
+  DataSource: root:f4FMhWc6FdzuBCHf@tcp(localhost:3306)/gzva_llmservice?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai

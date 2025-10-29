@@ -2,11 +2,15 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 
-	"go-zero-voice-agent/app/llmservice/cmd/rpc/internal/consts"
 	"go-zero-voice-agent/app/llmservice/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/llmservice/cmd/rpc/pb"
+	chatconsts "go-zero-voice-agent/app/llmservice/pkg/consts"
+	publicconsts "go-zero-voice-agent/pkg/consts"
+	"go-zero-voice-agent/app/mqueue/cmd/job/jobtype"
 
+	"github.com/hibiken/asynq"
 	"github.com/openai/openai-go"
 	"github.com/openai/openai-go/option"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -36,13 +40,13 @@ func (l *CreateChatLogic) CreateChat(in *pb.CreateChatReq) (*pb.CreateChatResp, 
 
 	for i, msg := range in.Messages {
 		switch msg.Role {
-		case consts.ChatMessageRole_USER:
+		case chatconsts.ChatMessageRoleUser:
 			// 用户消息处理
 			chatMsgs = append(chatMsgs, openai.UserMessage(msg.Content))
-		case consts.ChatMessageRole_ASSISTANT:
+		case chatconsts.ChatMessageRoleAssistant:
 			// 助手消息处理
 			chatMsgs = append(chatMsgs, openai.AssistantMessage(msg.Content))
-		case consts.ChatMessageRole_SYSTEM:
+		case chatconsts.ChatMessageRoleSystem:
 			// 系统消息处理
 			if i != 0 {
 				logx.Errorf("系统消息只能出现在第一条, 位置: %d", i)
@@ -68,12 +72,56 @@ func (l *CreateChatLogic) CreateChat(in *pb.CreateChatReq) (*pb.CreateChatResp, 
 		return nil, err
 	}
 
+	
+	aiRespMsg := &pb.ChatMsg{
+		Role:    chatconsts.ChatMessageRoleAssistant,
+		Content: chatCompletion.Choices[len(chatCompletion.Choices)-1].Message.Content,
+	}
+
+	go l.cacheConversation(chatCompletion.ID, in.Messages, aiRespMsg)
+
 	return &pb.CreateChatResp{
-		Id: chatCompletion.ID,
-		RespMsg: &pb.ChatMsg{
-			Role: "user",
-			Content: chatCompletion.Choices[len(chatCompletion.Choices)-1].Message.Content,
-		},
+		Id:      chatCompletion.ID,
+		RespMsg: aiRespMsg,
 	}, nil
 }
 
+func (l *CreateChatLogic) cacheConversation(conversationId string, userMsgs []*pb.ChatMsg, aiRespMsg *pb.ChatMsg) {
+	defer func() {
+		if r := recover(); r != nil {
+			logx.Errorf("panic recovered in cacheConversation, err: %v", r)
+		}
+	}()
+
+	cacheKey := publicconsts.ChatCacheKeyPrefix + conversationId
+	if _, err := l.svcCtx.RedisClient.Del(cacheKey); err != nil {
+		logx.Errorf("failed to clear conversation cache, key: %s, err: %v", cacheKey, err)
+	}
+
+	fullConversation := make([]*pb.ChatMsg, 0, len(userMsgs)+1)
+	fullConversation = append(fullConversation, userMsgs...)
+	fullConversation = append(fullConversation, aiRespMsg)
+	for _, msg := range fullConversation {
+		msgBytes, err := json.Marshal(msg)
+		if err != nil {
+			logx.Errorf("failed to marshal message, err: %v", err)
+			continue
+		}
+
+		if _, err = l.svcCtx.RedisClient.Rpush(cacheKey, string(msgBytes)); err != nil {
+			logx.Errorf("fail to push message to Redis, key: %s, err: %v", cacheKey, err)
+		}
+	}
+
+	l.svcCtx.RedisClient.Expire(cacheKey, chatconsts.ChatCacheExpireSeconds)
+
+	task, err := jobtype.NewSyncChatMsgTask(conversationId)
+	if err != nil {
+		logx.Errorf("failed to create sync task for conversation %s, err: %v", conversationId, err)
+		return
+	}
+
+	if _, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.Queue(jobtype.QueueDefault)); err != nil {
+		logx.Errorf("failed to enqueue sync task for conversation %s, err: %v", conversationId, err)
+	}
+}
