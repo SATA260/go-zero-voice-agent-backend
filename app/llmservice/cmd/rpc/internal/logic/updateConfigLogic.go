@@ -65,5 +65,6 @@ func updateConfigReqToModel(cfg *pb.UpdateConfigReq) *model.ChatConfig {
         MaxTokens:         tool.Int64ToNullInt64(cfg.MaxTokens),
         Seed:              tool.Int64ToNullInt64(cfg.Seed),
         EnableSearch:      tool.Int64ToNullInt64(cfg.EnableSearch),
+        ContextLength:     tool.Int64ToNullInt64(cfg.ContextLength),
     }
 }
