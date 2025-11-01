@@ -1,0 +1,109 @@
+[package]
+name = "rustpbx"
+version = "0.3.1"
+edition = "2021"
+authors = ["jinti<shenjindi@fourz.cn>"]
+description = "A WebRTC PBX implementation in Rust"
+license = "MIT"
+repository = "https://github.com/restsend/rustpbx"
+readme = "README.md"
+keywords = ["webrtc", "voip", "telephony", "pbx", "ai", "voice"]
+categories = ["network-programming", "multimedia"]
+
+[features]
+vad_webrtc = ["webrtc-vad"]
+vad_silero = ["ort", "ort-sys"]
+vad_ten = ["ort", "ort-sys"]
+default = ["vad_webrtc", "vad_silero", "vad_ten"]
+not_vad = []
+
+[dependencies]
+anyhow = "1.0.98"
+async-trait = "0.1.88"
+axum = { version = "0.8.3", features = ["ws", "tokio"] }
+tower-http = { version = "0.6.2", features = ["fs", "cors"] }
+bytes = "1.10.1"
+futures = "0.3.31"
+nnnoiseless = { version = "0.5", features = ["default"] }
+rubato = "0.16.2"
+rustls = { version = "0.23.26", features = ["ring"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.44.2", features = ["full"] }
+tokio-stream = { version = "0.1.17", features = ["net"] }
+tokio-tungstenite = { version = "0.26.2", features = [
+    "rustls-tls-native-roots",
+] }
+tokio-util = "0.7.15"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+tracing-appender = "0.2"
+url = "2.5.4"
+uuid = { version = "1.16.0", features = ["v4"] }
+webrtc = "0.13.0"
+webrtc-vad = { version = "0.4.0", optional = true }
+clap = { version = "4.5", features = ["derive"] }
+toml = "0.8"
+rand = "0.9.0"
+hound = "3.5.1"
+ort = { version = "2.0.0-rc.10", features = ["ndarray"], optional = true }
+ort-sys = { version = "2.0.0-rc.10", optional = true }
+chrono = "0.4.41"
+# SIP dependencies removed - only WebRTC and WebSocket calls supported
+reqwest = { version = "0.12.15", features = [
+    "json",
+    "rustls-tls",
+    "multipart",
+] }
+base64 = "0.22.1"
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4.3"
+dotenv = "0.15"
+async-openai = "0.28.1"
+md-5 = "0.10.6"
+once_cell = "1.21.3"
+cpal = "0.16.0"
+regex = "1.11.1"
+ring = "0.17.14"
+http = "1.3.1"
+urlencoding = "2.1.3"
+byteorder = "1.5.0"
+get_if_addrs = "0.5.3"
+tempfile = "3.8"
+rmp3 = "0.3"
+ipnetwork = "0.21.1"
+ipset_lookup = "0.4.8"
+sqlx = { version = "0.8.6", features = [
+    "runtime-tokio-rustls",
+    "postgres",
+    "sqlite",
+    "mysql",
+    "any",
+] }
+sha1 = "0.10.6"
+sea-orm = { version = "1.1.11", features = [
+    "runtime-tokio-rustls",
+    "sqlx-sqlite",
+] }
+sea-orm-migration = "1.1.11"
+object_store = { version = "0.12.1", features = ["aws", "azure", "gcp"] }
+humantime = "2"
+ndarray = "0.16.1"
+
+
+[dev-dependencies]
+tempfile = "3.8"
+tokio-test = "0.4"
+mockall = "0.13.1"
+warp = "0.3"
+portpicker = "0.1.1"
+
+[[example]]
+name = "webrtc-demo"
+path = "examples/webrtc-demo/src/main.rs"
+
+
+[[example]]
+name = "voice-demo"
+path = "examples/voice_demo.rs"
