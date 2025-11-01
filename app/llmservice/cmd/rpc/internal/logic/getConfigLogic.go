@@ -62,5 +62,6 @@ func chatConfigToPb(cfg *model.ChatConfig) *pb.ChatConfig {
         MaxTokens:         tool.NullInt64ToInt64(cfg.MaxTokens),
         Seed:              tool.NullInt64ToInt64(cfg.Seed),
         EnableSearch:      tool.NullInt64ToInt64(cfg.EnableSearch),
+        ContextLength:     tool.NullInt64ToInt64(cfg.ContextLength),
     }
 }

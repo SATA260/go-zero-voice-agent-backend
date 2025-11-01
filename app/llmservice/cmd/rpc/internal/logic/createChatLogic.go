@@ -2,15 +2,10 @@ package logic
 
 import (
 	"context"
-	"encoding/json"
 
 	"go-zero-voice-agent/app/llmservice/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/llmservice/cmd/rpc/pb"
 	chatconsts "go-zero-voice-agent/app/llmservice/pkg/consts"
-	publicconsts "go-zero-voice-agent/pkg/consts"
-	"go-zero-voice-agent/app/mqueue/cmd/job/jobtype"
-
-	"github.com/hibiken/asynq"
 	"github.com/openai/openai-go"
 	"github.com/openai/openai-go/option"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -78,7 +73,7 @@ func (l *CreateChatLogic) CreateChat(in *pb.CreateChatReq) (*pb.CreateChatResp, 
 		Content: chatCompletion.Choices[len(chatCompletion.Choices)-1].Message.Content,
 	}
 
-	go l.cacheConversation(chatCompletion.ID, in.Messages, aiRespMsg)
+	go l.svcCtx.CacheConversation(chatCompletion.ID, in.Messages, aiRespMsg)
 
 	return &pb.CreateChatResp{
 		Id:      chatCompletion.ID,
@@ -86,42 +81,4 @@ func (l *CreateChatLogic) CreateChat(in *pb.CreateChatReq) (*pb.CreateChatResp, 
 	}, nil
 }
 
-func (l *CreateChatLogic) cacheConversation(conversationId string, userMsgs []*pb.ChatMsg, aiRespMsg *pb.ChatMsg) {
-	defer func() {
-		if r := recover(); r != nil {
-			logx.Errorf("panic recovered in cacheConversation, err: %v", r)
-		}
-	}()
 
-	cacheKey := publicconsts.ChatCacheKeyPrefix + conversationId
-	if _, err := l.svcCtx.RedisClient.Del(cacheKey); err != nil {
-		logx.Errorf("failed to clear conversation cache, key: %s, err: %v", cacheKey, err)
-	}
-
-	fullConversation := make([]*pb.ChatMsg, 0, len(userMsgs)+1)
-	fullConversation = append(fullConversation, userMsgs...)
-	fullConversation = append(fullConversation, aiRespMsg)
-	for _, msg := range fullConversation {
-		msgBytes, err := json.Marshal(msg)
-		if err != nil {
-			logx.Errorf("failed to marshal message, err: %v", err)
-			continue
-		}
-
-		if _, err = l.svcCtx.RedisClient.Rpush(cacheKey, string(msgBytes)); err != nil {
-			logx.Errorf("fail to push message to Redis, key: %s, err: %v", cacheKey, err)
-		}
-	}
-
-	l.svcCtx.RedisClient.Expire(cacheKey, chatconsts.ChatCacheExpireSeconds)
-
-	task, err := jobtype.NewSyncChatMsgTask(conversationId)
-	if err != nil {
-		logx.Errorf("failed to create sync task for conversation %s, err: %v", conversationId, err)
-		return
-	}
-
-	if _, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.Queue(jobtype.QueueDefault)); err != nil {
-		logx.Errorf("failed to enqueue sync task for conversation %s, err: %v", conversationId, err)
-	}
-}
