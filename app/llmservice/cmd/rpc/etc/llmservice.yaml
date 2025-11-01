@@ -10,13 +10,7 @@ DB:
 Cache:
   - Host: localhost:36379
     Type: node
-    Pass: GwAGt4UmTwcMhjun 
-
-Redis:
-  Host: localhost:36379
-  Type: node
-  Pass: GwAGt4UmTwcMhjun
-  DB: 0
+    Pass: GwAGt4UmTwcMhjun
 
 Asynq:
   Host: localhost:36379

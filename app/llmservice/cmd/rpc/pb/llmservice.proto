@@ -46,6 +46,8 @@ message LlmConfig {
     int64 seed = 14;
     // 是否启用互联网搜索 (可选)
     bool enable_search = 15;
+    // 上下文长度 (可选)
+    int64 content_length = 16;
 }
 
 // 流式输出选项
@@ -130,6 +132,7 @@ message ChatConfig {
     int64 max_tokens = 15;
     int64 seed = 16;
     int64 enable_search = 17;
+    int64 context_length = 18;
 }
 
 // --- Config Management ---
@@ -152,6 +155,7 @@ message CreateConfigReq {
     int64 max_tokens = 14;
     int64 seed = 15;
     int64 enable_search = 16;
+    int64 context_length = 17;
 }
 message CreateConfigResp {
     int64 id = 1;
@@ -183,6 +187,7 @@ message UpdateConfigReq {
     int64 max_tokens = 15;
     int64 seed = 16;
     int64 enable_search = 17;
+    int64 context_length = 18;
 }
 message UpdateConfigResp {
 }
