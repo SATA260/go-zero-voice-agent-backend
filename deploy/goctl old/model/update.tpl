@@ -65,9 +65,37 @@ func (m *default{{.upperStartCamelObject}}Model) UpdateWithVersion(ctx context.C
 
 func (m *default{{.upperStartCamelObject}}Model) DeleteSoft(ctx context.Context,session sqlx.Session,data *{{.upperStartCamelObject}}) error {
 	data.DelState = globalkey.DelStateYes
-	data.DeleteTime = time.Now()
-	if err:= m.UpdateWithVersion(ctx,session, data);err!= nil{
-		return errors.Wrapf(errors.New("delete soft failed "),"{{.upperStartCamelObject}}Model delete err : %+v",err)
+	data.DeleteTime = sql.NullTime{
+		Time: time.Now(),
+		Valid: true,
+	}
+	data.Version += 1
+
+	var sqlResult sql.Result
+	var err error
+
+	{{if .withCache}}{{.keys}}
+	sqlResult, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("update %s set del_state = ?, delete_time = ?, version = ? where {{.originalPrimaryKey}} = {{if .postgreSql}}$1{{else}}?{{end}} and version = ?", m.table)
+		if session != nil {
+			return session.ExecCtx(ctx, query, globalkey.DelStateYes, data.DeleteTime, data.Version, data.{{.upperStartCamelPrimaryKey}}, data.Version-1)
+		}
+		return conn.ExecCtx(ctx, query, globalkey.DelStateYes, data.DeleteTime, data.Version, data.{{.upperStartCamelPrimaryKey}}, data.Version-1)
+	}, {{.keyValues}}){{else}}query := fmt.Sprintf("update %s set del_state = ?, delete_time = ?, version = ? where {{.originalPrimaryKey}} = {{if .postgreSql}}$1{{else}}?{{end}} and version = ?", m.table)
+	if session != nil {
+		sqlResult, err = session.ExecCtx(ctx, query, globalkey.DelStateYes, data.DeleteTime, data.Version, data.{{.upperStartCamelPrimaryKey}}, data.Version-1)
+	} else {
+		sqlResult, err = m.conn.ExecCtx(ctx, query, globalkey.DelStateYes, data.DeleteTime, data.Version, data.{{.upperStartCamelPrimaryKey}}, data.Version-1)
+	}{{end}}
+	if err != nil {
+		return errors.Wrapf(errors.New("delete soft failed"), "{{.upperStartCamelObject}}Model delete err : %+v", err)
+	}
+	updateCount, err := sqlResult.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if updateCount == 0 {
+		return ErrNoRowsUpdate
 	}
 	return nil
 }
