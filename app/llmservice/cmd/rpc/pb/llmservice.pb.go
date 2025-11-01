@@ -115,7 +115,9 @@ type LlmConfig struct {
 	// 随机种子，用于结果可复现 (可选)
 	Seed int64 `protobuf:"varint,14,opt,name=seed,proto3" json:"seed,omitempty"`
 	// 是否启用互联网搜索 (可选)
-	EnableSearch  bool `protobuf:"varint,15,opt,name=enable_search,json=enableSearch,proto3" json:"enable_search,omitempty"`
+	EnableSearch bool `protobuf:"varint,15,opt,name=enable_search,json=enableSearch,proto3" json:"enable_search,omitempty"`
+	// 上下文长度
+	ContentLength int64 `protobuf:"varint,16,opt,name=content_length,json=contentLength,proto3" json:"content_length,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -253,6 +255,13 @@ func (x *LlmConfig) GetEnableSearch() bool {
 		return x.EnableSearch
 	}
 	return false
+}
+
+func (x *LlmConfig) GetContentLength() int64 {
+	if x != nil {
+		return x.ContentLength
+	}
+	return 0
 }
 
 // 流式输出选项
@@ -725,6 +734,7 @@ type ChatConfig struct {
 	MaxTokens         int64                  `protobuf:"varint,15,opt,name=max_tokens,json=maxTokens,proto3" json:"max_tokens,omitempty"`
 	Seed              int64                  `protobuf:"varint,16,opt,name=seed,proto3" json:"seed,omitempty"`
 	EnableSearch      int64                  `protobuf:"varint,17,opt,name=enable_search,json=enableSearch,proto3" json:"enable_search,omitempty"`
+	ContextLength     int64                  `protobuf:"varint,18,opt,name=context_length,json=contextLength,proto3" json:"context_length,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -878,6 +888,13 @@ func (x *ChatConfig) GetEnableSearch() int64 {
 	return 0
 }
 
+func (x *ChatConfig) GetContextLength() int64 {
+	if x != nil {
+		return x.ContextLength
+	}
+	return 0
+}
+
 // Create
 type CreateConfigReq struct {
 	state             protoimpl.MessageState `protogen:"open.v1"`
@@ -897,6 +914,7 @@ type CreateConfigReq struct {
 	MaxTokens         int64                  `protobuf:"varint,14,opt,name=max_tokens,json=maxTokens,proto3" json:"max_tokens,omitempty"`
 	Seed              int64                  `protobuf:"varint,15,opt,name=seed,proto3" json:"seed,omitempty"`
 	EnableSearch      int64                  `protobuf:"varint,16,opt,name=enable_search,json=enableSearch,proto3" json:"enable_search,omitempty"`
+	ContextLength     int64                  `protobuf:"varint,17,opt,name=context_length,json=contextLength,proto3" json:"context_length,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -1039,6 +1057,13 @@ func (x *CreateConfigReq) GetSeed() int64 {
 func (x *CreateConfigReq) GetEnableSearch() int64 {
 	if x != nil {
 		return x.EnableSearch
+	}
+	return 0
+}
+
+func (x *CreateConfigReq) GetContextLength() int64 {
+	if x != nil {
+		return x.ContextLength
 	}
 	return 0
 }
@@ -1188,6 +1213,7 @@ type UpdateConfigReq struct {
 	MaxTokens         int64                  `protobuf:"varint,15,opt,name=max_tokens,json=maxTokens,proto3" json:"max_tokens,omitempty"`
 	Seed              int64                  `protobuf:"varint,16,opt,name=seed,proto3" json:"seed,omitempty"`
 	EnableSearch      int64                  `protobuf:"varint,17,opt,name=enable_search,json=enableSearch,proto3" json:"enable_search,omitempty"`
+	ContextLength     int64                  `protobuf:"varint,18,opt,name=context_length,json=contextLength,proto3" json:"context_length,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -1337,6 +1363,13 @@ func (x *UpdateConfigReq) GetSeed() int64 {
 func (x *UpdateConfigReq) GetEnableSearch() int64 {
 	if x != nil {
 		return x.EnableSearch
+	}
+	return 0
+}
+
+func (x *UpdateConfigReq) GetContextLength() int64 {
+	if x != nil {
+		return x.ContextLength
 	}
 	return 0
 }
@@ -1579,7 +1612,7 @@ const file_llmservice_proto_rawDesc = "" +
 	"\tPageQuery\x12\x12\n" +
 	"\x04page\x18\x01 \x01(\x03R\x04page\x12\x1b\n" +
 	"\tpage_size\x18\x02 \x01(\x03R\bpageSize\x12\x19\n" +
-	"\border_by\x18\x03 \x01(\tR\aorderBy\"\xf5\x03\n" +
+	"\border_by\x18\x03 \x01(\tR\aorderBy\"\x9c\x04\n" +
 	"\tLlmConfig\x12\x18\n" +
 	"\abaseUrl\x18\x01 \x01(\tR\abaseUrl\x12\x16\n" +
 	"\x06apiKey\x18\x02 \x01(\tR\x06apiKey\x12\x14\n" +
@@ -1597,7 +1630,8 @@ const file_llmservice_proto_rawDesc = "" +
 	"\n" +
 	"max_tokens\x18\r \x01(\x03R\tmaxTokens\x12\x12\n" +
 	"\x04seed\x18\x0e \x01(\x03R\x04seed\x12#\n" +
-	"\renable_search\x18\x0f \x01(\bR\fenableSearch\"4\n" +
+	"\renable_search\x18\x0f \x01(\bR\fenableSearch\x12%\n" +
+	"\x0econtent_length\x18\x10 \x01(\x03R\rcontentLength\"4\n" +
 	"\rStreamOptions\x12#\n" +
 	"\rinclude_usage\x18\x01 \x01(\bR\fincludeUsage\"D\n" +
 	"\x04Tool\x12\x12\n" +
@@ -1625,7 +1659,7 @@ const file_llmservice_proto_rawDesc = "" +
 	"\x05tools\x18\x03 \x03(\v2\b.pb.ToolR\x05tools\"I\n" +
 	"\x10ContinueChatResp\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
-	"\arespMsg\x18\x02 \x01(\v2\v.pb.ChatMsgR\arespMsg\"\xf4\x03\n" +
+	"\arespMsg\x18\x02 \x01(\v2\v.pb.ChatMsgR\arespMsg\"\x9b\x04\n" +
 	"\n" +
 	"ChatConfig\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
@@ -1646,7 +1680,8 @@ const file_llmservice_proto_rawDesc = "" +
 	"\n" +
 	"max_tokens\x18\x0f \x01(\x03R\tmaxTokens\x12\x12\n" +
 	"\x04seed\x18\x10 \x01(\x03R\x04seed\x12#\n" +
-	"\renable_search\x18\x11 \x01(\x03R\fenableSearch\"\xe9\x03\n" +
+	"\renable_search\x18\x11 \x01(\x03R\fenableSearch\x12%\n" +
+	"\x0econtext_length\x18\x12 \x01(\x03R\rcontextLength\"\x90\x04\n" +
 	"\x0fCreateConfigReq\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x17\n" +
@@ -1665,12 +1700,13 @@ const file_llmservice_proto_rawDesc = "" +
 	"\n" +
 	"max_tokens\x18\x0e \x01(\x03R\tmaxTokens\x12\x12\n" +
 	"\x04seed\x18\x0f \x01(\x03R\x04seed\x12#\n" +
-	"\renable_search\x18\x10 \x01(\x03R\fenableSearch\"\"\n" +
+	"\renable_search\x18\x10 \x01(\x03R\fenableSearch\x12%\n" +
+	"\x0econtext_length\x18\x11 \x01(\x03R\rcontextLength\"\"\n" +
 	"\x10CreateConfigResp\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"!\n" +
 	"\x0fDeleteConfigReq\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"\x12\n" +
-	"\x10DeleteConfigResp\"\xf9\x03\n" +
+	"\x10DeleteConfigResp\"\xa0\x04\n" +
 	"\x0fUpdateConfigReq\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
@@ -1690,7 +1726,8 @@ const file_llmservice_proto_rawDesc = "" +
 	"\n" +
 	"max_tokens\x18\x0f \x01(\x03R\tmaxTokens\x12\x12\n" +
 	"\x04seed\x18\x10 \x01(\x03R\x04seed\x12#\n" +
-	"\renable_search\x18\x11 \x01(\x03R\fenableSearch\"\x12\n" +
+	"\renable_search\x18\x11 \x01(\x03R\fenableSearch\x12%\n" +
+	"\x0econtext_length\x18\x12 \x01(\x03R\rcontextLength\"\x12\n" +
 	"\x10UpdateConfigResp\"\x1e\n" +
 	"\fGetConfigReq\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"7\n" +

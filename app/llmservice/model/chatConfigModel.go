@@ -20,8 +20,8 @@ type (
 )
 
 // NewChatConfigModel returns a model for the database table.
-func NewChatConfigModel(conn sqlx.SqlConn, c cache.CacheConf) ChatConfigModel {
+func NewChatConfigModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) ChatConfigModel {
 	return &customChatConfigModel{
-		defaultChatConfigModel: newChatConfigModel(conn, c),
+		defaultChatConfigModel: newChatConfigModel(conn, c, opts...),
 	}
 }

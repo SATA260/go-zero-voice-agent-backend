@@ -26,6 +26,7 @@ func NewCronJob(ctx context.Context, svcCtx *svc.ServiceContext) *CronJob {
 func (l *CronJob) Register() *asynq.ServeMux {
 
 	mux := asynq.NewServeMux()
+	
 	mux.HandleFunc(jobtype.SyncChatMsgToDb, l.handleSyncChatMsgToDb)
 
 	return mux

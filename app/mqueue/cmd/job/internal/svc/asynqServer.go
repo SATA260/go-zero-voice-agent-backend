@@ -1,10 +1,10 @@
 package svc
 
 import (
-	"fmt"
 	"go-zero-voice-agent/app/mqueue/cmd/job/internal/config"
 
 	"github.com/hibiken/asynq"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 func newAsynqServer(c config.Config) *asynq.Server {
@@ -12,10 +12,10 @@ func newAsynqServer(c config.Config) *asynq.Server {
 		asynq.RedisClientOpt{Addr: c.Redis.Host, Password: c.Redis.Pass},
 		asynq.Config{
 			IsFailure: func(err error) bool {
-				fmt.Printf("asynq server exec task IsFailure ======== >>>>>>>>>>>  err : %+v \n", err)
+				logx.Errorf("asynq server exec task IsFailure ======== >>>>>>>>>>>  err : %+v \n", err)
 				return true
 			},
-			Concurrency: 1000, //max concurrent process job task num
+			Concurrency: 20, //max concurrent process job task num
 		},
 	)
 }
