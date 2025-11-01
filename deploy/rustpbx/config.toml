@@ -1,0 +1,42 @@
+http_addr = "0.0.0.0:8080"
+log_level = "info"
+recorder_path = "/tmp/recorders"
+recorder_format = "wav" # or "ogg" when built with --features opus
+media_cache_path = "/tmp/mediacache"
+database_url = "sqlite://./db/rustpbx.sqlite3"
+
+[ua]
+addr="0.0.0.0"
+udp_port=13050
+
+[console]
+#session_secret = "please_change_me_to_a_random_secret"
+base_path = "/console"
+
+[proxy]
+modules = ["acl", "auth", "registrar", "call"]
+addr = "0.0.0.0"
+udp_port = 15060
+registrar_expires = 60
+ws_handler= "/ws"
+media_proxy = "auto"
+
+# ACL rules
+acl_rules = [
+    "allow 10.0.0.0/8",
+    "allow all",
+]
+
+[[proxy.user_backends]]
+type = "memory"
+users = [
+    { username = "bob", password = "123456" },
+    { username = "alice", password = "123456" },
+]
+
+[[proxy.user_backends]]
+type = "extension"
+
+[callrecord]
+type = "local"
+root = "/tmp/cdr"
