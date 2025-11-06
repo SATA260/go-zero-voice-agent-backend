@@ -1,0 +1,9 @@
+syntax = "v1"
+
+info (
+	title:   "VoicePilot WS API"
+	desc:    "WebSocket 接入"
+	version: "1.0"
+)
+
+type Empty {}

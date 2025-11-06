@@ -1,0 +1,32 @@
+Name: wsservice
+Host: 0.0.0.0
+Port: 3083
+
+WsServiceRpcConf:
+  Etcd:
+    Hosts:
+    - localhost:2379
+    Key: wsservice.rpc
+
+
+Websocket:
+  MaxConnections: 100
+  HeartbeatInterval: 30s
+  ConnectionTimeout: 60s
+  MessageBufferSize: 256
+  ReadBufferSize: 1024
+  WriteBufferSize: 1024
+  MaxMessageSize: 512
+  EnableCompression: true
+  EnableMessageQueue: true
+  MessageQueueSize: 1000
+  EnableCluster: false
+  ClusterNodeID: ""
+  ShardCount: 16
+  BroadcastWorkerCount: 32
+  DropOnFull: true
+  CompressionLevel: -2
+  CloseOnBackpressure: false
+  SendTimeout: 50s
+  EnableGlobalPing: false
+  PingWorkerCount: 8

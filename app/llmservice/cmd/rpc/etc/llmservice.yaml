@@ -1,5 +1,5 @@
 Name: llmservice.rpc
-ListenOn: 0.0.0.0:8080
+ListenOn: 0.0.0.0:4082
 Etcd:
   Hosts:
   - localhost:2379

@@ -1,0 +1,24 @@
+syntax = "v1"
+
+info (
+	title:   "websocket连接管理实例"
+	desc:    "管理websocket连接的创建"
+	author:  "2penheimer"
+	email:   "2603237065@qq.com"
+	version: "v1"
+)
+
+import (
+	"wsservice/wsservice.api"
+)
+
+@server (
+	prefix: ws/v1
+	group:  ws
+)
+service wsservice {
+	@doc "创建 WebSocket 连接"
+	@handler openConnection
+	get /open (Empty) returns (Empty)
+}
+
