@@ -12,8 +12,8 @@ import (
 
 type Config struct {
 	rest.RestConf
-	WsServiceRpcConf zrpc.RpcClientConf
-	Websocket WsConfig
+	ChatroomRpcConf zrpc.RpcClientConf
+	Websocket       WsConfig
 }
 
 type WsConfig struct {

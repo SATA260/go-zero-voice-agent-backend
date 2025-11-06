@@ -1,12 +1,12 @@
-Name: wsservice
+Name: chatroom
 Host: 0.0.0.0
 Port: 3083
 
-WsServiceRpcConf:
+ChatroomRpcConf:
   Etcd:
     Hosts:
     - localhost:2379
-    Key: wsservice.rpc
+    Key: chatroom.rpc
 
 
 Websocket:

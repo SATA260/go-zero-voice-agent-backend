@@ -4,8 +4,8 @@
 package svc
 
 import (
-	"go-zero-voice-agent/app/wsservice/cmd/api/internal/config"
-	"go-zero-voice-agent/app/wsservice/cmd/api/internal/websocket"
+	"go-zero-voice-agent/app/chatroom/cmd/api/internal/config"
+	"go-zero-voice-agent/app/chatroom/cmd/api/internal/websocket"
 )
 
 type ServiceContext struct {

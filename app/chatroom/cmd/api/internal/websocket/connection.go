@@ -2,7 +2,7 @@ package websocket
 
 import (
 	"encoding/json"
-	"go-zero-voice-agent/app/wsservice/cmd/api/internal/types"
+	"go-zero-voice-agent/app/chatroom/cmd/api/internal/types"
 	"go-zero-voice-agent/pkg/uniqueid"
 	"net/http"
 	"time"

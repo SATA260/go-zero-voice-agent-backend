@@ -3,8 +3,8 @@ package websocket
 import (
 	"context"
 	"encoding/json"
-	"go-zero-voice-agent/app/wsservice/cmd/api/internal/config"
-	"go-zero-voice-agent/app/wsservice/cmd/api/internal/types"
+	"go-zero-voice-agent/app/chatroom/cmd/api/internal/config"
+	"go-zero-voice-agent/app/chatroom/cmd/api/internal/types"
 
 	"hash/fnv"
 	"sync"
