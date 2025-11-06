@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	"go-zero-voice-agent/app/llmservice/cmd/rpc/pb"
-	"go-zero-voice-agent/app/llmservice/model"
+	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
+	"go-zero-voice-agent/app/llm/model"
 	"go-zero-voice-agent/app/mqueue/cmd/job/internal/svc"
 	"go-zero-voice-agent/app/mqueue/cmd/job/jobtype"
 	publicconsts "go-zero-voice-agent/pkg/consts"

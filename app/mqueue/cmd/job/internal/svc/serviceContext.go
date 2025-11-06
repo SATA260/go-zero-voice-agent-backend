@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"go-zero-voice-agent/app/llmservice/model"
+	"go-zero-voice-agent/app/llm/model"
 	"go-zero-voice-agent/app/mqueue/cmd/job/internal/config"
 
 	"github.com/hibiken/asynq"
