@@ -6,8 +6,8 @@ package ws
 import (
 	"net/http"
 
-	"go-zero-voice-agent/app/wsservice/cmd/api/internal/logic/ws"
-	"go-zero-voice-agent/app/wsservice/cmd/api/internal/svc"
+	"go-zero-voice-agent/app/chatroom/cmd/api/internal/logic/ws"
+	"go-zero-voice-agent/app/chatroom/cmd/api/internal/svc"
 	"go-zero-voice-agent/pkg/tool"
 )
 

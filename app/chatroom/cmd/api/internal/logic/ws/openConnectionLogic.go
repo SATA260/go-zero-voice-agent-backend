@@ -7,8 +7,8 @@ import (
 	"context"
 	"net/http"
 
-	"go-zero-voice-agent/app/wsservice/cmd/api/internal/svc"
-	"go-zero-voice-agent/app/wsservice/cmd/api/internal/websocket"
+	"go-zero-voice-agent/app/chatroom/cmd/api/internal/svc"
+	"go-zero-voice-agent/app/chatroom/cmd/api/internal/websocket"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

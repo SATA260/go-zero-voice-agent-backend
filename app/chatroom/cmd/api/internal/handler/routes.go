@@ -6,8 +6,8 @@ package handler
 import (
 	"net/http"
 
-	ws "go-zero-voice-agent/app/wsservice/cmd/api/internal/handler/ws"
-	"go-zero-voice-agent/app/wsservice/cmd/api/internal/svc"
+	ws "go-zero-voice-agent/app/chatroom/cmd/api/internal/handler/ws"
+	"go-zero-voice-agent/app/chatroom/cmd/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

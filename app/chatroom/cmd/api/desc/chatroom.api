@@ -9,14 +9,14 @@ info (
 )
 
 import (
-	"wsservice/wsservice.api"
+	"chatroom/chatroom.api"
 )
 
 @server (
 	prefix: ws/v1
 	group:  ws
 )
-service wsservice {
+service chatroom {
 	@doc "创建 WebSocket 连接"
 	@handler openConnection
 	get /open (Empty) returns (Empty)
