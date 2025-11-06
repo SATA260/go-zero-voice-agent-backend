@@ -81,35 +81,23 @@ message ChatMsg {
 }
 
 // 创建聊天请求
-message CreateChatReq {
-    // 大语言模型配置 (必选)
-    LlmConfig llmConfig = 1;
-    // 可供模型调用的工具列表 (可选)
-    repeated Tool tools = 2;
-    // 消息
-    repeated ChatMsg messages = 3;
-}
-
-message CreateChatResp {
-    string id = 1;
-    ChatMsg respMsg = 2;
-}
-
-// 继续上文聊天
-message ContinueChatReq {
-    // 会话的唯一标识
-    string id = 1;
-    // 大语言模型配置 (必选)
+message ChatReq {
+    // 已存在的会话标识，用于继续对话（可选）
+    string conversation_id = 1;
+    // 当前大模型请求配置
     LlmConfig llmConfig = 2;
-    // 可供模型调用的工具列表 (可选)
+    // 模型可用工具定义（可选）
     repeated Tool tools = 3;
+    // 当创建新会话时的上下文消息（继续会话时可选）
+    repeated ChatMsg messages = 4;
+    // 是否允许服务端自动回填历史记录（默认 true）
+    bool auto_fill_history = 5;
 }
 
-message ContinueChatResp {
+message ChatResp {
     string id = 1;
     ChatMsg respMsg = 2;
 }
-
 
 message ChatStreamReq {
     // 已存在的会话标识，用于继续对话（可选）
@@ -259,8 +247,7 @@ message ListConfigResp {
 
 
 service LlmChatService {
-    rpc CreateChat(CreateChatReq) returns (CreateChatResp);
-    rpc ContinueChat(ContinueChatReq) returns (ContinueChatResp);
+    rpc Chat(ChatReq) returns (ChatResp);
     rpc ChatStream(ChatStreamReq) returns (stream ChatStreamResp);
 }
 

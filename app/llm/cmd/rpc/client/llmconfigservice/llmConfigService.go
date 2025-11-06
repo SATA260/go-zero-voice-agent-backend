@@ -16,12 +16,10 @@ import (
 type (
 	ChatConfig       = pb.ChatConfig
 	ChatMsg          = pb.ChatMsg
+	ChatReq          = pb.ChatReq
+	ChatResp         = pb.ChatResp
 	ChatStreamReq    = pb.ChatStreamReq
 	ChatStreamResp   = pb.ChatStreamResp
-	ContinueChatReq  = pb.ContinueChatReq
-	ContinueChatResp = pb.ContinueChatResp
-	CreateChatReq    = pb.CreateChatReq
-	CreateChatResp   = pb.CreateChatResp
 	CreateConfigReq  = pb.CreateConfigReq
 	CreateConfigResp = pb.CreateConfigResp
 	DeleteConfigReq  = pb.DeleteConfigReq
