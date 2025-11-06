@@ -23,14 +23,9 @@ func NewLlmChatServiceServer(svcCtx *svc.ServiceContext) *LlmChatServiceServer {
 	}
 }
 
-func (s *LlmChatServiceServer) CreateChat(ctx context.Context, in *pb.CreateChatReq) (*pb.CreateChatResp, error) {
-	l := llmchatservicelogic.NewCreateChatLogic(ctx, s.svcCtx)
-	return l.CreateChat(in)
-}
-
-func (s *LlmChatServiceServer) ContinueChat(ctx context.Context, in *pb.ContinueChatReq) (*pb.ContinueChatResp, error) {
-	l := llmchatservicelogic.NewContinueChatLogic(ctx, s.svcCtx)
-	return l.ContinueChat(in)
+func (s *LlmChatServiceServer) Chat(ctx context.Context, in *pb.ChatReq) (*pb.ChatResp, error) {
+	l := llmchatservicelogic.NewChatLogic(ctx, s.svcCtx)
+	return l.Chat(in)
 }
 
 func (s *LlmChatServiceServer) ChatStream(in *pb.ChatStreamReq, stream pb.LlmChatService_ChatStreamServer) error {

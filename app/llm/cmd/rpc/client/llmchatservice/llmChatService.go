@@ -16,12 +16,10 @@ import (
 type (
 	ChatConfig       = pb.ChatConfig
 	ChatMsg          = pb.ChatMsg
+	ChatReq          = pb.ChatReq
+	ChatResp         = pb.ChatResp
 	ChatStreamReq    = pb.ChatStreamReq
 	ChatStreamResp   = pb.ChatStreamResp
-	ContinueChatReq  = pb.ContinueChatReq
-	ContinueChatResp = pb.ContinueChatResp
-	CreateChatReq    = pb.CreateChatReq
-	CreateChatResp   = pb.CreateChatResp
 	CreateConfigReq  = pb.CreateConfigReq
 	CreateConfigResp = pb.CreateConfigResp
 	DeleteConfigReq  = pb.DeleteConfigReq
@@ -42,8 +40,7 @@ type (
 	UsageData        = pb.UsageData
 
 	LlmChatService interface {
-		CreateChat(ctx context.Context, in *CreateChatReq, opts ...grpc.CallOption) (*CreateChatResp, error)
-		ContinueChat(ctx context.Context, in *ContinueChatReq, opts ...grpc.CallOption) (*ContinueChatResp, error)
+		Chat(ctx context.Context, in *ChatReq, opts ...grpc.CallOption) (*ChatResp, error)
 		ChatStream(ctx context.Context, in *ChatStreamReq, opts ...grpc.CallOption) (pb.LlmChatService_ChatStreamClient, error)
 	}
 
@@ -58,14 +55,9 @@ func NewLlmChatService(cli zrpc.Client) LlmChatService {
 	}
 }
 
-func (m *defaultLlmChatService) CreateChat(ctx context.Context, in *CreateChatReq, opts ...grpc.CallOption) (*CreateChatResp, error) {
+func (m *defaultLlmChatService) Chat(ctx context.Context, in *ChatReq, opts ...grpc.CallOption) (*ChatResp, error) {
 	client := pb.NewLlmChatServiceClient(m.cli.Conn())
-	return client.CreateChat(ctx, in, opts...)
-}
-
-func (m *defaultLlmChatService) ContinueChat(ctx context.Context, in *ContinueChatReq, opts ...grpc.CallOption) (*ContinueChatResp, error) {
-	client := pb.NewLlmChatServiceClient(m.cli.Conn())
-	return client.ContinueChat(ctx, in, opts...)
+	return client.Chat(ctx, in, opts...)
 }
 
 func (m *defaultLlmChatService) ChatStream(ctx context.Context, in *ChatStreamReq, opts ...grpc.CallOption) (pb.LlmChatService_ChatStreamClient, error) {

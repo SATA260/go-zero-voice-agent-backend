@@ -19,17 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LlmChatService_CreateChat_FullMethodName   = "/pb.LlmChatService/CreateChat"
-	LlmChatService_ContinueChat_FullMethodName = "/pb.LlmChatService/ContinueChat"
-	LlmChatService_ChatStream_FullMethodName   = "/pb.LlmChatService/ChatStream"
+	LlmChatService_Chat_FullMethodName       = "/pb.LlmChatService/Chat"
+	LlmChatService_ChatStream_FullMethodName = "/pb.LlmChatService/ChatStream"
 )
 
 // LlmChatServiceClient is the client API for LlmChatService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LlmChatServiceClient interface {
-	CreateChat(ctx context.Context, in *CreateChatReq, opts ...grpc.CallOption) (*CreateChatResp, error)
-	ContinueChat(ctx context.Context, in *ContinueChatReq, opts ...grpc.CallOption) (*ContinueChatResp, error)
+	Chat(ctx context.Context, in *ChatReq, opts ...grpc.CallOption) (*ChatResp, error)
 	ChatStream(ctx context.Context, in *ChatStreamReq, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ChatStreamResp], error)
 }
 
@@ -41,20 +39,10 @@ func NewLlmChatServiceClient(cc grpc.ClientConnInterface) LlmChatServiceClient {
 	return &llmChatServiceClient{cc}
 }
 
-func (c *llmChatServiceClient) CreateChat(ctx context.Context, in *CreateChatReq, opts ...grpc.CallOption) (*CreateChatResp, error) {
+func (c *llmChatServiceClient) Chat(ctx context.Context, in *ChatReq, opts ...grpc.CallOption) (*ChatResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateChatResp)
-	err := c.cc.Invoke(ctx, LlmChatService_CreateChat_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *llmChatServiceClient) ContinueChat(ctx context.Context, in *ContinueChatReq, opts ...grpc.CallOption) (*ContinueChatResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ContinueChatResp)
-	err := c.cc.Invoke(ctx, LlmChatService_ContinueChat_FullMethodName, in, out, cOpts...)
+	out := new(ChatResp)
+	err := c.cc.Invoke(ctx, LlmChatService_Chat_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -84,8 +72,7 @@ type LlmChatService_ChatStreamClient = grpc.ServerStreamingClient[ChatStreamResp
 // All implementations must embed UnimplementedLlmChatServiceServer
 // for forward compatibility.
 type LlmChatServiceServer interface {
-	CreateChat(context.Context, *CreateChatReq) (*CreateChatResp, error)
-	ContinueChat(context.Context, *ContinueChatReq) (*ContinueChatResp, error)
+	Chat(context.Context, *ChatReq) (*ChatResp, error)
 	ChatStream(*ChatStreamReq, grpc.ServerStreamingServer[ChatStreamResp]) error
 	mustEmbedUnimplementedLlmChatServiceServer()
 }
@@ -97,11 +84,8 @@ type LlmChatServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedLlmChatServiceServer struct{}
 
-func (UnimplementedLlmChatServiceServer) CreateChat(context.Context, *CreateChatReq) (*CreateChatResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateChat not implemented")
-}
-func (UnimplementedLlmChatServiceServer) ContinueChat(context.Context, *ContinueChatReq) (*ContinueChatResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContinueChat not implemented")
+func (UnimplementedLlmChatServiceServer) Chat(context.Context, *ChatReq) (*ChatResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Chat not implemented")
 }
 func (UnimplementedLlmChatServiceServer) ChatStream(*ChatStreamReq, grpc.ServerStreamingServer[ChatStreamResp]) error {
 	return status.Errorf(codes.Unimplemented, "method ChatStream not implemented")
@@ -127,38 +111,20 @@ func RegisterLlmChatServiceServer(s grpc.ServiceRegistrar, srv LlmChatServiceSer
 	s.RegisterService(&LlmChatService_ServiceDesc, srv)
 }
 
-func _LlmChatService_CreateChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateChatReq)
+func _LlmChatService_Chat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChatReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LlmChatServiceServer).CreateChat(ctx, in)
+		return srv.(LlmChatServiceServer).Chat(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LlmChatService_CreateChat_FullMethodName,
+		FullMethod: LlmChatService_Chat_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LlmChatServiceServer).CreateChat(ctx, req.(*CreateChatReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _LlmChatService_ContinueChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContinueChatReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LlmChatServiceServer).ContinueChat(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LlmChatService_ContinueChat_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LlmChatServiceServer).ContinueChat(ctx, req.(*ContinueChatReq))
+		return srv.(LlmChatServiceServer).Chat(ctx, req.(*ChatReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -182,12 +148,8 @@ var LlmChatService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*LlmChatServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateChat",
-			Handler:    _LlmChatService_CreateChat_Handler,
-		},
-		{
-			MethodName: "ContinueChat",
-			Handler:    _LlmChatService_ContinueChat_Handler,
+			MethodName: "Chat",
+			Handler:    _LlmChatService_Chat_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
