@@ -1804,17 +1804,85 @@ func (x *GetConfigResp) GetConfig() *ChatConfig {
 }
 
 // List
+type ListConfigFilter struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserId        int64                  `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListConfigFilter) Reset() {
+	*x = ListConfigFilter{}
+	mi := &file_llmservice_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListConfigFilter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListConfigFilter) ProtoMessage() {}
+
+func (x *ListConfigFilter) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListConfigFilter.ProtoReflect.Descriptor instead.
+func (*ListConfigFilter) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *ListConfigFilter) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *ListConfigFilter) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *ListConfigFilter) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ListConfigFilter) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
 type ListConfigReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PageQuery     *PageQuery             `protobuf:"bytes,1,opt,name=pageQuery,proto3" json:"pageQuery,omitempty"`
-	QueryWrapper  *ChatConfig            `protobuf:"bytes,2,opt,name=queryWrapper,proto3" json:"queryWrapper,omitempty"`
+	Filter        *ListConfigFilter      `protobuf:"bytes,2,opt,name=filter,proto3" json:"filter,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListConfigReq) Reset() {
 	*x = ListConfigReq{}
-	mi := &file_llmservice_proto_msgTypes[22]
+	mi := &file_llmservice_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1826,7 +1894,7 @@ func (x *ListConfigReq) String() string {
 func (*ListConfigReq) ProtoMessage() {}
 
 func (x *ListConfigReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[22]
+	mi := &file_llmservice_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1839,7 +1907,7 @@ func (x *ListConfigReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListConfigReq.ProtoReflect.Descriptor instead.
 func (*ListConfigReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{22}
+	return file_llmservice_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *ListConfigReq) GetPageQuery() *PageQuery {
@@ -1849,9 +1917,9 @@ func (x *ListConfigReq) GetPageQuery() *PageQuery {
 	return nil
 }
 
-func (x *ListConfigReq) GetQueryWrapper() *ChatConfig {
+func (x *ListConfigReq) GetFilter() *ListConfigFilter {
 	if x != nil {
-		return x.QueryWrapper
+		return x.Filter
 	}
 	return nil
 }
@@ -1866,7 +1934,7 @@ type ListConfigResp struct {
 
 func (x *ListConfigResp) Reset() {
 	*x = ListConfigResp{}
-	mi := &file_llmservice_proto_msgTypes[23]
+	mi := &file_llmservice_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1878,7 +1946,7 @@ func (x *ListConfigResp) String() string {
 func (*ListConfigResp) ProtoMessage() {}
 
 func (x *ListConfigResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[23]
+	mi := &file_llmservice_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1891,7 +1959,7 @@ func (x *ListConfigResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListConfigResp.ProtoReflect.Descriptor instead.
 func (*ListConfigResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{23}
+	return file_llmservice_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *ListConfigResp) GetTotal() int64 {
@@ -2058,10 +2126,15 @@ const file_llmservice_proto_rawDesc = "" +
 	"\fGetConfigReq\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"7\n" +
 	"\rGetConfigResp\x12&\n" +
-	"\x06config\x18\x01 \x01(\v2\x0e.pb.ChatConfigR\x06config\"p\n" +
+	"\x06config\x18\x01 \x01(\v2\x0e.pb.ChatConfigR\x06config\"q\n" +
+	"\x10ListConfigFilter\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\"j\n" +
 	"\rListConfigReq\x12+\n" +
-	"\tpageQuery\x18\x01 \x01(\v2\r.pb.PageQueryR\tpageQuery\x122\n" +
-	"\fqueryWrapper\x18\x02 \x01(\v2\x0e.pb.ChatConfigR\fqueryWrapper\"P\n" +
+	"\tpageQuery\x18\x01 \x01(\v2\r.pb.PageQueryR\tpageQuery\x12,\n" +
+	"\x06filter\x18\x02 \x01(\v2\x14.pb.ListConfigFilterR\x06filter\"P\n" +
 	"\x0eListConfigResp\x12\x14\n" +
 	"\x05total\x18\x01 \x01(\x03R\x05total\x12(\n" +
 	"\aconfigs\x18\x02 \x03(\v2\x0e.pb.ChatConfigR\aconfigs2j\n" +
@@ -2089,7 +2162,7 @@ func file_llmservice_proto_rawDescGZIP() []byte {
 	return file_llmservice_proto_rawDescData
 }
 
-var file_llmservice_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
+var file_llmservice_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_llmservice_proto_goTypes = []any{
 	(*PageQuery)(nil),        // 0: pb.PageQuery
 	(*LlmConfig)(nil),        // 1: pb.LlmConfig
@@ -2113,14 +2186,15 @@ var file_llmservice_proto_goTypes = []any{
 	(*UpdateConfigResp)(nil), // 19: pb.UpdateConfigResp
 	(*GetConfigReq)(nil),     // 20: pb.GetConfigReq
 	(*GetConfigResp)(nil),    // 21: pb.GetConfigResp
-	(*ListConfigReq)(nil),    // 22: pb.ListConfigReq
-	(*ListConfigResp)(nil),   // 23: pb.ListConfigResp
-	(*structpb.Struct)(nil),  // 24: google.protobuf.Struct
+	(*ListConfigFilter)(nil), // 22: pb.ListConfigFilter
+	(*ListConfigReq)(nil),    // 23: pb.ListConfigReq
+	(*ListConfigResp)(nil),   // 24: pb.ListConfigResp
+	(*structpb.Struct)(nil),  // 25: google.protobuf.Struct
 }
 var file_llmservice_proto_depIdxs = []int32{
 	2,  // 0: pb.LlmConfig.stream_options:type_name -> pb.StreamOptions
 	4,  // 1: pb.Tool.function:type_name -> pb.Function
-	24, // 2: pb.Function.parameters:type_name -> google.protobuf.Struct
+	25, // 2: pb.Function.parameters:type_name -> google.protobuf.Struct
 	1,  // 3: pb.ChatReq.llmConfig:type_name -> pb.LlmConfig
 	3,  // 4: pb.ChatReq.tools:type_name -> pb.Tool
 	5,  // 5: pb.ChatReq.messages:type_name -> pb.ChatMsg
@@ -2133,7 +2207,7 @@ var file_llmservice_proto_depIdxs = []int32{
 	11, // 12: pb.ChatStreamResp.usage:type_name -> pb.UsageData
 	13, // 13: pb.GetConfigResp.config:type_name -> pb.ChatConfig
 	0,  // 14: pb.ListConfigReq.pageQuery:type_name -> pb.PageQuery
-	13, // 15: pb.ListConfigReq.queryWrapper:type_name -> pb.ChatConfig
+	22, // 15: pb.ListConfigReq.filter:type_name -> pb.ListConfigFilter
 	13, // 16: pb.ListConfigResp.configs:type_name -> pb.ChatConfig
 	6,  // 17: pb.LlmChatService.Chat:input_type -> pb.ChatReq
 	8,  // 18: pb.LlmChatService.ChatStream:input_type -> pb.ChatStreamReq
@@ -2141,14 +2215,14 @@ var file_llmservice_proto_depIdxs = []int32{
 	16, // 20: pb.LlmConfigService.DeleteConfig:input_type -> pb.DeleteConfigReq
 	18, // 21: pb.LlmConfigService.UpdateConfig:input_type -> pb.UpdateConfigReq
 	20, // 22: pb.LlmConfigService.GetConfig:input_type -> pb.GetConfigReq
-	22, // 23: pb.LlmConfigService.ListConfig:input_type -> pb.ListConfigReq
+	23, // 23: pb.LlmConfigService.ListConfig:input_type -> pb.ListConfigReq
 	7,  // 24: pb.LlmChatService.Chat:output_type -> pb.ChatResp
 	12, // 25: pb.LlmChatService.ChatStream:output_type -> pb.ChatStreamResp
 	15, // 26: pb.LlmConfigService.CreateConfig:output_type -> pb.CreateConfigResp
 	17, // 27: pb.LlmConfigService.DeleteConfig:output_type -> pb.DeleteConfigResp
 	19, // 28: pb.LlmConfigService.UpdateConfig:output_type -> pb.UpdateConfigResp
 	21, // 29: pb.LlmConfigService.GetConfig:output_type -> pb.GetConfigResp
-	23, // 30: pb.LlmConfigService.ListConfig:output_type -> pb.ListConfigResp
+	24, // 30: pb.LlmConfigService.ListConfig:output_type -> pb.ListConfigResp
 	24, // [24:31] is the sub-list for method output_type
 	17, // [17:24] is the sub-list for method input_type
 	17, // [17:17] is the sub-list for extension type_name
@@ -2173,7 +2247,7 @@ func file_llmservice_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_llmservice_proto_rawDesc), len(file_llmservice_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   24,
+			NumMessages:   25,
 			NumExtensions: 0,
 			NumServices:   2,
 		},

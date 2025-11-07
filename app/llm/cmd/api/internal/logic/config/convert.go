@@ -73,7 +73,7 @@ func toRpcListConfigReq(req *types.ListMyConfigReq) *llmconfigservice.ListConfig
 
 	return &llmconfigservice.ListConfigReq{
 		PageQuery:    toRpcPageQuery(req.PageQuery),
-		QueryWrapper: toRpcChatConfigFilter(req.QueryFilter),
+		Filter: toRpcChatConfigFilter(req.Filter),
 	}
 }
 
@@ -85,26 +85,12 @@ func toRpcPageQuery(query types.PageQuery) *llmconfigservice.PageQuery {
 	}
 }
 
-func toRpcChatConfigFilter(filter types.ChatConfig) *llmconfigservice.ChatConfig {
-	return &llmconfigservice.ChatConfig{
+func toRpcChatConfigFilter(filter types.ChatConfigQueryFilter) *llmconfigservice.ListConfigFilter {
+	return &llmconfigservice.ListConfigFilter{
 		Id:                filter.Id,
 		Name:              filter.Name,
 		Description:       filter.Description,
 		UserId:            filter.UserId,
-		BaseUrl:           filter.BaseUrl,
-		ApiKey:            filter.ApiKey,
-		Model:             filter.Model,
-		Stream:            filter.Stream,
-		Temperature:       filter.Temperature,
-		TopP:              filter.TopP,
-		TopK:              filter.TopK,
-		EnableThinking:    filter.EnableThinking,
-		RepetitionPenalty: filter.RepetitionPenalty,
-		PresencePenalty:   filter.PresencePenalty,
-		MaxTokens:         filter.MaxTokens,
-		Seed:              filter.Seed,
-		EnableSearch:      filter.EnableSearch,
-		ContextLength:     filter.ContextLength,
 	}
 }
 

@@ -37,7 +37,7 @@ func (l *UpdateConfigLogic) UpdateConfig(in *pb.UpdateConfigReq) (*pb.UpdateConf
 
     chatConfig := updateConfigReqToModel(in)
     // err = l.svcCtx.ChatConfigModel.Update(l.ctx, chatConfig)
-	_, err = l.svcCtx.ChatConfigModel.Update(l.ctx, nil, chatConfig)
+	err = l.svcCtx.ChatConfigModel.UpdateWithVersion(l.ctx, nil, chatConfig)
     if err != nil {
         return nil, errors.Wrapf(err, "Update chat config failed. req: %+v", in)
     }

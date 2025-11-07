@@ -5,7 +5,6 @@ package config
 
 import (
 	"net/http"
-	"strconv"
 
 	"go-zero-voice-agent/app/llm/cmd/api/internal/logic/config"
 	"go-zero-voice-agent/app/llm/cmd/api/internal/svc"
@@ -24,17 +23,12 @@ func ListMyConfigHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		userIdStr, err := tool.GetUserIdFromHeader(r)
+		userId, err := tool.GetUserIdInt64FromHeader(r)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
-		userId, err := strconv.ParseInt(userIdStr, 10, 64)
-		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
-			return
-		}
-		req.QueryFilter.UserId = userId
+		req.Filter.UserId = userId
 
 		l := config.NewListMyConfigLogic(r.Context(), svcCtx)
 		resp, err := l.ListMyConfig(&req)

@@ -236,9 +236,15 @@ message GetConfigResp {
 }
 
 // List
+message ListConfigFilter {
+    int64 id = 1;
+    int64 user_id = 2;
+    string name = 3;
+    string description = 4;
+}
 message ListConfigReq {
     PageQuery pageQuery = 1;
-    ChatConfig queryWrapper = 2;
+    ListConfigFilter filter = 2;
 }
 message ListConfigResp {
     int64 total = 1;
