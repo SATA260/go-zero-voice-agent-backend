@@ -9,6 +9,7 @@ import (
 	"go-zero-voice-agent/app/llm/cmd/api/internal/svc"
 	"go-zero-voice-agent/app/llm/cmd/api/internal/types"
 
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -31,6 +32,10 @@ func (l *GetConfigLogic) GetConfig(req *types.GetConfigReq) (resp *types.GetConf
 	configResp, err := l.svcCtx.LlmConfigRpc.GetConfig(l.ctx, toRpcGetConfigReq(req.Id))
 	if err != nil {
 		return nil, err
+	}
+
+	if configResp.Config.UserId != req.UserId {
+		return nil, errors.New("Not authorized to access this config")
 	}
 
 	return &types.GetConfigResp{Config: toTypesChatConfig(configResp.Config)}, nil

@@ -24,24 +24,31 @@ type ChatConfig struct {
 	ContextLength     int64   `json:"contextLength"`
 }
 
+type ChatConfigQueryFilter struct {
+	Id          int64  `json:"id,optional"`
+	Name        string `json:"name,optional"`
+	Description string `json:"description,optional"`
+	UserId      int64  `json:"userId,optional"`
+}
+
 type CreateConfigReq struct {
-	Name              string  `json:"name"`
-	Description       string  `json:"description"`
-	UserId            int64   `json:"userId"`
-	BaseUrl           string  `json:"baseUrl"`
-	ApiKey            string  `json:"apiKey"`
-	Model             string  `json:"model"`
-	Stream            int64   `json:"stream"`
-	Temperature       float64 `json:"temperature"`
-	TopP              float64 `json:"topP"`
-	TopK              int64   `json:"topK"`
-	EnableThinking    int64   `json:"enableThinking"`
-	RepetitionPenalty float64 `json:"repetitionPenalty"`
-	PresencePenalty   float64 `json:"presencePenalty"`
-	MaxTokens         int64   `json:"maxTokens"`
-	Seed              int64   `json:"seed"`
-	EnableSearch      int64   `json:"enableSearch"`
-	ContextLength     int64   `json:"contextLength"`
+	Name              string  `json:"name,optional"`
+	Description       string  `json:"description,optional"`
+	UserId            int64   `json:"userId,optional"`
+	BaseUrl           string  `json:"baseUrl,optional"`
+	ApiKey            string  `json:"apiKey,optional"`
+	Model             string  `json:"model,optional"`
+	Stream            int64   `json:"stream,optional"`
+	Temperature       float64 `json:"temperature,optional"`
+	TopP              float64 `json:"topP,optional"`
+	TopK              int64   `json:"topK,optional"`
+	EnableThinking    int64   `json:"enableThinking,optional"`
+	RepetitionPenalty float64 `json:"repetitionPenalty,optional"`
+	PresencePenalty   float64 `json:"presencePenalty,optional"`
+	MaxTokens         int64   `json:"maxTokens,optional"`
+	Seed              int64   `json:"seed,optional"`
+	EnableSearch      int64   `json:"enableSearch,optional"`
+	ContextLength     int64   `json:"contextLength,optional"`
 }
 
 type CreateConfigResp struct {
@@ -49,14 +56,16 @@ type CreateConfigResp struct {
 }
 
 type DeleteConfigReq struct {
-	Id int64 `path:"id"`
+	Id     int64 `path:"id"`
+	UserId int64 `json:"userId"`
 }
 
 type DeleteConfigResp struct {
 }
 
 type GetConfigReq struct {
-	Id int64 `path:"id"`
+	Id     int64 `path:"id"`
+	UserId int64 `json:"userId,optional"`
 }
 
 type GetConfigResp struct {
@@ -64,8 +73,8 @@ type GetConfigResp struct {
 }
 
 type ListMyConfigReq struct {
-	PageQuery   PageQuery  `json:"pageQuery"`
-	QueryFilter ChatConfig `json:"queryFilter"`
+	PageQuery PageQuery             `json:"pageQuery"`
+	Filter    ChatConfigQueryFilter `json:"filter",optional`
 }
 
 type ListMyConfigResp struct {
@@ -81,23 +90,23 @@ type PageQuery struct {
 
 type UpdateConfigReq struct {
 	Id                int64   `path:"id"`
-	Name              string  `json:"name"`
-	Description       string  `json:"description"`
-	UserId            int64   `json:"userId"`
-	BaseUrl           string  `json:"baseUrl"`
-	ApiKey            string  `json:"apiKey"`
-	Model             string  `json:"model"`
-	Stream            int64   `json:"stream"`
-	Temperature       float64 `json:"temperature"`
-	TopP              float64 `json:"topP"`
-	TopK              int64   `json:"topK"`
-	EnableThinking    int64   `json:"enableThinking"`
-	RepetitionPenalty float64 `json:"repetitionPenalty"`
-	PresencePenalty   float64 `json:"presencePenalty"`
-	MaxTokens         int64   `json:"maxTokens"`
-	Seed              int64   `json:"seed"`
-	EnableSearch      int64   `json:"enableSearch"`
-	ContextLength     int64   `json:"contextLength"`
+	Name              string  `json:"name,optional"`
+	Description       string  `json:"description,optional"`
+	UserId            int64   `json:"userId,optional"`
+	BaseUrl           string  `json:"baseUrl,optional"`
+	ApiKey            string  `json:"apiKey,optional"`
+	Model             string  `json:"model,optional"`
+	Stream            int64   `json:"stream,optional"`
+	Temperature       float64 `json:"temperature,optional"`
+	TopP              float64 `json:"topP,optional"`
+	TopK              int64   `json:"topK,optional"`
+	EnableThinking    int64   `json:"enableThinking,optional"`
+	RepetitionPenalty float64 `json:"repetitionPenalty,optional"`
+	PresencePenalty   float64 `json:"presencePenalty,optional"`
+	MaxTokens         int64   `json:"maxTokens,optional"`
+	Seed              int64   `json:"seed,optional"`
+	EnableSearch      int64   `json:"enableSearch,optional"`
+	ContextLength     int64   `json:"contextLength,optional"`
 }
 
 type UpdateConfigResp struct {

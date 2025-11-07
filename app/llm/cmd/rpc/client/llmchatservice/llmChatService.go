@@ -27,6 +27,7 @@ type (
 	Function         = pb.Function
 	GetConfigReq     = pb.GetConfigReq
 	GetConfigResp    = pb.GetConfigResp
+	ListConfigFilter = pb.ListConfigFilter
 	ListConfigReq    = pb.ListConfigReq
 	ListConfigResp   = pb.ListConfigResp
 	LlmConfig        = pb.LlmConfig

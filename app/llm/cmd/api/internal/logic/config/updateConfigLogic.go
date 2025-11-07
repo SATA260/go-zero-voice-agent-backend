@@ -8,7 +8,9 @@ import (
 
 	"go-zero-voice-agent/app/llm/cmd/api/internal/svc"
 	"go-zero-voice-agent/app/llm/cmd/api/internal/types"
+	"go-zero-voice-agent/app/llm/cmd/rpc/client/llmchatservice"
 
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -28,6 +30,12 @@ func NewUpdateConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Upda
 }
 
 func (l *UpdateConfigLogic) UpdateConfig(req *types.UpdateConfigReq) (resp *types.UpdateConfigResp, err error) {
+	if rpcResp, err := l.svcCtx.LlmConfigRpc.GetConfig(l.ctx, &llmchatservice.GetConfigReq{Id: req.Id}); err != nil {
+		return nil, err
+	} else if rpcResp.Config.UserId != req.UserId {
+		return nil, errors.New("Not authorized to update this config")
+	}
+
 	if _, err = l.svcCtx.LlmConfigRpc.UpdateConfig(l.ctx, toRpcUpdateConfigReq(req)); err != nil {
 		return nil, err
 	}
