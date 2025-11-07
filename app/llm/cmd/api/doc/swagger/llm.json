@@ -1,0 +1,605 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "title": "llm实例",
+    "version": "v1"
+  },
+  "basePath": "/",
+  "paths": {
+    "/llm/v1/config/create": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "创建配置",
+        "operationId": "configCreateConfig",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "description",
+                "userId",
+                "baseUrl",
+                "apiKey",
+                "model",
+                "stream",
+                "temperature",
+                "topP",
+                "topK",
+                "enableThinking",
+                "repetitionPenalty",
+                "presencePenalty",
+                "maxTokens",
+                "seed",
+                "enableSearch",
+                "contextLength"
+              ],
+              "properties": {
+                "apiKey": {
+                  "type": "string"
+                },
+                "baseUrl": {
+                  "type": "string"
+                },
+                "contextLength": {
+                  "type": "integer"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "enableSearch": {
+                  "type": "integer"
+                },
+                "enableThinking": {
+                  "type": "integer"
+                },
+                "maxTokens": {
+                  "type": "integer"
+                },
+                "model": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "presencePenalty": {
+                  "type": "number"
+                },
+                "repetitionPenalty": {
+                  "type": "number"
+                },
+                "seed": {
+                  "type": "integer"
+                },
+                "stream": {
+                  "type": "integer"
+                },
+                "temperature": {
+                  "type": "number"
+                },
+                "topK": {
+                  "type": "integer"
+                },
+                "topP": {
+                  "type": "number"
+                },
+                "userId": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/llm/v1/config/list": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "分页查询我的配置",
+        "operationId": "configListMyConfig",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "pageQuery",
+                "queryFilter"
+              ],
+              "properties": {
+                "pageQuery": {
+                  "type": "object",
+                  "required": [
+                    "page",
+                    "pageSize",
+                    "orderBy"
+                  ],
+                  "properties": {
+                    "orderBy": {
+                      "type": "string"
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "queryFilter": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "userId",
+                    "baseUrl",
+                    "apiKey",
+                    "model",
+                    "stream",
+                    "temperature",
+                    "topP",
+                    "topK",
+                    "enableThinking",
+                    "repetitionPenalty",
+                    "presencePenalty",
+                    "maxTokens",
+                    "seed",
+                    "enableSearch",
+                    "contextLength"
+                  ],
+                  "properties": {
+                    "apiKey": {
+                      "type": "string"
+                    },
+                    "baseUrl": {
+                      "type": "string"
+                    },
+                    "contextLength": {
+                      "type": "integer"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "enableSearch": {
+                      "type": "integer"
+                    },
+                    "enableThinking": {
+                      "type": "integer"
+                    },
+                    "id": {
+                      "type": "integer"
+                    },
+                    "maxTokens": {
+                      "type": "integer"
+                    },
+                    "model": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "presencePenalty": {
+                      "type": "number"
+                    },
+                    "repetitionPenalty": {
+                      "type": "number"
+                    },
+                    "seed": {
+                      "type": "integer"
+                    },
+                    "stream": {
+                      "type": "integer"
+                    },
+                    "temperature": {
+                      "type": "number"
+                    },
+                    "topK": {
+                      "type": "integer"
+                    },
+                    "topP": {
+                      "type": "number"
+                    },
+                    "userId": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "configs": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "name",
+                      "description",
+                      "userId",
+                      "baseUrl",
+                      "apiKey",
+                      "model",
+                      "stream",
+                      "temperature",
+                      "topP",
+                      "topK",
+                      "enableThinking",
+                      "repetitionPenalty",
+                      "presencePenalty",
+                      "maxTokens",
+                      "seed",
+                      "enableSearch",
+                      "contextLength"
+                    ],
+                    "properties": {
+                      "apiKey": {
+                        "type": "string"
+                      },
+                      "baseUrl": {
+                        "type": "string"
+                      },
+                      "contextLength": {
+                        "type": "integer"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "enableSearch": {
+                        "type": "integer"
+                      },
+                      "enableThinking": {
+                        "type": "integer"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "maxTokens": {
+                        "type": "integer"
+                      },
+                      "model": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "presencePenalty": {
+                        "type": "number"
+                      },
+                      "repetitionPenalty": {
+                        "type": "number"
+                      },
+                      "seed": {
+                        "type": "integer"
+                      },
+                      "stream": {
+                        "type": "integer"
+                      },
+                      "temperature": {
+                        "type": "number"
+                      },
+                      "topK": {
+                        "type": "integer"
+                      },
+                      "topP": {
+                        "type": "number"
+                      },
+                      "userId": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/llm/v1/config/{id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "获取配置详情",
+        "operationId": "configGetConfig",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "config": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "userId",
+                    "baseUrl",
+                    "apiKey",
+                    "model",
+                    "stream",
+                    "temperature",
+                    "topP",
+                    "topK",
+                    "enableThinking",
+                    "repetitionPenalty",
+                    "presencePenalty",
+                    "maxTokens",
+                    "seed",
+                    "enableSearch",
+                    "contextLength"
+                  ],
+                  "properties": {
+                    "apiKey": {
+                      "type": "string"
+                    },
+                    "baseUrl": {
+                      "type": "string"
+                    },
+                    "contextLength": {
+                      "type": "integer"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "enableSearch": {
+                      "type": "integer"
+                    },
+                    "enableThinking": {
+                      "type": "integer"
+                    },
+                    "id": {
+                      "type": "integer"
+                    },
+                    "maxTokens": {
+                      "type": "integer"
+                    },
+                    "model": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "presencePenalty": {
+                      "type": "number"
+                    },
+                    "repetitionPenalty": {
+                      "type": "number"
+                    },
+                    "seed": {
+                      "type": "integer"
+                    },
+                    "stream": {
+                      "type": "integer"
+                    },
+                    "temperature": {
+                      "type": "number"
+                    },
+                    "topK": {
+                      "type": "integer"
+                    },
+                    "topP": {
+                      "type": "number"
+                    },
+                    "userId": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "更新配置",
+        "operationId": "configUpdateConfig",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "description",
+                "userId",
+                "baseUrl",
+                "apiKey",
+                "model",
+                "stream",
+                "temperature",
+                "topP",
+                "topK",
+                "enableThinking",
+                "repetitionPenalty",
+                "presencePenalty",
+                "maxTokens",
+                "seed",
+                "enableSearch",
+                "contextLength"
+              ],
+              "properties": {
+                "apiKey": {
+                  "type": "string"
+                },
+                "baseUrl": {
+                  "type": "string"
+                },
+                "contextLength": {
+                  "type": "integer"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "enableSearch": {
+                  "type": "integer"
+                },
+                "enableThinking": {
+                  "type": "integer"
+                },
+                "maxTokens": {
+                  "type": "integer"
+                },
+                "model": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "presencePenalty": {
+                  "type": "number"
+                },
+                "repetitionPenalty": {
+                  "type": "number"
+                },
+                "seed": {
+                  "type": "integer"
+                },
+                "stream": {
+                  "type": "integer"
+                },
+                "temperature": {
+                  "type": "number"
+                },
+                "topK": {
+                  "type": "integer"
+                },
+                "topP": {
+                  "type": "number"
+                },
+                "userId": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "delete": {
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "删除配置",
+        "operationId": "configDeleteConfig",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-date": "2025-11-07 16:58:12",
+  "x-description": "This is a goctl generated swagger file.",
+  "x-github": "https://github.com/zeromicro/go-zero",
+  "x-go-zero-doc": "https://go-zero.dev/",
+  "x-goctl-version": "1.9.2"
+}
