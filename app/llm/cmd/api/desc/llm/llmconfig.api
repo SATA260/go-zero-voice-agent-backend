@@ -1,0 +1,112 @@
+syntax = "v1"
+
+info (
+  title:  "LLM配置接口"
+  desc:   "LLM配置增删改查"
+  author: "auto"
+)
+
+type (
+  PageQuery {
+    Page     int64  `json:"page"`
+    PageSize int64  `json:"pageSize"`
+    OrderBy  string `json:"orderBy"`
+  }
+
+  ChatConfig {
+    Id               int64   `json:"id"`
+    Name             string  `json:"name"`
+    Description      string  `json:"description"`
+    UserId           int64   `json:"userId"`
+    BaseUrl          string  `json:"baseUrl"`
+    ApiKey           string  `json:"apiKey"`
+    Model            string  `json:"model"`
+    Stream           int64   `json:"stream"`
+    Temperature      float64  `json:"temperature"`
+    TopP             float64  `json:"topP"`
+    TopK             int64   `json:"topK"`
+    EnableThinking   int64   `json:"enableThinking"`
+    RepetitionPenalty float64 `json:"repetitionPenalty"`
+    PresencePenalty  float64  `json:"presencePenalty"`
+    MaxTokens        int64   `json:"maxTokens"`
+    Seed             int64   `json:"seed"`
+    EnableSearch     int64   `json:"enableSearch"`
+    ContextLength    int64   `json:"contextLength"`
+  }
+)
+
+type (
+  CreateConfigReq {
+    Name              string  `json:"name"`
+    Description       string  `json:"description"`
+    UserId            int64   `json:"userId"`
+    BaseUrl           string  `json:"baseUrl"`
+    ApiKey            string  `json:"apiKey"`
+    Model             string  `json:"model"`
+    Stream            int64   `json:"stream"`
+    Temperature       float64  `json:"temperature"`
+    TopP              float64  `json:"topP"`
+    TopK              int64   `json:"topK"`
+    EnableThinking    int64   `json:"enableThinking"`
+    RepetitionPenalty float64  `json:"repetitionPenalty"`
+    PresencePenalty   float64  `json:"presencePenalty"`
+    MaxTokens         int64   `json:"maxTokens"`
+    Seed              int64   `json:"seed"`
+    EnableSearch      int64   `json:"enableSearch"`
+    ContextLength     int64   `json:"contextLength"`
+  }
+  CreateConfigResp {
+    Id int64 `json:"id"`
+  }
+)
+
+type (
+  DeleteConfigReq {
+    Id int64 `path:"id"`
+  }
+  DeleteConfigResp {}
+)
+
+type (
+  UpdateConfigReq {
+    Id               int64   `path:"id"`
+    Name             string  `json:"name"`
+    Description      string  `json:"description"`
+    UserId           int64   `json:"userId"`
+    BaseUrl          string  `json:"baseUrl"`
+    ApiKey           string  `json:"apiKey"`
+    Model            string  `json:"model"`
+    Stream           int64   `json:"stream"`
+    Temperature      float64  `json:"temperature"`
+    TopP             float64  `json:"topP"`
+    TopK             int64   `json:"topK"`
+    EnableThinking   int64   `json:"enableThinking"`
+    RepetitionPenalty float64 `json:"repetitionPenalty"`
+    PresencePenalty  float64  `json:"presencePenalty"`
+    MaxTokens        int64   `json:"maxTokens"`
+    Seed             int64   `json:"seed"`
+    EnableSearch     int64   `json:"enableSearch"`
+    ContextLength    int64   `json:"contextLength"`
+  }
+  UpdateConfigResp {}
+)
+
+type (
+  GetConfigReq {
+    Id int64 `path:"id"`
+  }
+  GetConfigResp {
+    Config ChatConfig `json:"config"`
+  }
+)
+
+type (
+  ListMyConfigReq {
+    PageQuery   PageQuery   `json:"pageQuery"`
+    QueryFilter ChatConfig  `json:"queryFilter"`
+  }
+  ListMyConfigResp {
+    Total   int64        `json:"total"`
+    Configs []ChatConfig `json:"configs"`
+  }
+)

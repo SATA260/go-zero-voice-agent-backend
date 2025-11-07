@@ -1,0 +1,32 @@
+// Code scaffolded by goctl. Safe to edit.
+// goctl 1.9.2
+
+package config
+
+import (
+	"net/http"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
+	"go-zero-voice-agent/app/llm/cmd/api/internal/logic/config"
+	"go-zero-voice-agent/app/llm/cmd/api/internal/svc"
+	"go-zero-voice-agent/app/llm/cmd/api/internal/types"
+)
+
+// 更新配置
+func UpdateConfigHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req types.UpdateConfigReq
+		if err := httpx.Parse(r, &req); err != nil {
+			httpx.ErrorCtx(r.Context(), w, err)
+			return
+		}
+
+		l := config.NewUpdateConfigLogic(r.Context(), svcCtx)
+		resp, err := l.UpdateConfig(&req)
+		if err != nil {
+			httpx.ErrorCtx(r.Context(), w, err)
+		} else {
+			httpx.OkJsonCtx(r.Context(), w, resp)
+		}
+	}
+}
