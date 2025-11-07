@@ -1,0 +1,9 @@
+Name: llm
+Host: 0.0.0.0
+Port: 3082
+
+LlmRpcConf:
+  Etcd:
+    Hosts:
+    - localhost:2379
+    Key: llmservice.rpc

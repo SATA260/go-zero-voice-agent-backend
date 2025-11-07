@@ -1,0 +1,41 @@
+syntax = "v1"
+
+info (
+	title:   "llm实例"
+	desc:    "llm配置管理"
+	author:  "2penheimer"
+	email:   "2603237065@qq.com"
+	version: "v1"
+)
+
+import (
+	"llm/llmconfig.api"
+)
+
+// Server & Service
+@server (
+	group:  config
+	prefix: llm/v1/config
+)
+service llm {
+	@doc "创建配置"
+	@handler CreateConfig
+	post /create (CreateConfigReq) returns (CreateConfigResp)
+
+	@doc "删除配置"
+	@handler DeleteConfig
+	delete /:id (DeleteConfigReq) returns (DeleteConfigResp)
+
+	@doc "更新配置"
+	@handler UpdateConfig
+	put /:id (UpdateConfigReq) returns (UpdateConfigResp)
+
+	@doc "获取配置详情"
+	@handler GetConfig
+	get /:id (GetConfigReq) returns (GetConfigResp)
+
+	@doc "分页查询我的配置"
+	@handler ListMyConfig
+	post /list (ListMyConfigReq) returns (ListMyConfigResp)
+}
+
