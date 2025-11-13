@@ -30,5 +30,4 @@ func NewOpenConnectionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Op
 
 func (l *OpenConnectionLogic) OpenConnection(w http.ResponseWriter, r *http.Request, userId string) {
 	websocket.NewConnection(l.svcCtx.WsManager, w, r, userId)
-	return
 }
