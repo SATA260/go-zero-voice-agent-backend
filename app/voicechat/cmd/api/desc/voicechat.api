@@ -1,0 +1,24 @@
+syntax = "v1"
+
+info (
+	title:   "webrtc通信"
+	desc:    "通过websocket转发peer信息,帮助建立webrtc连接。进行大模型的调用。"
+	author:  "2penheimer"
+	email:   "2603237065@qq.com"
+	version: "v1"
+)
+
+import (
+	"voicechat/voicechat.api"
+)
+
+@server (
+	prefix: voice/v1
+	group:  voice
+)
+service voicechat {
+	@doc "创建websocket连接,然后帮助建立webrtc连接"
+	@handler start
+	get /start (StartVoiceRequest) returns (Empty)
+}
+

@@ -1,0 +1,13 @@
+Name: voiceChat
+Host: 0.0.0.0
+Port: 3082
+
+LlmRpcConf:
+  Etcd:
+    Hosts:
+    - localhost:2379
+    Key: llmservice.rpc
+
+RustPBXConfig:
+  Url: ${RUST_PBX_URL}
+  WebSocketUrl: ${RUST_PBX_WEBSOCKET_URL}

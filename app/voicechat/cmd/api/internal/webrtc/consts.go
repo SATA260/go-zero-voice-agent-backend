@@ -1,0 +1,11 @@
+package webrtc
+
+const (
+	WEBRTC_SIGNALING_OFFER  = "offer"
+	WEBRTC_SIGNALING_ANSWER = "answer"
+
+	WS_CALLBACK_EVENT_TYPE_INVITE   = "invite"
+	WS_CALLBACK_EVENT_TYPE_TTS      = "tts"
+	WS_CALLBACK_EVENT_TYPE_ANSWER   = "answer"
+	WS_CALLBACK_EVENT_TYPE_ASRFINAL = "asrFinal"
+)

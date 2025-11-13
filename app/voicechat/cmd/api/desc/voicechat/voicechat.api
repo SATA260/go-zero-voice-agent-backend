@@ -1,0 +1,20 @@
+syntax = "v1"
+
+info (
+    title: "websocket连接"
+    desc: "websocket连接实例"
+    author: "2penheimer"
+    email: "2603237065@qq.com"
+)
+
+type Empty {}
+
+type StartVoiceRequest {
+    UserId string `header:"X-User-Id"`
+    LlmConfigId string `json:"llmConfigId"`
+}
+
+type WebSocketMsg {
+    Type string `json:"type"`
+    Data interface{} `json:"data"`
+}
