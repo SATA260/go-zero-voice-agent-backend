@@ -13,7 +13,7 @@ modeldir=./model
 # 数据库配置
 host=127.0.0.1
 port=3306
-dbname=gzva_llmservice
+dbname=$1
 username=root
 passwd=f4FMhWc6FdzuBCHf
 

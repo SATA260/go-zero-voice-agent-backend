@@ -5,12 +5,12 @@ package voice
 
 import (
 	"context"
-
+	"encoding/json"
 	"net/http"
 
 	"go-zero-voice-agent/app/voicechat/cmd/api/internal/svc"
 	"go-zero-voice-agent/app/voicechat/cmd/api/internal/types"
-	
+	"go-zero-voice-agent/app/voicechat/cmd/api/internal/webrtc"
 	"go-zero-voice-agent/app/voicechat/cmd/api/internal/websocket"
 
 	wsTool "github.com/gorilla/websocket"
@@ -44,5 +44,32 @@ func (l *StartLogic) Start(req *types.StartVoiceRequest, r *http.Request, w http
 }
 
 func (l *StartLogic) handleWebsocketMsg(ctx context.Context, conn *wsTool.Conn) {
-	
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			typeVal, data, err := conn.ReadMessage()
+			if err != nil {
+				return
+			}
+			if typeVal != wsTool.TextMessage {
+				continue
+			}
+			l.Logger.Infof("Received message: %s", string(data))
+			var msg webrtc.WebRTCMessage
+			if err := json.Unmarshal(data, &msg); err != nil {
+				l.Logger.Errorf("Failed to unmarshal message: %v", err)
+				continue
+			}
+			if msg.Type == webrtc.WEBRTC_SIGNALING_OFFER {
+				webrtc.NewSignalingClient(conn, ctx, l.svcCtx.Config.RustPBXConfig.WebSocketUrl, webrtc.PBXMessage{
+					Command: webrtc.WS_CALLBACK_EVENT_TYPE_INVITE,
+					Option: &webrtc.CallOptions{
+						
+					},
+				})
+			}
+		}
+	}
 }
