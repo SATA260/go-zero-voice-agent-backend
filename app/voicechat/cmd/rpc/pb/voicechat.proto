@@ -1,0 +1,125 @@
+// ...existing code...
+syntax = "proto3";
+
+package pb;
+option go_package = "./pb";
+
+// 分页查询通用
+message PageQuery {
+    int64 page = 1;
+    int64 page_size = 2;
+    string order_by = 3;
+}
+
+// 数据结构
+message AsrConfig {
+    int64 Id = 1;
+    int64 UserId = 2;
+    string Provider = 3;
+    string AppId = 4;
+    string SecretId = 5;
+    string SecretKey = 6;
+    string Language = 7;
+}
+
+message TtsConfig {
+    int64 Id = 1;
+    int64 UserId = 2;
+    string Provider = 3;
+    string AppId = 4;
+    string SecretId = 5;
+    string SecretKey = 6;
+}
+
+// AsrConfig CRUD & List
+message CreateAsrConfigRequest {
+    AsrConfig config = 1;
+}
+message CreateAsrConfigResponse {
+    AsrConfig config = 1;
+}
+
+message GetAsrConfigRequest {
+    int64 id = 1;
+}
+message GetAsrConfigResponse {
+    AsrConfig config = 1;
+}
+
+message UpdateAsrConfigRequest {
+    AsrConfig config = 1;
+}
+message UpdateAsrConfigResponse {
+    AsrConfig config = 1;
+}
+
+message DeleteAsrConfigRequest {
+    int64 id = 1;
+}
+message DeleteAsrConfigResponse {
+    bool ok = 1;
+}
+
+message ListAsrConfigRequest {
+    PageQuery page = 1;
+    int64 user_id = 2;
+}
+message ListAsrConfigResponse {
+    repeated AsrConfig configs = 1;
+    int64 total = 2;
+}
+
+// TtsConfig CRUD & List
+message CreateTtsConfigRequest {
+    TtsConfig config = 1;
+}
+message CreateTtsConfigResponse {
+    TtsConfig config = 1;
+}
+
+message GetTtsConfigRequest {
+    int64 id = 1;
+}
+message GetTtsConfigResponse {
+    TtsConfig config = 1;
+}
+
+message UpdateTtsConfigRequest {
+    TtsConfig config = 1;
+}
+message UpdateTtsConfigResponse {
+    TtsConfig config = 1;
+}
+
+message DeleteTtsConfigRequest {
+    int64 id = 1;
+}
+message DeleteTtsConfigResponse {
+    bool ok = 1;
+}
+
+message ListTtsConfigRequest {
+    PageQuery page = 1;
+    int64 user_id = 2;
+}
+message ListTtsConfigResponse {
+    repeated TtsConfig configs = 1;
+    int64 total = 2;
+}
+
+// 两个独立的 service：ASR 与 TTS
+service AsrConfigService {
+    rpc CreateAsrConfig(CreateAsrConfigRequest) returns (CreateAsrConfigResponse);
+    rpc GetAsrConfig(GetAsrConfigRequest) returns (GetAsrConfigResponse);
+    rpc UpdateAsrConfig(UpdateAsrConfigRequest) returns (UpdateAsrConfigResponse);
+    rpc DeleteAsrConfig(DeleteAsrConfigRequest) returns (DeleteAsrConfigResponse);
+    rpc ListAsrConfig(ListAsrConfigRequest) returns (ListAsrConfigResponse);
+}
+
+service TtsConfigService {
+    rpc CreateTtsConfig(CreateTtsConfigRequest) returns (CreateTtsConfigResponse);
+    rpc GetTtsConfig(GetTtsConfigRequest) returns (GetTtsConfigResponse);
+    rpc UpdateTtsConfig(UpdateTtsConfigRequest) returns (UpdateTtsConfigResponse);
+    rpc DeleteTtsConfig(DeleteTtsConfigRequest) returns (DeleteTtsConfigResponse);
+    rpc ListTtsConfig(ListTtsConfigRequest) returns (ListTtsConfigResponse);
+}
