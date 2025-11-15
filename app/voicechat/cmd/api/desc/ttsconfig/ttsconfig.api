@@ -1,0 +1,56 @@
+// TTS 配置类型定义
+type CreateTtsConfigReq {
+	userId    int64  `header:"X-User-Id"`
+	provider  string `json:"provider"`
+	appId     string `json:"appId"`
+	secretId  string `json:"secretId"`
+	secretKey string `json:"secretKey"`
+}
+
+type CreateTtsConfigResp {
+	id int64 `json:"id"`
+}
+
+type DeleteTtsConfigReq {
+	id     int64 `path:"id"`
+	userId int64 `header:"X-User-Id"`
+}
+
+type DeleteTtsConfigResp {}
+
+type UpdateTtsConfigReq {
+	id        int64  `path:"id"`
+	userId    int64  `header:"X-User-Id"`
+	provider  string `json:"provider"`
+	appId     string `json:"appId"`
+	secretId  string `json:"secretId"`
+	secretKey string `json:"secretKey"`
+}
+
+type UpdateTtsConfigResp {}
+
+type GetTtsConfigReq {
+	id     int64 `path:"id"`
+	userId int64 `header:"X-User-Id"`
+}
+
+type GetTtsConfigResp {
+	id        int64  `json:"id"`
+	userId    int64  `header:"X-User-Id"`
+	provider  string `json:"provider"`
+	appId     string `json:"appId"`
+	secretId  string `json:"secretId"`
+	secretKey string `json:"secretKey"`
+}
+
+type ListTtsConfigReq {
+	userId   int64 `header:"X-User-Id"`
+	page     int64 `json:"page"`
+	pageSize int64 `json:"pageSize"`
+}
+
+type ListTtsConfigResp {
+	configList []GetTtsConfigResp `json:"configList"`
+	total      int64              `json:"total"`
+}
+

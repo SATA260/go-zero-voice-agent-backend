@@ -1,12 +1,18 @@
 Name: voiceChat
 Host: 0.0.0.0
-Port: 3082
+Port: 3083
 
 LlmRpcConf:
   Etcd:
     Hosts:
     - localhost:2379
     Key: llmservice.rpc
+
+VoiceChatRpcConf:
+  Etcd:
+    Hosts:
+    - localhost:2379
+    Key: voicechat.rpc
 
 RustPBXConfig:
   Url: ${RUST_PBX_URL}

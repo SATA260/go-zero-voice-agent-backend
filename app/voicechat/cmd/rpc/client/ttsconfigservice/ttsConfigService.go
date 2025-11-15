@@ -7,36 +7,36 @@ package ttsconfigservice
 import (
 	"context"
 
-	"go-zero-voice-agent/app/voicechat/cmd/rpc/pb"
+	"go-zero-voice-agent/app/voicechat/cmd/rpc/voicechatpb"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 
 type (
-	AsrConfig               = pb.AsrConfig
-	CreateAsrConfigRequest  = pb.CreateAsrConfigRequest
-	CreateAsrConfigResponse = pb.CreateAsrConfigResponse
-	CreateTtsConfigRequest  = pb.CreateTtsConfigRequest
-	CreateTtsConfigResponse = pb.CreateTtsConfigResponse
-	DeleteAsrConfigRequest  = pb.DeleteAsrConfigRequest
-	DeleteAsrConfigResponse = pb.DeleteAsrConfigResponse
-	DeleteTtsConfigRequest  = pb.DeleteTtsConfigRequest
-	DeleteTtsConfigResponse = pb.DeleteTtsConfigResponse
-	GetAsrConfigRequest     = pb.GetAsrConfigRequest
-	GetAsrConfigResponse    = pb.GetAsrConfigResponse
-	GetTtsConfigRequest     = pb.GetTtsConfigRequest
-	GetTtsConfigResponse    = pb.GetTtsConfigResponse
-	ListAsrConfigRequest    = pb.ListAsrConfigRequest
-	ListAsrConfigResponse   = pb.ListAsrConfigResponse
-	ListTtsConfigRequest    = pb.ListTtsConfigRequest
-	ListTtsConfigResponse   = pb.ListTtsConfigResponse
-	PageQuery               = pb.PageQuery
-	TtsConfig               = pb.TtsConfig
-	UpdateAsrConfigRequest  = pb.UpdateAsrConfigRequest
-	UpdateAsrConfigResponse = pb.UpdateAsrConfigResponse
-	UpdateTtsConfigRequest  = pb.UpdateTtsConfigRequest
-	UpdateTtsConfigResponse = pb.UpdateTtsConfigResponse
+	AsrConfig               = voicechatpb.AsrConfig
+	CreateAsrConfigRequest  = voicechatpb.CreateAsrConfigRequest
+	CreateAsrConfigResponse = voicechatpb.CreateAsrConfigResponse
+	CreateTtsConfigRequest  = voicechatpb.CreateTtsConfigRequest
+	CreateTtsConfigResponse = voicechatpb.CreateTtsConfigResponse
+	DeleteAsrConfigRequest  = voicechatpb.DeleteAsrConfigRequest
+	DeleteAsrConfigResponse = voicechatpb.DeleteAsrConfigResponse
+	DeleteTtsConfigRequest  = voicechatpb.DeleteTtsConfigRequest
+	DeleteTtsConfigResponse = voicechatpb.DeleteTtsConfigResponse
+	GetAsrConfigRequest     = voicechatpb.GetAsrConfigRequest
+	GetAsrConfigResponse    = voicechatpb.GetAsrConfigResponse
+	GetTtsConfigRequest     = voicechatpb.GetTtsConfigRequest
+	GetTtsConfigResponse    = voicechatpb.GetTtsConfigResponse
+	ListAsrConfigRequest    = voicechatpb.ListAsrConfigRequest
+	ListAsrConfigResponse   = voicechatpb.ListAsrConfigResponse
+	ListTtsConfigRequest    = voicechatpb.ListTtsConfigRequest
+	ListTtsConfigResponse   = voicechatpb.ListTtsConfigResponse
+	PageQuery               = voicechatpb.PageQuery
+	TtsConfig               = voicechatpb.TtsConfig
+	UpdateAsrConfigRequest  = voicechatpb.UpdateAsrConfigRequest
+	UpdateAsrConfigResponse = voicechatpb.UpdateAsrConfigResponse
+	UpdateTtsConfigRequest  = voicechatpb.UpdateTtsConfigRequest
+	UpdateTtsConfigResponse = voicechatpb.UpdateTtsConfigResponse
 
 	TtsConfigService interface {
 		CreateTtsConfig(ctx context.Context, in *CreateTtsConfigRequest, opts ...grpc.CallOption) (*CreateTtsConfigResponse, error)
@@ -58,26 +58,26 @@ func NewTtsConfigService(cli zrpc.Client) TtsConfigService {
 }
 
 func (m *defaultTtsConfigService) CreateTtsConfig(ctx context.Context, in *CreateTtsConfigRequest, opts ...grpc.CallOption) (*CreateTtsConfigResponse, error) {
-	client := pb.NewTtsConfigServiceClient(m.cli.Conn())
+	client := voicechatpb.NewTtsConfigServiceClient(m.cli.Conn())
 	return client.CreateTtsConfig(ctx, in, opts...)
 }
 
 func (m *defaultTtsConfigService) GetTtsConfig(ctx context.Context, in *GetTtsConfigRequest, opts ...grpc.CallOption) (*GetTtsConfigResponse, error) {
-	client := pb.NewTtsConfigServiceClient(m.cli.Conn())
+	client := voicechatpb.NewTtsConfigServiceClient(m.cli.Conn())
 	return client.GetTtsConfig(ctx, in, opts...)
 }
 
 func (m *defaultTtsConfigService) UpdateTtsConfig(ctx context.Context, in *UpdateTtsConfigRequest, opts ...grpc.CallOption) (*UpdateTtsConfigResponse, error) {
-	client := pb.NewTtsConfigServiceClient(m.cli.Conn())
+	client := voicechatpb.NewTtsConfigServiceClient(m.cli.Conn())
 	return client.UpdateTtsConfig(ctx, in, opts...)
 }
 
 func (m *defaultTtsConfigService) DeleteTtsConfig(ctx context.Context, in *DeleteTtsConfigRequest, opts ...grpc.CallOption) (*DeleteTtsConfigResponse, error) {
-	client := pb.NewTtsConfigServiceClient(m.cli.Conn())
+	client := voicechatpb.NewTtsConfigServiceClient(m.cli.Conn())
 	return client.DeleteTtsConfig(ctx, in, opts...)
 }
 
 func (m *defaultTtsConfigService) ListTtsConfig(ctx context.Context, in *ListTtsConfigRequest, opts ...grpc.CallOption) (*ListTtsConfigResponse, error) {
-	client := pb.NewTtsConfigServiceClient(m.cli.Conn())
+	client := voicechatpb.NewTtsConfigServiceClient(m.cli.Conn())
 	return client.ListTtsConfig(ctx, in, opts...)
 }

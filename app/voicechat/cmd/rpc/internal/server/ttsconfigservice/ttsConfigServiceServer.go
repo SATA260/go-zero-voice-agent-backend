@@ -9,12 +9,12 @@ import (
 
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/logic/ttsconfigservice"
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/svc"
-	"go-zero-voice-agent/app/voicechat/cmd/rpc/pb"
+	"go-zero-voice-agent/app/voicechat/cmd/rpc/voicechatpb"
 )
 
 type TtsConfigServiceServer struct {
 	svcCtx *svc.ServiceContext
-	pb.UnimplementedTtsConfigServiceServer
+	voicechatpb.UnimplementedTtsConfigServiceServer
 }
 
 func NewTtsConfigServiceServer(svcCtx *svc.ServiceContext) *TtsConfigServiceServer {
@@ -23,27 +23,27 @@ func NewTtsConfigServiceServer(svcCtx *svc.ServiceContext) *TtsConfigServiceServ
 	}
 }
 
-func (s *TtsConfigServiceServer) CreateTtsConfig(ctx context.Context, in *pb.CreateTtsConfigRequest) (*pb.CreateTtsConfigResponse, error) {
+func (s *TtsConfigServiceServer) CreateTtsConfig(ctx context.Context, in *voicechatpb.CreateTtsConfigRequest) (*voicechatpb.CreateTtsConfigResponse, error) {
 	l := ttsconfigservicelogic.NewCreateTtsConfigLogic(ctx, s.svcCtx)
 	return l.CreateTtsConfig(in)
 }
 
-func (s *TtsConfigServiceServer) GetTtsConfig(ctx context.Context, in *pb.GetTtsConfigRequest) (*pb.GetTtsConfigResponse, error) {
+func (s *TtsConfigServiceServer) GetTtsConfig(ctx context.Context, in *voicechatpb.GetTtsConfigRequest) (*voicechatpb.GetTtsConfigResponse, error) {
 	l := ttsconfigservicelogic.NewGetTtsConfigLogic(ctx, s.svcCtx)
 	return l.GetTtsConfig(in)
 }
 
-func (s *TtsConfigServiceServer) UpdateTtsConfig(ctx context.Context, in *pb.UpdateTtsConfigRequest) (*pb.UpdateTtsConfigResponse, error) {
+func (s *TtsConfigServiceServer) UpdateTtsConfig(ctx context.Context, in *voicechatpb.UpdateTtsConfigRequest) (*voicechatpb.UpdateTtsConfigResponse, error) {
 	l := ttsconfigservicelogic.NewUpdateTtsConfigLogic(ctx, s.svcCtx)
 	return l.UpdateTtsConfig(in)
 }
 
-func (s *TtsConfigServiceServer) DeleteTtsConfig(ctx context.Context, in *pb.DeleteTtsConfigRequest) (*pb.DeleteTtsConfigResponse, error) {
+func (s *TtsConfigServiceServer) DeleteTtsConfig(ctx context.Context, in *voicechatpb.DeleteTtsConfigRequest) (*voicechatpb.DeleteTtsConfigResponse, error) {
 	l := ttsconfigservicelogic.NewDeleteTtsConfigLogic(ctx, s.svcCtx)
 	return l.DeleteTtsConfig(in)
 }
 
-func (s *TtsConfigServiceServer) ListTtsConfig(ctx context.Context, in *pb.ListTtsConfigRequest) (*pb.ListTtsConfigResponse, error) {
+func (s *TtsConfigServiceServer) ListTtsConfig(ctx context.Context, in *voicechatpb.ListTtsConfigRequest) (*voicechatpb.ListTtsConfigResponse, error) {
 	l := ttsconfigservicelogic.NewListTtsConfigLogic(ctx, s.svcCtx)
 	return l.ListTtsConfig(in)
 }

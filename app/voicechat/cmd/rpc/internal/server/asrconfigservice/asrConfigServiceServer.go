@@ -9,12 +9,12 @@ import (
 
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/logic/asrconfigservice"
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/svc"
-	"go-zero-voice-agent/app/voicechat/cmd/rpc/pb"
+	"go-zero-voice-agent/app/voicechat/cmd/rpc/voicechatpb"
 )
 
 type AsrConfigServiceServer struct {
 	svcCtx *svc.ServiceContext
-	pb.UnimplementedAsrConfigServiceServer
+	voicechatpb.UnimplementedAsrConfigServiceServer
 }
 
 func NewAsrConfigServiceServer(svcCtx *svc.ServiceContext) *AsrConfigServiceServer {
@@ -23,27 +23,27 @@ func NewAsrConfigServiceServer(svcCtx *svc.ServiceContext) *AsrConfigServiceServ
 	}
 }
 
-func (s *AsrConfigServiceServer) CreateAsrConfig(ctx context.Context, in *pb.CreateAsrConfigRequest) (*pb.CreateAsrConfigResponse, error) {
+func (s *AsrConfigServiceServer) CreateAsrConfig(ctx context.Context, in *voicechatpb.CreateAsrConfigRequest) (*voicechatpb.CreateAsrConfigResponse, error) {
 	l := asrconfigservicelogic.NewCreateAsrConfigLogic(ctx, s.svcCtx)
 	return l.CreateAsrConfig(in)
 }
 
-func (s *AsrConfigServiceServer) GetAsrConfig(ctx context.Context, in *pb.GetAsrConfigRequest) (*pb.GetAsrConfigResponse, error) {
+func (s *AsrConfigServiceServer) GetAsrConfig(ctx context.Context, in *voicechatpb.GetAsrConfigRequest) (*voicechatpb.GetAsrConfigResponse, error) {
 	l := asrconfigservicelogic.NewGetAsrConfigLogic(ctx, s.svcCtx)
 	return l.GetAsrConfig(in)
 }
 
-func (s *AsrConfigServiceServer) UpdateAsrConfig(ctx context.Context, in *pb.UpdateAsrConfigRequest) (*pb.UpdateAsrConfigResponse, error) {
+func (s *AsrConfigServiceServer) UpdateAsrConfig(ctx context.Context, in *voicechatpb.UpdateAsrConfigRequest) (*voicechatpb.UpdateAsrConfigResponse, error) {
 	l := asrconfigservicelogic.NewUpdateAsrConfigLogic(ctx, s.svcCtx)
 	return l.UpdateAsrConfig(in)
 }
 
-func (s *AsrConfigServiceServer) DeleteAsrConfig(ctx context.Context, in *pb.DeleteAsrConfigRequest) (*pb.DeleteAsrConfigResponse, error) {
+func (s *AsrConfigServiceServer) DeleteAsrConfig(ctx context.Context, in *voicechatpb.DeleteAsrConfigRequest) (*voicechatpb.DeleteAsrConfigResponse, error) {
 	l := asrconfigservicelogic.NewDeleteAsrConfigLogic(ctx, s.svcCtx)
 	return l.DeleteAsrConfig(in)
 }
 
-func (s *AsrConfigServiceServer) ListAsrConfig(ctx context.Context, in *pb.ListAsrConfigRequest) (*pb.ListAsrConfigResponse, error) {
+func (s *AsrConfigServiceServer) ListAsrConfig(ctx context.Context, in *voicechatpb.ListAsrConfigRequest) (*voicechatpb.ListAsrConfigResponse, error) {
 	l := asrconfigservicelogic.NewListAsrConfigLogic(ctx, s.svcCtx)
 	return l.ListAsrConfig(in)
 }

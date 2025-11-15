@@ -6,7 +6,9 @@ package handler
 import (
 	"net/http"
 
-	voice "go-zero-voice-agent/app/voicechat/cmd/api/internal/handler/voice"
+	asr "go-zero-voice-agent/app/voicechat/cmd/api/internal/handler/asr"
+	chat "go-zero-voice-agent/app/voicechat/cmd/api/internal/handler/chat"
+	tts "go-zero-voice-agent/app/voicechat/cmd/api/internal/handler/tts"
 	"go-zero-voice-agent/app/voicechat/cmd/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -16,12 +18,84 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				// 创建ASR配置
+				Method:  http.MethodPost,
+				Path:    "/config",
+				Handler: asr.CreateAsrConfigHandler(serverCtx),
+			},
+			{
+				// 删除ASR配置
+				Method:  http.MethodDelete,
+				Path:    "/config/:id",
+				Handler: asr.DeleteAsrConfigHandler(serverCtx),
+			},
+			{
+				// 更新ASR配置
+				Method:  http.MethodPut,
+				Path:    "/config/:id",
+				Handler: asr.UpdateAsrConfigHandler(serverCtx),
+			},
+			{
+				// 获取ASR配置详情
+				Method:  http.MethodGet,
+				Path:    "/config/:id",
+				Handler: asr.GetAsrConfigHandler(serverCtx),
+			},
+			{
+				// 分页获取ASR配置列表
+				Method:  http.MethodGet,
+				Path:    "/configs",
+				Handler: asr.ListAsrConfigHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/voice/v1/asr"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
 				// 创建websocket连接,然后帮助建立webrtc连接
 				Method:  http.MethodGet,
 				Path:    "/start",
-				Handler: voice.StartHandler(serverCtx),
+				Handler: chat.StartHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/voice/v1"),
+		rest.WithPrefix("/voice/v1/chat"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				// 创建TTS配置
+				Method:  http.MethodPost,
+				Path:    "/config",
+				Handler: tts.CreateTtsConfigHandler(serverCtx),
+			},
+			{
+				// 删除TTS配置
+				Method:  http.MethodDelete,
+				Path:    "/config/:id",
+				Handler: tts.DeleteTtsConfigHandler(serverCtx),
+			},
+			{
+				// 更新TTS配置
+				Method:  http.MethodPut,
+				Path:    "/config/:id",
+				Handler: tts.UpdateTtsConfigHandler(serverCtx),
+			},
+			{
+				// 获取TTS配置详情
+				Method:  http.MethodGet,
+				Path:    "/config/:id",
+				Handler: tts.GetTtsConfigHandler(serverCtx),
+			},
+			{
+				// 分页获取TTS配置列表
+				Method:  http.MethodGet,
+				Path:    "/configs",
+				Handler: tts.ListTtsConfigHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/voice/v1/tts"),
 	)
 }

@@ -9,16 +9,70 @@ info (
 )
 
 import (
-	"voicechat/voicechat.api"
+	"chat/chat.api"
+	"asrconfig/asrconfig.api"
+	"ttsconfig/ttsconfig.api"
 )
 
 @server (
-	prefix: voice/v1
-	group:  voice
+	prefix: voice/v1/chat
+	group:  chat
 )
 service voicechat {
 	@doc "创建websocket连接,然后帮助建立webrtc连接"
 	@handler start
 	get /start (StartVoiceRequest) returns (Empty)
+}
+
+@server (
+	prefix: voice/v1/asr
+	group:  asr
+)
+service voicechat {
+	@doc "创建ASR配置"
+	@handler createAsrConfig
+	post /config (CreateAsrConfigReq) returns (CreateAsrConfigResp)
+
+	@doc "删除ASR配置"
+	@handler deleteAsrConfig
+	delete /config/:id (DeleteAsrConfigReq) returns (DeleteAsrConfigResp)
+
+	@doc "更新ASR配置"
+	@handler updateAsrConfig
+	put /config/:id (UpdateAsrConfigReq) returns (UpdateAsrConfigResp)
+
+	@doc "获取ASR配置详情"
+	@handler getAsrConfig
+	get /config/:id (GetAsrConfigReq) returns (GetAsrConfigResp)
+
+	@doc "分页获取ASR配置列表"
+	@handler listAsrConfig
+	get /configs (ListAsrConfigReq) returns (ListAsrConfigResp)
+}
+
+@server (
+	prefix: voice/v1/tts
+	group:  tts
+)
+service voicechat {
+	@doc "创建TTS配置"
+	@handler createTtsConfig
+	post /config (CreateTtsConfigReq) returns (CreateTtsConfigResp)
+
+	@doc "删除TTS配置"
+	@handler deleteTtsConfig
+	delete /config/:id (DeleteTtsConfigReq) returns (DeleteTtsConfigResp)
+
+	@doc "更新TTS配置"
+	@handler updateTtsConfig
+	put /config/:id (UpdateTtsConfigReq) returns (UpdateTtsConfigResp)
+
+	@doc "获取TTS配置详情"
+	@handler getTtsConfig
+	get /config/:id (GetTtsConfigReq) returns (GetTtsConfigResp)
+
+	@doc "分页获取TTS配置列表"
+	@handler listTtsConfig
+	get /configs (ListTtsConfigReq) returns (ListTtsConfigResp)
 }
 

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/svc"
-	"go-zero-voice-agent/app/voicechat/cmd/rpc/pb"
+	"go-zero-voice-agent/app/voicechat/cmd/rpc/voicechatpb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,14 +23,14 @@ func NewGetTtsConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetT
 	}
 }
 
-func (l *GetTtsConfigLogic) GetTtsConfig(in *pb.GetTtsConfigRequest) (*pb.GetTtsConfigResponse, error) {
+func (l *GetTtsConfigLogic) GetTtsConfig(in *voicechatpb.GetTtsConfigRequest) (*voicechatpb.GetTtsConfigResponse, error) {
 	data, err := l.svcCtx.TtsConfigModel.FindOne(l.ctx, in.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	return &pb.GetTtsConfigResponse{
-		Config: &pb.TtsConfig{
+	return &voicechatpb.GetTtsConfigResponse{
+		Config: &voicechatpb.TtsConfig{
 			Id:        data.Id,
 			UserId:    data.UserId.Int64,
 			Provider:  data.Provider.String,

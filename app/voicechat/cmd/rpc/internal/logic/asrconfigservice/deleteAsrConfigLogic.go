@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/svc"
-	"go-zero-voice-agent/app/voicechat/cmd/rpc/pb"
+	"go-zero-voice-agent/app/voicechat/cmd/rpc/voicechatpb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,7 +23,7 @@ func NewDeleteAsrConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 	}
 }
 
-func (l *DeleteAsrConfigLogic) DeleteAsrConfig(in *pb.DeleteAsrConfigRequest) (*pb.DeleteAsrConfigResponse, error) {
+func (l *DeleteAsrConfigLogic) DeleteAsrConfig(in *voicechatpb.DeleteAsrConfigRequest) (*voicechatpb.DeleteAsrConfigResponse, error) {
 	data, err := l.svcCtx.AsrConfigModel.FindOne(l.ctx, in.Id)
 	if err != nil {
 		return nil, err
@@ -34,5 +34,5 @@ func (l *DeleteAsrConfigLogic) DeleteAsrConfig(in *pb.DeleteAsrConfigRequest) (*
 		return nil, err
 	}
 
-	return &pb.DeleteAsrConfigResponse{Ok: true}, nil
+	return &voicechatpb.DeleteAsrConfigResponse{Ok: true}, nil
 }

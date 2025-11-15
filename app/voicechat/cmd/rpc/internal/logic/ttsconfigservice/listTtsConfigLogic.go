@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/svc"
-	"go-zero-voice-agent/app/voicechat/cmd/rpc/pb"
+	"go-zero-voice-agent/app/voicechat/cmd/rpc/voicechatpb"
 	"go-zero-voice-agent/app/voicechat/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -24,7 +24,7 @@ func NewListTtsConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Lis
 	}
 }
 
-func (l *ListTtsConfigLogic) ListTtsConfig(in *pb.ListTtsConfigRequest) (*pb.ListTtsConfigResponse, error) {
+func (l *ListTtsConfigLogic) ListTtsConfig(in *voicechatpb.ListTtsConfigRequest) (*voicechatpb.ListTtsConfigResponse, error) {
 	builder := l.svcCtx.TtsConfigModel.SelectBuilder()
 	if in.UserId != 0 {
 		builder = builder.Where("user_id = ?", in.UserId)
@@ -46,9 +46,9 @@ func (l *ListTtsConfigLogic) ListTtsConfig(in *pb.ListTtsConfigRequest) (*pb.Lis
 		return nil, err
 	}
 
-	respList := make([]*pb.TtsConfig, 0, len(configs))
+	respList := make([]*voicechatpb.TtsConfig, 0, len(configs))
 	for _, c := range configs {
-		respList = append(respList, &pb.TtsConfig{
+		respList = append(respList, &voicechatpb.TtsConfig{
 			Id:        c.Id,
 			UserId:    c.UserId.Int64,
 			Provider:  c.Provider.String,
@@ -58,7 +58,7 @@ func (l *ListTtsConfigLogic) ListTtsConfig(in *pb.ListTtsConfigRequest) (*pb.Lis
 		})
 	}
 
-	return &pb.ListTtsConfigResponse{
+	return &voicechatpb.ListTtsConfigResponse{
 		Configs: respList,
 		Total:   total,
 	}, nil

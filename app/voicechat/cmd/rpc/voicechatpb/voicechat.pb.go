@@ -6,7 +6,7 @@
 // 	protoc        v6.32.0
 // source: voicechat.proto
 
-package pb
+package voicechatpb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -264,7 +264,12 @@ func (x *TtsConfig) GetSecretKey() string {
 // AsrConfig CRUD & List
 type CreateAsrConfigRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Config        *AsrConfig             `protobuf:"bytes,1,opt,name=config,proto3" json:"config,omitempty"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=UserId,proto3" json:"UserId,omitempty"`
+	Provider      string                 `protobuf:"bytes,2,opt,name=Provider,proto3" json:"Provider,omitempty"`
+	AppId         string                 `protobuf:"bytes,3,opt,name=AppId,proto3" json:"AppId,omitempty"`
+	SecretId      string                 `protobuf:"bytes,4,opt,name=SecretId,proto3" json:"SecretId,omitempty"`
+	SecretKey     string                 `protobuf:"bytes,5,opt,name=SecretKey,proto3" json:"SecretKey,omitempty"`
+	Language      string                 `protobuf:"bytes,6,opt,name=Language,proto3" json:"Language,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -299,11 +304,46 @@ func (*CreateAsrConfigRequest) Descriptor() ([]byte, []int) {
 	return file_voicechat_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *CreateAsrConfigRequest) GetConfig() *AsrConfig {
+func (x *CreateAsrConfigRequest) GetUserId() int64 {
 	if x != nil {
-		return x.Config
+		return x.UserId
 	}
-	return nil
+	return 0
+}
+
+func (x *CreateAsrConfigRequest) GetProvider() string {
+	if x != nil {
+		return x.Provider
+	}
+	return ""
+}
+
+func (x *CreateAsrConfigRequest) GetAppId() string {
+	if x != nil {
+		return x.AppId
+	}
+	return ""
+}
+
+func (x *CreateAsrConfigRequest) GetSecretId() string {
+	if x != nil {
+		return x.SecretId
+	}
+	return ""
+}
+
+func (x *CreateAsrConfigRequest) GetSecretKey() string {
+	if x != nil {
+		return x.SecretKey
+	}
+	return ""
+}
+
+func (x *CreateAsrConfigRequest) GetLanguage() string {
+	if x != nil {
+		return x.Language
+	}
+	return ""
 }
 
 type CreateAsrConfigResponse struct {
@@ -721,7 +761,11 @@ func (x *ListAsrConfigResponse) GetTotal() int64 {
 // TtsConfig CRUD & List
 type CreateTtsConfigRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Config        *TtsConfig             `protobuf:"bytes,1,opt,name=config,proto3" json:"config,omitempty"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=UserId,proto3" json:"UserId,omitempty"`
+	Provider      string                 `protobuf:"bytes,2,opt,name=Provider,proto3" json:"Provider,omitempty"`
+	AppId         string                 `protobuf:"bytes,3,opt,name=AppId,proto3" json:"AppId,omitempty"`
+	SecretId      string                 `protobuf:"bytes,4,opt,name=SecretId,proto3" json:"SecretId,omitempty"`
+	SecretKey     string                 `protobuf:"bytes,5,opt,name=SecretKey,proto3" json:"SecretKey,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -756,11 +800,39 @@ func (*CreateTtsConfigRequest) Descriptor() ([]byte, []int) {
 	return file_voicechat_proto_rawDescGZIP(), []int{13}
 }
 
-func (x *CreateTtsConfigRequest) GetConfig() *TtsConfig {
+func (x *CreateTtsConfigRequest) GetUserId() int64 {
 	if x != nil {
-		return x.Config
+		return x.UserId
 	}
-	return nil
+	return 0
+}
+
+func (x *CreateTtsConfigRequest) GetProvider() string {
+	if x != nil {
+		return x.Provider
+	}
+	return ""
+}
+
+func (x *CreateTtsConfigRequest) GetAppId() string {
+	if x != nil {
+		return x.AppId
+	}
+	return ""
+}
+
+func (x *CreateTtsConfigRequest) GetSecretId() string {
+	if x != nil {
+		return x.SecretId
+	}
+	return ""
+}
+
+func (x *CreateTtsConfigRequest) GetSecretKey() string {
+	if x != nil {
+		return x.SecretKey
+	}
+	return ""
 }
 
 type CreateTtsConfigResponse struct {
@@ -1179,7 +1251,7 @@ var File_voicechat_proto protoreflect.FileDescriptor
 
 const file_voicechat_proto_rawDesc = "" +
 	"\n" +
-	"\x0fvoicechat.proto\x12\x02pb\"W\n" +
+	"\x0fvoicechat.proto\x12\vvoicechatpb\"W\n" +
 	"\tPageQuery\x12\x12\n" +
 	"\x04page\x18\x01 \x01(\x03R\x04page\x12\x1b\n" +
 	"\tpage_size\x18\x02 \x01(\x03R\bpageSize\x12\x19\n" +
@@ -1198,63 +1270,72 @@ const file_voicechat_proto_rawDesc = "" +
 	"\bProvider\x18\x03 \x01(\tR\bProvider\x12\x14\n" +
 	"\x05AppId\x18\x04 \x01(\tR\x05AppId\x12\x1a\n" +
 	"\bSecretId\x18\x05 \x01(\tR\bSecretId\x12\x1c\n" +
-	"\tSecretKey\x18\x06 \x01(\tR\tSecretKey\"?\n" +
-	"\x16CreateAsrConfigRequest\x12%\n" +
-	"\x06config\x18\x01 \x01(\v2\r.pb.AsrConfigR\x06config\"@\n" +
-	"\x17CreateAsrConfigResponse\x12%\n" +
-	"\x06config\x18\x01 \x01(\v2\r.pb.AsrConfigR\x06config\"%\n" +
+	"\tSecretKey\x18\x06 \x01(\tR\tSecretKey\"\xb8\x01\n" +
+	"\x16CreateAsrConfigRequest\x12\x16\n" +
+	"\x06UserId\x18\x01 \x01(\x03R\x06UserId\x12\x1a\n" +
+	"\bProvider\x18\x02 \x01(\tR\bProvider\x12\x14\n" +
+	"\x05AppId\x18\x03 \x01(\tR\x05AppId\x12\x1a\n" +
+	"\bSecretId\x18\x04 \x01(\tR\bSecretId\x12\x1c\n" +
+	"\tSecretKey\x18\x05 \x01(\tR\tSecretKey\x12\x1a\n" +
+	"\bLanguage\x18\x06 \x01(\tR\bLanguage\"I\n" +
+	"\x17CreateAsrConfigResponse\x12.\n" +
+	"\x06config\x18\x01 \x01(\v2\x16.voicechatpb.AsrConfigR\x06config\"%\n" +
 	"\x13GetAsrConfigRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"=\n" +
-	"\x14GetAsrConfigResponse\x12%\n" +
-	"\x06config\x18\x01 \x01(\v2\r.pb.AsrConfigR\x06config\"?\n" +
-	"\x16UpdateAsrConfigRequest\x12%\n" +
-	"\x06config\x18\x01 \x01(\v2\r.pb.AsrConfigR\x06config\"@\n" +
-	"\x17UpdateAsrConfigResponse\x12%\n" +
-	"\x06config\x18\x01 \x01(\v2\r.pb.AsrConfigR\x06config\"(\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"F\n" +
+	"\x14GetAsrConfigResponse\x12.\n" +
+	"\x06config\x18\x01 \x01(\v2\x16.voicechatpb.AsrConfigR\x06config\"H\n" +
+	"\x16UpdateAsrConfigRequest\x12.\n" +
+	"\x06config\x18\x01 \x01(\v2\x16.voicechatpb.AsrConfigR\x06config\"I\n" +
+	"\x17UpdateAsrConfigResponse\x12.\n" +
+	"\x06config\x18\x01 \x01(\v2\x16.voicechatpb.AsrConfigR\x06config\"(\n" +
 	"\x16DeleteAsrConfigRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\")\n" +
 	"\x17DeleteAsrConfigResponse\x12\x0e\n" +
-	"\x02ok\x18\x01 \x01(\bR\x02ok\"R\n" +
-	"\x14ListAsrConfigRequest\x12!\n" +
-	"\x04page\x18\x01 \x01(\v2\r.pb.PageQueryR\x04page\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\x03R\x06userId\"V\n" +
-	"\x15ListAsrConfigResponse\x12'\n" +
-	"\aconfigs\x18\x01 \x03(\v2\r.pb.AsrConfigR\aconfigs\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x03R\x05total\"?\n" +
-	"\x16CreateTtsConfigRequest\x12%\n" +
-	"\x06config\x18\x01 \x01(\v2\r.pb.TtsConfigR\x06config\"@\n" +
-	"\x17CreateTtsConfigResponse\x12%\n" +
-	"\x06config\x18\x01 \x01(\v2\r.pb.TtsConfigR\x06config\"%\n" +
+	"\x02ok\x18\x01 \x01(\bR\x02ok\"[\n" +
+	"\x14ListAsrConfigRequest\x12*\n" +
+	"\x04page\x18\x01 \x01(\v2\x16.voicechatpb.PageQueryR\x04page\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\x03R\x06userId\"_\n" +
+	"\x15ListAsrConfigResponse\x120\n" +
+	"\aconfigs\x18\x01 \x03(\v2\x16.voicechatpb.AsrConfigR\aconfigs\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x03R\x05total\"\x9c\x01\n" +
+	"\x16CreateTtsConfigRequest\x12\x16\n" +
+	"\x06UserId\x18\x01 \x01(\x03R\x06UserId\x12\x1a\n" +
+	"\bProvider\x18\x02 \x01(\tR\bProvider\x12\x14\n" +
+	"\x05AppId\x18\x03 \x01(\tR\x05AppId\x12\x1a\n" +
+	"\bSecretId\x18\x04 \x01(\tR\bSecretId\x12\x1c\n" +
+	"\tSecretKey\x18\x05 \x01(\tR\tSecretKey\"I\n" +
+	"\x17CreateTtsConfigResponse\x12.\n" +
+	"\x06config\x18\x01 \x01(\v2\x16.voicechatpb.TtsConfigR\x06config\"%\n" +
 	"\x13GetTtsConfigRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"=\n" +
-	"\x14GetTtsConfigResponse\x12%\n" +
-	"\x06config\x18\x01 \x01(\v2\r.pb.TtsConfigR\x06config\"?\n" +
-	"\x16UpdateTtsConfigRequest\x12%\n" +
-	"\x06config\x18\x01 \x01(\v2\r.pb.TtsConfigR\x06config\"@\n" +
-	"\x17UpdateTtsConfigResponse\x12%\n" +
-	"\x06config\x18\x01 \x01(\v2\r.pb.TtsConfigR\x06config\"(\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"F\n" +
+	"\x14GetTtsConfigResponse\x12.\n" +
+	"\x06config\x18\x01 \x01(\v2\x16.voicechatpb.TtsConfigR\x06config\"H\n" +
+	"\x16UpdateTtsConfigRequest\x12.\n" +
+	"\x06config\x18\x01 \x01(\v2\x16.voicechatpb.TtsConfigR\x06config\"I\n" +
+	"\x17UpdateTtsConfigResponse\x12.\n" +
+	"\x06config\x18\x01 \x01(\v2\x16.voicechatpb.TtsConfigR\x06config\"(\n" +
 	"\x16DeleteTtsConfigRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\")\n" +
 	"\x17DeleteTtsConfigResponse\x12\x0e\n" +
-	"\x02ok\x18\x01 \x01(\bR\x02ok\"R\n" +
-	"\x14ListTtsConfigRequest\x12!\n" +
-	"\x04page\x18\x01 \x01(\v2\r.pb.PageQueryR\x04page\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\x03R\x06userId\"V\n" +
-	"\x15ListTtsConfigResponse\x12'\n" +
-	"\aconfigs\x18\x01 \x03(\v2\r.pb.TtsConfigR\aconfigs\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x03R\x05total2\xff\x02\n" +
-	"\x10AsrConfigService\x12J\n" +
-	"\x0fCreateAsrConfig\x12\x1a.pb.CreateAsrConfigRequest\x1a\x1b.pb.CreateAsrConfigResponse\x12A\n" +
-	"\fGetAsrConfig\x12\x17.pb.GetAsrConfigRequest\x1a\x18.pb.GetAsrConfigResponse\x12J\n" +
-	"\x0fUpdateAsrConfig\x12\x1a.pb.UpdateAsrConfigRequest\x1a\x1b.pb.UpdateAsrConfigResponse\x12J\n" +
-	"\x0fDeleteAsrConfig\x12\x1a.pb.DeleteAsrConfigRequest\x1a\x1b.pb.DeleteAsrConfigResponse\x12D\n" +
-	"\rListAsrConfig\x12\x18.pb.ListAsrConfigRequest\x1a\x19.pb.ListAsrConfigResponse2\xff\x02\n" +
-	"\x10TtsConfigService\x12J\n" +
-	"\x0fCreateTtsConfig\x12\x1a.pb.CreateTtsConfigRequest\x1a\x1b.pb.CreateTtsConfigResponse\x12A\n" +
-	"\fGetTtsConfig\x12\x17.pb.GetTtsConfigRequest\x1a\x18.pb.GetTtsConfigResponse\x12J\n" +
-	"\x0fUpdateTtsConfig\x12\x1a.pb.UpdateTtsConfigRequest\x1a\x1b.pb.UpdateTtsConfigResponse\x12J\n" +
-	"\x0fDeleteTtsConfig\x12\x1a.pb.DeleteTtsConfigRequest\x1a\x1b.pb.DeleteTtsConfigResponse\x12D\n" +
-	"\rListTtsConfig\x12\x18.pb.ListTtsConfigRequest\x1a\x19.pb.ListTtsConfigResponseB\x06Z\x04./pbb\x06proto3"
+	"\x02ok\x18\x01 \x01(\bR\x02ok\"[\n" +
+	"\x14ListTtsConfigRequest\x12*\n" +
+	"\x04page\x18\x01 \x01(\v2\x16.voicechatpb.PageQueryR\x04page\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\x03R\x06userId\"_\n" +
+	"\x15ListTtsConfigResponse\x120\n" +
+	"\aconfigs\x18\x01 \x03(\v2\x16.voicechatpb.TtsConfigR\aconfigs\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x03R\x05total2\xd9\x03\n" +
+	"\x10AsrConfigService\x12\\\n" +
+	"\x0fCreateAsrConfig\x12#.voicechatpb.CreateAsrConfigRequest\x1a$.voicechatpb.CreateAsrConfigResponse\x12S\n" +
+	"\fGetAsrConfig\x12 .voicechatpb.GetAsrConfigRequest\x1a!.voicechatpb.GetAsrConfigResponse\x12\\\n" +
+	"\x0fUpdateAsrConfig\x12#.voicechatpb.UpdateAsrConfigRequest\x1a$.voicechatpb.UpdateAsrConfigResponse\x12\\\n" +
+	"\x0fDeleteAsrConfig\x12#.voicechatpb.DeleteAsrConfigRequest\x1a$.voicechatpb.DeleteAsrConfigResponse\x12V\n" +
+	"\rListAsrConfig\x12!.voicechatpb.ListAsrConfigRequest\x1a\".voicechatpb.ListAsrConfigResponse2\xd9\x03\n" +
+	"\x10TtsConfigService\x12\\\n" +
+	"\x0fCreateTtsConfig\x12#.voicechatpb.CreateTtsConfigRequest\x1a$.voicechatpb.CreateTtsConfigResponse\x12S\n" +
+	"\fGetTtsConfig\x12 .voicechatpb.GetTtsConfigRequest\x1a!.voicechatpb.GetTtsConfigResponse\x12\\\n" +
+	"\x0fUpdateTtsConfig\x12#.voicechatpb.UpdateTtsConfigRequest\x1a$.voicechatpb.UpdateTtsConfigResponse\x12\\\n" +
+	"\x0fDeleteTtsConfig\x12#.voicechatpb.DeleteTtsConfigRequest\x1a$.voicechatpb.DeleteTtsConfigResponse\x12V\n" +
+	"\rListTtsConfig\x12!.voicechatpb.ListTtsConfigRequest\x1a\".voicechatpb.ListTtsConfigResponseB\x0fZ\r./voicechatpbb\x06proto3"
 
 var (
 	file_voicechat_proto_rawDescOnce sync.Once
@@ -1270,70 +1351,68 @@ func file_voicechat_proto_rawDescGZIP() []byte {
 
 var file_voicechat_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
 var file_voicechat_proto_goTypes = []any{
-	(*PageQuery)(nil),               // 0: pb.PageQuery
-	(*AsrConfig)(nil),               // 1: pb.AsrConfig
-	(*TtsConfig)(nil),               // 2: pb.TtsConfig
-	(*CreateAsrConfigRequest)(nil),  // 3: pb.CreateAsrConfigRequest
-	(*CreateAsrConfigResponse)(nil), // 4: pb.CreateAsrConfigResponse
-	(*GetAsrConfigRequest)(nil),     // 5: pb.GetAsrConfigRequest
-	(*GetAsrConfigResponse)(nil),    // 6: pb.GetAsrConfigResponse
-	(*UpdateAsrConfigRequest)(nil),  // 7: pb.UpdateAsrConfigRequest
-	(*UpdateAsrConfigResponse)(nil), // 8: pb.UpdateAsrConfigResponse
-	(*DeleteAsrConfigRequest)(nil),  // 9: pb.DeleteAsrConfigRequest
-	(*DeleteAsrConfigResponse)(nil), // 10: pb.DeleteAsrConfigResponse
-	(*ListAsrConfigRequest)(nil),    // 11: pb.ListAsrConfigRequest
-	(*ListAsrConfigResponse)(nil),   // 12: pb.ListAsrConfigResponse
-	(*CreateTtsConfigRequest)(nil),  // 13: pb.CreateTtsConfigRequest
-	(*CreateTtsConfigResponse)(nil), // 14: pb.CreateTtsConfigResponse
-	(*GetTtsConfigRequest)(nil),     // 15: pb.GetTtsConfigRequest
-	(*GetTtsConfigResponse)(nil),    // 16: pb.GetTtsConfigResponse
-	(*UpdateTtsConfigRequest)(nil),  // 17: pb.UpdateTtsConfigRequest
-	(*UpdateTtsConfigResponse)(nil), // 18: pb.UpdateTtsConfigResponse
-	(*DeleteTtsConfigRequest)(nil),  // 19: pb.DeleteTtsConfigRequest
-	(*DeleteTtsConfigResponse)(nil), // 20: pb.DeleteTtsConfigResponse
-	(*ListTtsConfigRequest)(nil),    // 21: pb.ListTtsConfigRequest
-	(*ListTtsConfigResponse)(nil),   // 22: pb.ListTtsConfigResponse
+	(*PageQuery)(nil),               // 0: voicechatpb.PageQuery
+	(*AsrConfig)(nil),               // 1: voicechatpb.AsrConfig
+	(*TtsConfig)(nil),               // 2: voicechatpb.TtsConfig
+	(*CreateAsrConfigRequest)(nil),  // 3: voicechatpb.CreateAsrConfigRequest
+	(*CreateAsrConfigResponse)(nil), // 4: voicechatpb.CreateAsrConfigResponse
+	(*GetAsrConfigRequest)(nil),     // 5: voicechatpb.GetAsrConfigRequest
+	(*GetAsrConfigResponse)(nil),    // 6: voicechatpb.GetAsrConfigResponse
+	(*UpdateAsrConfigRequest)(nil),  // 7: voicechatpb.UpdateAsrConfigRequest
+	(*UpdateAsrConfigResponse)(nil), // 8: voicechatpb.UpdateAsrConfigResponse
+	(*DeleteAsrConfigRequest)(nil),  // 9: voicechatpb.DeleteAsrConfigRequest
+	(*DeleteAsrConfigResponse)(nil), // 10: voicechatpb.DeleteAsrConfigResponse
+	(*ListAsrConfigRequest)(nil),    // 11: voicechatpb.ListAsrConfigRequest
+	(*ListAsrConfigResponse)(nil),   // 12: voicechatpb.ListAsrConfigResponse
+	(*CreateTtsConfigRequest)(nil),  // 13: voicechatpb.CreateTtsConfigRequest
+	(*CreateTtsConfigResponse)(nil), // 14: voicechatpb.CreateTtsConfigResponse
+	(*GetTtsConfigRequest)(nil),     // 15: voicechatpb.GetTtsConfigRequest
+	(*GetTtsConfigResponse)(nil),    // 16: voicechatpb.GetTtsConfigResponse
+	(*UpdateTtsConfigRequest)(nil),  // 17: voicechatpb.UpdateTtsConfigRequest
+	(*UpdateTtsConfigResponse)(nil), // 18: voicechatpb.UpdateTtsConfigResponse
+	(*DeleteTtsConfigRequest)(nil),  // 19: voicechatpb.DeleteTtsConfigRequest
+	(*DeleteTtsConfigResponse)(nil), // 20: voicechatpb.DeleteTtsConfigResponse
+	(*ListTtsConfigRequest)(nil),    // 21: voicechatpb.ListTtsConfigRequest
+	(*ListTtsConfigResponse)(nil),   // 22: voicechatpb.ListTtsConfigResponse
 }
 var file_voicechat_proto_depIdxs = []int32{
-	1,  // 0: pb.CreateAsrConfigRequest.config:type_name -> pb.AsrConfig
-	1,  // 1: pb.CreateAsrConfigResponse.config:type_name -> pb.AsrConfig
-	1,  // 2: pb.GetAsrConfigResponse.config:type_name -> pb.AsrConfig
-	1,  // 3: pb.UpdateAsrConfigRequest.config:type_name -> pb.AsrConfig
-	1,  // 4: pb.UpdateAsrConfigResponse.config:type_name -> pb.AsrConfig
-	0,  // 5: pb.ListAsrConfigRequest.page:type_name -> pb.PageQuery
-	1,  // 6: pb.ListAsrConfigResponse.configs:type_name -> pb.AsrConfig
-	2,  // 7: pb.CreateTtsConfigRequest.config:type_name -> pb.TtsConfig
-	2,  // 8: pb.CreateTtsConfigResponse.config:type_name -> pb.TtsConfig
-	2,  // 9: pb.GetTtsConfigResponse.config:type_name -> pb.TtsConfig
-	2,  // 10: pb.UpdateTtsConfigRequest.config:type_name -> pb.TtsConfig
-	2,  // 11: pb.UpdateTtsConfigResponse.config:type_name -> pb.TtsConfig
-	0,  // 12: pb.ListTtsConfigRequest.page:type_name -> pb.PageQuery
-	2,  // 13: pb.ListTtsConfigResponse.configs:type_name -> pb.TtsConfig
-	3,  // 14: pb.AsrConfigService.CreateAsrConfig:input_type -> pb.CreateAsrConfigRequest
-	5,  // 15: pb.AsrConfigService.GetAsrConfig:input_type -> pb.GetAsrConfigRequest
-	7,  // 16: pb.AsrConfigService.UpdateAsrConfig:input_type -> pb.UpdateAsrConfigRequest
-	9,  // 17: pb.AsrConfigService.DeleteAsrConfig:input_type -> pb.DeleteAsrConfigRequest
-	11, // 18: pb.AsrConfigService.ListAsrConfig:input_type -> pb.ListAsrConfigRequest
-	13, // 19: pb.TtsConfigService.CreateTtsConfig:input_type -> pb.CreateTtsConfigRequest
-	15, // 20: pb.TtsConfigService.GetTtsConfig:input_type -> pb.GetTtsConfigRequest
-	17, // 21: pb.TtsConfigService.UpdateTtsConfig:input_type -> pb.UpdateTtsConfigRequest
-	19, // 22: pb.TtsConfigService.DeleteTtsConfig:input_type -> pb.DeleteTtsConfigRequest
-	21, // 23: pb.TtsConfigService.ListTtsConfig:input_type -> pb.ListTtsConfigRequest
-	4,  // 24: pb.AsrConfigService.CreateAsrConfig:output_type -> pb.CreateAsrConfigResponse
-	6,  // 25: pb.AsrConfigService.GetAsrConfig:output_type -> pb.GetAsrConfigResponse
-	8,  // 26: pb.AsrConfigService.UpdateAsrConfig:output_type -> pb.UpdateAsrConfigResponse
-	10, // 27: pb.AsrConfigService.DeleteAsrConfig:output_type -> pb.DeleteAsrConfigResponse
-	12, // 28: pb.AsrConfigService.ListAsrConfig:output_type -> pb.ListAsrConfigResponse
-	14, // 29: pb.TtsConfigService.CreateTtsConfig:output_type -> pb.CreateTtsConfigResponse
-	16, // 30: pb.TtsConfigService.GetTtsConfig:output_type -> pb.GetTtsConfigResponse
-	18, // 31: pb.TtsConfigService.UpdateTtsConfig:output_type -> pb.UpdateTtsConfigResponse
-	20, // 32: pb.TtsConfigService.DeleteTtsConfig:output_type -> pb.DeleteTtsConfigResponse
-	22, // 33: pb.TtsConfigService.ListTtsConfig:output_type -> pb.ListTtsConfigResponse
-	24, // [24:34] is the sub-list for method output_type
-	14, // [14:24] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	1,  // 0: voicechatpb.CreateAsrConfigResponse.config:type_name -> voicechatpb.AsrConfig
+	1,  // 1: voicechatpb.GetAsrConfigResponse.config:type_name -> voicechatpb.AsrConfig
+	1,  // 2: voicechatpb.UpdateAsrConfigRequest.config:type_name -> voicechatpb.AsrConfig
+	1,  // 3: voicechatpb.UpdateAsrConfigResponse.config:type_name -> voicechatpb.AsrConfig
+	0,  // 4: voicechatpb.ListAsrConfigRequest.page:type_name -> voicechatpb.PageQuery
+	1,  // 5: voicechatpb.ListAsrConfigResponse.configs:type_name -> voicechatpb.AsrConfig
+	2,  // 6: voicechatpb.CreateTtsConfigResponse.config:type_name -> voicechatpb.TtsConfig
+	2,  // 7: voicechatpb.GetTtsConfigResponse.config:type_name -> voicechatpb.TtsConfig
+	2,  // 8: voicechatpb.UpdateTtsConfigRequest.config:type_name -> voicechatpb.TtsConfig
+	2,  // 9: voicechatpb.UpdateTtsConfigResponse.config:type_name -> voicechatpb.TtsConfig
+	0,  // 10: voicechatpb.ListTtsConfigRequest.page:type_name -> voicechatpb.PageQuery
+	2,  // 11: voicechatpb.ListTtsConfigResponse.configs:type_name -> voicechatpb.TtsConfig
+	3,  // 12: voicechatpb.AsrConfigService.CreateAsrConfig:input_type -> voicechatpb.CreateAsrConfigRequest
+	5,  // 13: voicechatpb.AsrConfigService.GetAsrConfig:input_type -> voicechatpb.GetAsrConfigRequest
+	7,  // 14: voicechatpb.AsrConfigService.UpdateAsrConfig:input_type -> voicechatpb.UpdateAsrConfigRequest
+	9,  // 15: voicechatpb.AsrConfigService.DeleteAsrConfig:input_type -> voicechatpb.DeleteAsrConfigRequest
+	11, // 16: voicechatpb.AsrConfigService.ListAsrConfig:input_type -> voicechatpb.ListAsrConfigRequest
+	13, // 17: voicechatpb.TtsConfigService.CreateTtsConfig:input_type -> voicechatpb.CreateTtsConfigRequest
+	15, // 18: voicechatpb.TtsConfigService.GetTtsConfig:input_type -> voicechatpb.GetTtsConfigRequest
+	17, // 19: voicechatpb.TtsConfigService.UpdateTtsConfig:input_type -> voicechatpb.UpdateTtsConfigRequest
+	19, // 20: voicechatpb.TtsConfigService.DeleteTtsConfig:input_type -> voicechatpb.DeleteTtsConfigRequest
+	21, // 21: voicechatpb.TtsConfigService.ListTtsConfig:input_type -> voicechatpb.ListTtsConfigRequest
+	4,  // 22: voicechatpb.AsrConfigService.CreateAsrConfig:output_type -> voicechatpb.CreateAsrConfigResponse
+	6,  // 23: voicechatpb.AsrConfigService.GetAsrConfig:output_type -> voicechatpb.GetAsrConfigResponse
+	8,  // 24: voicechatpb.AsrConfigService.UpdateAsrConfig:output_type -> voicechatpb.UpdateAsrConfigResponse
+	10, // 25: voicechatpb.AsrConfigService.DeleteAsrConfig:output_type -> voicechatpb.DeleteAsrConfigResponse
+	12, // 26: voicechatpb.AsrConfigService.ListAsrConfig:output_type -> voicechatpb.ListAsrConfigResponse
+	14, // 27: voicechatpb.TtsConfigService.CreateTtsConfig:output_type -> voicechatpb.CreateTtsConfigResponse
+	16, // 28: voicechatpb.TtsConfigService.GetTtsConfig:output_type -> voicechatpb.GetTtsConfigResponse
+	18, // 29: voicechatpb.TtsConfigService.UpdateTtsConfig:output_type -> voicechatpb.UpdateTtsConfigResponse
+	20, // 30: voicechatpb.TtsConfigService.DeleteTtsConfig:output_type -> voicechatpb.DeleteTtsConfigResponse
+	22, // 31: voicechatpb.TtsConfigService.ListTtsConfig:output_type -> voicechatpb.ListTtsConfigResponse
+	22, // [22:32] is the sub-list for method output_type
+	12, // [12:22] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_voicechat_proto_init() }

@@ -5,7 +5,7 @@ import (
 	"database/sql"
 
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/svc"
-	"go-zero-voice-agent/app/voicechat/cmd/rpc/pb"
+	"go-zero-voice-agent/app/voicechat/cmd/rpc/voicechatpb"
 	"go-zero-voice-agent/app/voicechat/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -25,7 +25,7 @@ func NewUpdateTtsConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *U
 	}
 }
 
-func (l *UpdateTtsConfigLogic) UpdateTtsConfig(in *pb.UpdateTtsConfigRequest) (*pb.UpdateTtsConfigResponse, error) {
+func (l *UpdateTtsConfigLogic) UpdateTtsConfig(in *voicechatpb.UpdateTtsConfigRequest) (*voicechatpb.UpdateTtsConfigResponse, error) {
 	data := &model.TtsConfig{
 		Id:        in.Config.Id,
 		UserId:    sql.NullInt64{Int64: in.Config.UserId, Valid: in.Config.UserId != 0},
@@ -40,7 +40,7 @@ func (l *UpdateTtsConfigLogic) UpdateTtsConfig(in *pb.UpdateTtsConfigRequest) (*
 		return nil, err
 	}
 
-	return &pb.UpdateTtsConfigResponse{
+	return &voicechatpb.UpdateTtsConfigResponse{
 		Config: in.Config,
 	}, nil
 }
