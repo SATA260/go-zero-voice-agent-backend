@@ -3,12 +3,129 @@
 
 package types
 
+type CreateAsrConfigReq struct {
+	UserId    int64  `header:"X-User-Id"`
+	Provider  string `json:"provider"`
+	AppId     string `json:"appId"`
+	SecretId  string `json:"secretId"`
+	SecretKey string `json:"secretKey"`
+	Language  string `json:"language"`
+}
+
+type CreateAsrConfigResp struct {
+	Id int64 `json:"id"`
+}
+
+type CreateTtsConfigReq struct {
+	UserId    int64  `header:"X-User-Id"`
+	Provider  string `json:"provider"`
+	AppId     string `json:"appId"`
+	SecretId  string `json:"secretId"`
+	SecretKey string `json:"secretKey"`
+}
+
+type CreateTtsConfigResp struct {
+	Id int64 `json:"id"`
+}
+
+type DeleteAsrConfigReq struct {
+	Id     int64 `path:"id"`
+	UserId int64 `header:"X-User-Id"`
+}
+
+type DeleteAsrConfigResp struct {
+}
+
+type DeleteTtsConfigReq struct {
+	Id     int64 `path:"id"`
+	UserId int64 `header:"X-User-Id"`
+}
+
+type DeleteTtsConfigResp struct {
+}
+
 type Empty struct {
 }
 
+type GetAsrConfigReq struct {
+	Id     int64 `path:"id"`
+	UserId int64 `header:"X-User-Id"`
+}
+
+type GetAsrConfigResp struct {
+	Id        int64  `json:"id"`
+	UserId    int64  `header:"X-User-Id"`
+	Provider  string `json:"provider"`
+	AppId     string `json:"appId"`
+	SecretId  string `json:"secretId"`
+	SecretKey string `json:"secretKey"`
+	Language  string `json:"language"`
+}
+
+type GetTtsConfigReq struct {
+	Id     int64 `path:"id"`
+	UserId int64 `header:"X-User-Id"`
+}
+
+type GetTtsConfigResp struct {
+	Id        int64  `json:"id"`
+	UserId    int64  `header:"X-User-Id"`
+	Provider  string `json:"provider"`
+	AppId     string `json:"appId"`
+	SecretId  string `json:"secretId"`
+	SecretKey string `json:"secretKey"`
+}
+
+type ListAsrConfigReq struct {
+	UserId   int64 `header:"X-User-Id"`
+	Page     int64 `json:"page"`
+	PageSize int64 `json:"pageSize"`
+}
+
+type ListAsrConfigResp struct {
+	ConfigList []GetAsrConfigResp `json:"configList"`
+	Total      int64              `json:"total"`
+}
+
+type ListTtsConfigReq struct {
+	UserId   int64 `header:"X-User-Id"`
+	Page     int64 `json:"page"`
+	PageSize int64 `json:"pageSize"`
+}
+
+type ListTtsConfigResp struct {
+	ConfigList []GetTtsConfigResp `json:"configList"`
+	Total      int64              `json:"total"`
+}
+
 type StartVoiceRequest struct {
-	UserId      string `header:"X-User-Id"`
+	UserId      int64  `header:"X-User-Id"`
 	LlmConfigId string `json:"llmConfigId"`
+}
+
+type UpdateAsrConfigReq struct {
+	Id        int64  `path:"id"`
+	UserId    int64  `header:"X-User-Id"`
+	Provider  string `json:"provider"`
+	AppId     string `json:"appId"`
+	SecretId  string `json:"secretId"`
+	SecretKey string `json:"secretKey"`
+	Language  string `json:"language"`
+}
+
+type UpdateAsrConfigResp struct {
+}
+
+type UpdateTtsConfigReq struct {
+	Id        int64  `path:"id"`
+	UserId    int64  `header:"X-User-Id"`
+	Provider  string `json:"provider"`
+	AppId     string `json:"appId"`
+	SecretId  string `json:"secretId"`
+	SecretKey string `json:"secretKey"`
+}
+
+type UpdateTtsConfigResp struct {
 }
 
 type WebSocketMsg struct {

@@ -8,7 +8,7 @@ import (
 	asrconfigserviceServer "go-zero-voice-agent/app/voicechat/cmd/rpc/internal/server/asrconfigservice"
 	ttsconfigserviceServer "go-zero-voice-agent/app/voicechat/cmd/rpc/internal/server/ttsconfigservice"
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/svc"
-	"go-zero-voice-agent/app/voicechat/cmd/rpc/pb"
+	"go-zero-voice-agent/app/voicechat/cmd/rpc/voicechatpb"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -27,8 +27,8 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		pb.RegisterAsrConfigServiceServer(grpcServer, asrconfigserviceServer.NewAsrConfigServiceServer(ctx))
-		pb.RegisterTtsConfigServiceServer(grpcServer, ttsconfigserviceServer.NewTtsConfigServiceServer(ctx))
+		voicechatpb.RegisterAsrConfigServiceServer(grpcServer, asrconfigserviceServer.NewAsrConfigServiceServer(ctx))
+		voicechatpb.RegisterTtsConfigServiceServer(grpcServer, ttsconfigserviceServer.NewTtsConfigServiceServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

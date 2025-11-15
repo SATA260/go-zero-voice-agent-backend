@@ -1,0 +1,12 @@
+type Empty {}
+
+type StartVoiceRequest {
+	userId      int64  `header:"X-User-Id"`
+	LlmConfigId string `json:"llmConfigId"`
+}
+
+type WebSocketMsg {
+	Type string      `json:"type"`
+	Data interface{} `json:"data"`
+}
+

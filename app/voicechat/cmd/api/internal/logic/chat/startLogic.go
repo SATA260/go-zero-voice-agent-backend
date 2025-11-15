@@ -1,7 +1,7 @@
 // Code scaffolded by goctl. Safe to edit.
 // goctl 1.9.2
 
-package voice
+package chat
 
 import (
 	"context"
@@ -34,7 +34,7 @@ func NewStartLogic(ctx context.Context, svcCtx *svc.ServiceContext) *StartLogic 
 }
 
 func (l *StartLogic) Start(req *types.StartVoiceRequest, r *http.Request, w http.ResponseWriter) (resp *types.Empty, err error) {
-	conn, err := websocket.NewConnection(w, r, req.UserId)
+	conn, err := websocket.NewConnection(w, r)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to establish websocket connection")
 	}

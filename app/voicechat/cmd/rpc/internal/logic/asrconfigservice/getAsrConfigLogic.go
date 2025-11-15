@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/svc"
-	"go-zero-voice-agent/app/voicechat/cmd/rpc/pb"
+	"go-zero-voice-agent/app/voicechat/cmd/rpc/voicechatpb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,14 +23,14 @@ func NewGetAsrConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetA
 	}
 }
 
-func (l *GetAsrConfigLogic) GetAsrConfig(in *pb.GetAsrConfigRequest) (*pb.GetAsrConfigResponse, error) {
+func (l *GetAsrConfigLogic) GetAsrConfig(in *voicechatpb.GetAsrConfigRequest) (*voicechatpb.GetAsrConfigResponse, error) {
 	data, err := l.svcCtx.AsrConfigModel.FindOne(l.ctx, in.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	return &pb.GetAsrConfigResponse{
-		Config: &pb.AsrConfig{
+	return &voicechatpb.GetAsrConfigResponse{
+		Config: &voicechatpb.AsrConfig{
 			Id:        data.Id,
 			UserId:    data.UserId.Int64,
 			Provider:  data.Provider.String,

@@ -1,0 +1,58 @@
+type CreateAsrConfigReq {
+	userId    int64  `header:"X-User-Id"`
+	provider  string `json:"provider"`
+	appId     string `json:"appId"`
+	secretId  string `json:"secretId"`
+	secretKey string `json:"secretKey"`
+	language  string `json:"language"`
+}
+
+type CreateAsrConfigResp {
+	id int64 `json:"id"`
+}
+
+type DeleteAsrConfigReq {
+	id     int64 `path:"id"`
+	userId int64 `header:"X-User-Id"`
+}
+
+type DeleteAsrConfigResp {}
+
+type UpdateAsrConfigReq {
+	id        int64  `path:"id"`
+	userId    int64  `header:"X-User-Id"`
+	provider  string `json:"provider"`
+	appId     string `json:"appId"`
+	secretId  string `json:"secretId"`
+	secretKey string `json:"secretKey"`
+	language  string `json:"language"`
+}
+
+type UpdateAsrConfigResp {}
+
+type GetAsrConfigReq {
+	id     int64 `path:"id"`
+	userId int64 `header:"X-User-Id"`
+}
+
+type GetAsrConfigResp {
+	id        int64  `json:"id"`
+	userId    int64  `header:"X-User-Id"`
+	provider  string `json:"provider"`
+	appId     string `json:"appId"`
+	secretId  string `json:"secretId"`
+	secretKey string `json:"secretKey"`
+	language  string `json:"language"`
+}
+
+type ListAsrConfigReq {
+	userId   int64 `header:"X-User-Id"`
+	page     int64 `json:"page"`
+	pageSize int64 `json:"pageSize"`
+}
+
+type ListAsrConfigResp {
+	configList []GetAsrConfigResp `json:"configList"`
+	total      int64              `json:"total"`
+}
+

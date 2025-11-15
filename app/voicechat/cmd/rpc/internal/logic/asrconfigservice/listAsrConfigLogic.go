@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/svc"
-	"go-zero-voice-agent/app/voicechat/cmd/rpc/pb"
+	"go-zero-voice-agent/app/voicechat/cmd/rpc/voicechatpb"
 	"go-zero-voice-agent/app/voicechat/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -24,7 +24,7 @@ func NewListAsrConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Lis
 	}
 }
 
-func (l *ListAsrConfigLogic) ListAsrConfig(in *pb.ListAsrConfigRequest) (*pb.ListAsrConfigResponse, error) {
+func (l *ListAsrConfigLogic) ListAsrConfig(in *voicechatpb.ListAsrConfigRequest) (*voicechatpb.ListAsrConfigResponse, error) {
 	builder := l.svcCtx.AsrConfigModel.SelectBuilder()
 	if in.UserId != 0 {
 		builder = builder.Where("user_id = ?", in.UserId)
@@ -46,9 +46,9 @@ func (l *ListAsrConfigLogic) ListAsrConfig(in *pb.ListAsrConfigRequest) (*pb.Lis
 		return nil, err
 	}
 
-	respList := make([]*pb.AsrConfig, 0, len(configs))
+	respList := make([]*voicechatpb.AsrConfig, 0, len(configs))
 	for _, c := range configs {
-		respList = append(respList, &pb.AsrConfig{
+		respList = append(respList, &voicechatpb.AsrConfig{
 			Id:        c.Id,
 			UserId:    c.UserId.Int64,
 			Provider:  c.Provider.String,
@@ -59,7 +59,7 @@ func (l *ListAsrConfigLogic) ListAsrConfig(in *pb.ListAsrConfigRequest) (*pb.Lis
 		})
 	}
 
-	return &pb.ListAsrConfigResponse{
+	return &voicechatpb.ListAsrConfigResponse{
 		Configs: respList,
 		Total:   total,
 	}, nil

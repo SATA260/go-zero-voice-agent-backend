@@ -1,8 +1,8 @@
 // ...existing code...
 syntax = "proto3";
 
-package pb;
-option go_package = "./pb";
+package voicechatpb;
+option go_package = "./voicechatpb";
 
 // 分页查询通用
 message PageQuery {
@@ -33,7 +33,12 @@ message TtsConfig {
 
 // AsrConfig CRUD & List
 message CreateAsrConfigRequest {
-    AsrConfig config = 1;
+    int64 UserId = 1;
+    string Provider = 2;
+    string AppId = 3;
+    string SecretId = 4;
+    string SecretKey = 5;
+    string Language = 6;
 }
 message CreateAsrConfigResponse {
     AsrConfig config = 1;
@@ -71,7 +76,11 @@ message ListAsrConfigResponse {
 
 // TtsConfig CRUD & List
 message CreateTtsConfigRequest {
-    TtsConfig config = 1;
+    int64 UserId = 1;
+    string Provider = 2;
+    string AppId = 3;
+    string SecretId = 4;
+    string SecretKey = 5;
 }
 message CreateTtsConfigResponse {
     TtsConfig config = 1;

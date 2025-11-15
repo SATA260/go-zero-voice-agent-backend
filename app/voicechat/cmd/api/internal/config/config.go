@@ -11,6 +11,7 @@ import (
 type Config struct {
 	rest.RestConf
 	LlmRpcConf    zrpc.RpcClientConf
+	VoicechatRpcConf zrpc.RpcClientConf
 	RustPBXConfig RustPBXConfig
 }
 

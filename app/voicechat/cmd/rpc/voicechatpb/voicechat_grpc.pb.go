@@ -6,7 +6,7 @@
 // - protoc             v6.32.0
 // source: voicechat.proto
 
-package pb
+package voicechatpb
 
 import (
 	context "context"
@@ -21,11 +21,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AsrConfigService_CreateAsrConfig_FullMethodName = "/pb.AsrConfigService/CreateAsrConfig"
-	AsrConfigService_GetAsrConfig_FullMethodName    = "/pb.AsrConfigService/GetAsrConfig"
-	AsrConfigService_UpdateAsrConfig_FullMethodName = "/pb.AsrConfigService/UpdateAsrConfig"
-	AsrConfigService_DeleteAsrConfig_FullMethodName = "/pb.AsrConfigService/DeleteAsrConfig"
-	AsrConfigService_ListAsrConfig_FullMethodName   = "/pb.AsrConfigService/ListAsrConfig"
+	AsrConfigService_CreateAsrConfig_FullMethodName = "/voicechatpb.AsrConfigService/CreateAsrConfig"
+	AsrConfigService_GetAsrConfig_FullMethodName    = "/voicechatpb.AsrConfigService/GetAsrConfig"
+	AsrConfigService_UpdateAsrConfig_FullMethodName = "/voicechatpb.AsrConfigService/UpdateAsrConfig"
+	AsrConfigService_DeleteAsrConfig_FullMethodName = "/voicechatpb.AsrConfigService/DeleteAsrConfig"
+	AsrConfigService_ListAsrConfig_FullMethodName   = "/voicechatpb.AsrConfigService/ListAsrConfig"
 )
 
 // AsrConfigServiceClient is the client API for AsrConfigService service.
@@ -250,7 +250,7 @@ func _AsrConfigService_ListAsrConfig_Handler(srv interface{}, ctx context.Contex
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var AsrConfigService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.AsrConfigService",
+	ServiceName: "voicechatpb.AsrConfigService",
 	HandlerType: (*AsrConfigServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -279,11 +279,11 @@ var AsrConfigService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	TtsConfigService_CreateTtsConfig_FullMethodName = "/pb.TtsConfigService/CreateTtsConfig"
-	TtsConfigService_GetTtsConfig_FullMethodName    = "/pb.TtsConfigService/GetTtsConfig"
-	TtsConfigService_UpdateTtsConfig_FullMethodName = "/pb.TtsConfigService/UpdateTtsConfig"
-	TtsConfigService_DeleteTtsConfig_FullMethodName = "/pb.TtsConfigService/DeleteTtsConfig"
-	TtsConfigService_ListTtsConfig_FullMethodName   = "/pb.TtsConfigService/ListTtsConfig"
+	TtsConfigService_CreateTtsConfig_FullMethodName = "/voicechatpb.TtsConfigService/CreateTtsConfig"
+	TtsConfigService_GetTtsConfig_FullMethodName    = "/voicechatpb.TtsConfigService/GetTtsConfig"
+	TtsConfigService_UpdateTtsConfig_FullMethodName = "/voicechatpb.TtsConfigService/UpdateTtsConfig"
+	TtsConfigService_DeleteTtsConfig_FullMethodName = "/voicechatpb.TtsConfigService/DeleteTtsConfig"
+	TtsConfigService_ListTtsConfig_FullMethodName   = "/voicechatpb.TtsConfigService/ListTtsConfig"
 )
 
 // TtsConfigServiceClient is the client API for TtsConfigService service.
@@ -504,7 +504,7 @@ func _TtsConfigService_ListTtsConfig_Handler(srv interface{}, ctx context.Contex
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var TtsConfigService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.TtsConfigService",
+	ServiceName: "voicechatpb.TtsConfigService",
 	HandlerType: (*TtsConfigServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

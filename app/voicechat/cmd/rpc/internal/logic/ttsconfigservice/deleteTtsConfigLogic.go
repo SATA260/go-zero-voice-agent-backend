@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/svc"
-	"go-zero-voice-agent/app/voicechat/cmd/rpc/pb"
+	"go-zero-voice-agent/app/voicechat/cmd/rpc/voicechatpb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,7 +23,7 @@ func NewDeleteTtsConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 	}
 }
 
-func (l *DeleteTtsConfigLogic) DeleteTtsConfig(in *pb.DeleteTtsConfigRequest) (*pb.DeleteTtsConfigResponse, error) {
+func (l *DeleteTtsConfigLogic) DeleteTtsConfig(in *voicechatpb.DeleteTtsConfigRequest) (*voicechatpb.DeleteTtsConfigResponse, error) {
 	data, err := l.svcCtx.TtsConfigModel.FindOne(l.ctx, in.Id)
 	if err != nil {
 		return nil, err
@@ -34,5 +34,5 @@ func (l *DeleteTtsConfigLogic) DeleteTtsConfig(in *pb.DeleteTtsConfigRequest) (*
 		return nil, err
 	}
 
-	return &pb.DeleteTtsConfigResponse{Ok: true}, nil
+	return &voicechatpb.DeleteTtsConfigResponse{Ok: true}, nil
 }

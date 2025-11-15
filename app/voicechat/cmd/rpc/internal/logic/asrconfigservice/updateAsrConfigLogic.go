@@ -5,7 +5,7 @@ import (
 	"database/sql"
 
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/svc"
-	"go-zero-voice-agent/app/voicechat/cmd/rpc/pb"
+	"go-zero-voice-agent/app/voicechat/cmd/rpc/voicechatpb"
 	"go-zero-voice-agent/app/voicechat/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -25,7 +25,7 @@ func NewUpdateAsrConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *U
 	}
 }
 
-func (l *UpdateAsrConfigLogic) UpdateAsrConfig(in *pb.UpdateAsrConfigRequest) (*pb.UpdateAsrConfigResponse, error) {
+func (l *UpdateAsrConfigLogic) UpdateAsrConfig(in *voicechatpb.UpdateAsrConfigRequest) (*voicechatpb.UpdateAsrConfigResponse, error) {
 	data := &model.AsrConfig{
 		Id:        in.Config.Id,
 		UserId:    sql.NullInt64{Int64: in.Config.UserId, Valid: in.Config.UserId != 0},
@@ -41,7 +41,7 @@ func (l *UpdateAsrConfigLogic) UpdateAsrConfig(in *pb.UpdateAsrConfigRequest) (*
 		return nil, err
 	}
 
-	return &pb.UpdateAsrConfigResponse{
+	return &voicechatpb.UpdateAsrConfigResponse{
 		Config: in.Config,
 	}, nil
 }
