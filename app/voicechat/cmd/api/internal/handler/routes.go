@@ -43,7 +43,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				// 分页获取ASR配置列表
-				Method:  http.MethodGet,
+				Method:  http.MethodPost,
 				Path:    "/configs",
 				Handler: asr.ListAsrConfigHandler(serverCtx),
 			},
@@ -91,7 +91,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				// 分页获取TTS配置列表
-				Method:  http.MethodGet,
+				Method:  http.MethodPost,
 				Path:    "/configs",
 				Handler: tts.ListTtsConfigHandler(serverCtx),
 			},

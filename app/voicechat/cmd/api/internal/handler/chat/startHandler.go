@@ -16,17 +16,16 @@ import (
 func StartHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.StartVoiceRequest
-		if err := httpx.Parse(r, &req); err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
-			return
-		}
+		// if err := httpx.Parse(r, &req); err != nil {
+		// 	httpx.ErrorCtx(r.Context(), w, err)
+		// 	return
+		// }
+		req.UserId = 1
 
 		l := chat.NewStartLogic(r.Context(), svcCtx)
-		resp, err := l.Start(&req, r, w)
+		_, err := l.Start(&req, r, w)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
-		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
 		}
 	}
 }

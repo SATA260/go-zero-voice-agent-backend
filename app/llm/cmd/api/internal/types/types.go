@@ -28,13 +28,12 @@ type ChatConfigQueryFilter struct {
 	Id          int64  `json:"id,optional"`
 	Name        string `json:"name,optional"`
 	Description string `json:"description,optional"`
-	UserId      int64  `json:"userId,optional"`
 }
 
 type CreateConfigReq struct {
+	UserId            int64   `header:"X-User-Id"`
 	Name              string  `json:"name,optional"`
 	Description       string  `json:"description,optional"`
-	UserId            int64   `json:"userId,optional"`
 	BaseUrl           string  `json:"baseUrl,optional"`
 	ApiKey            string  `json:"apiKey,optional"`
 	Model             string  `json:"model,optional"`
@@ -57,7 +56,7 @@ type CreateConfigResp struct {
 
 type DeleteConfigReq struct {
 	Id     int64 `path:"id"`
-	UserId int64 `json:"userId"`
+	UserId int64 `header:"X-User-Id"`
 }
 
 type DeleteConfigResp struct {
@@ -65,7 +64,7 @@ type DeleteConfigResp struct {
 
 type GetConfigReq struct {
 	Id     int64 `path:"id"`
-	UserId int64 `json:"userId,optional"`
+	UserId int64 `header:"X-User-Id"`
 }
 
 type GetConfigResp struct {
@@ -74,7 +73,8 @@ type GetConfigResp struct {
 
 type ListMyConfigReq struct {
 	PageQuery PageQuery             `json:"pageQuery"`
-	Filter    ChatConfigQueryFilter `json:"filter",optional`
+	UserId    int64                 `header:"X-User-Id"`
+	Filter    ChatConfigQueryFilter `json:"filter,optional"`
 }
 
 type ListMyConfigResp struct {
@@ -90,9 +90,9 @@ type PageQuery struct {
 
 type UpdateConfigReq struct {
 	Id                int64   `path:"id"`
+	UserId            int64   `header:"X-User-Id"`
 	Name              string  `json:"name,optional"`
 	Description       string  `json:"description,optional"`
-	UserId            int64   `json:"userId,optional"`
 	BaseUrl           string  `json:"baseUrl,optional"`
 	ApiKey            string  `json:"apiKey,optional"`
 	Model             string  `json:"model,optional"`

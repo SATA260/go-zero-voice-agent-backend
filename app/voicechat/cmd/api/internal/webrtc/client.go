@@ -65,22 +65,18 @@ type EventMessage struct {
 	Text      string                 `json:"text,omitempty"`
 }
 
+
 type WebRTCMessage struct {
 	Type         string  `json:"type"`          // 消息类型: offer / answer / ice-candidate
 	SDP          string  `json:"sdp,omitempty"` // SDP 内容（仅 offer / answer 时有）
 	Text         string  `json:"text,omitempty"`
-	AssistantID  int64   `json:"assistantId" binding:"required"`
-	SystemPrompt string  `json:"systemPrompt"`
-	Instruction  string  `json:"instruction"`
-	Speaker      string  `json:"speaker"`
-	Language     string  `json:"language"`
-	ApiKey       string  `json:"apiKey"`
-	ApiSecret    string  `json:"apiSecret"`
-	Speed        float32 `json:"speed"`
-	Volume       int     `json:"volume"`
-	PersonaTag   string  `json:"personaTag"`
-	Temperature  float32 `json:"temperature"`
-	MaxTokens    int     `json:"maxTokens"`
+	Candidate    string  `json:"candidate,omitempty"` // ICE 候选（仅 ice-candidate 时有）
+	AssistantID  int64   `json:"assistantId,omitempty"`
+	SystemPrompt string  `json:"systemPrompt,omitempty"`
+	KnowledgeInfo string `json:"knowledgeInfo,omitempty"`
+
+	AsrConfig AsrConfig `json:"asrConfig,omitempty"`
+	TtsConfig TtsConfig `json:"ttsConfig,omitempty"`
 }
 
 func NewSignalingClient(Conn *websocket.Conn, ctx context.Context, serverAddr string, initial PBXMessage) (*SignalingClient, error) {
@@ -104,7 +100,7 @@ func NewSignalingClient(Conn *websocket.Conn, ctx context.Context, serverAddr st
 
 	client := &SignalingClient{
 		outConn:  Conn,
-		inConn:     conn,
+		inConn:   conn,
 		ctx:      ctx,
 		cancel:   cancel,
 		recvDone: make(chan struct{}),

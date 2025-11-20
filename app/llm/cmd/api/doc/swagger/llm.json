@@ -30,30 +30,16 @@
         "operationId": "configCreateConfig",
         "parameters": [
           {
+            "type": "integer",
+            "name": "X-User-Id",
+            "in": "header"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
               "type": "object",
-              "required": [
-                "name",
-                "description",
-                "userId",
-                "baseUrl",
-                "apiKey",
-                "model",
-                "stream",
-                "temperature",
-                "topP",
-                "topK",
-                "enableThinking",
-                "repetitionPenalty",
-                "presencePenalty",
-                "maxTokens",
-                "seed",
-                "enableSearch",
-                "contextLength"
-              ],
               "properties": {
                 "apiKey": {
                   "type": "string"
@@ -102,9 +88,6 @@
                 },
                 "topP": {
                   "type": "number"
-                },
-                "userId": {
-                  "type": "integer"
                 }
               }
             }
@@ -140,16 +123,34 @@
         "operationId": "configListMyConfig",
         "parameters": [
           {
+            "type": "integer",
+            "name": "X-User-Id",
+            "in": "header"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
               "type": "object",
               "required": [
-                "pageQuery",
-                "queryFilter"
+                "pageQuery"
               ],
               "properties": {
+                "filter": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                },
                 "pageQuery": {
                   "type": "object",
                   "required": [
@@ -165,85 +166,6 @@
                       "type": "integer"
                     },
                     "pageSize": {
-                      "type": "integer"
-                    }
-                  }
-                },
-                "queryFilter": {
-                  "type": "object",
-                  "required": [
-                    "id",
-                    "name",
-                    "description",
-                    "userId",
-                    "baseUrl",
-                    "apiKey",
-                    "model",
-                    "stream",
-                    "temperature",
-                    "topP",
-                    "topK",
-                    "enableThinking",
-                    "repetitionPenalty",
-                    "presencePenalty",
-                    "maxTokens",
-                    "seed",
-                    "enableSearch",
-                    "contextLength"
-                  ],
-                  "properties": {
-                    "apiKey": {
-                      "type": "string"
-                    },
-                    "baseUrl": {
-                      "type": "string"
-                    },
-                    "contextLength": {
-                      "type": "integer"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "enableSearch": {
-                      "type": "integer"
-                    },
-                    "enableThinking": {
-                      "type": "integer"
-                    },
-                    "id": {
-                      "type": "integer"
-                    },
-                    "maxTokens": {
-                      "type": "integer"
-                    },
-                    "model": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "presencePenalty": {
-                      "type": "number"
-                    },
-                    "repetitionPenalty": {
-                      "type": "number"
-                    },
-                    "seed": {
-                      "type": "integer"
-                    },
-                    "stream": {
-                      "type": "integer"
-                    },
-                    "temperature": {
-                      "type": "number"
-                    },
-                    "topK": {
-                      "type": "integer"
-                    },
-                    "topP": {
-                      "type": "number"
-                    },
-                    "userId": {
                       "type": "integer"
                     }
                   }
@@ -365,6 +287,11 @@
             "name": "id",
             "in": "path",
             "required": true
+          },
+          {
+            "type": "integer",
+            "name": "X-User-Id",
+            "in": "header"
           }
         ],
         "responses": {
@@ -477,30 +404,16 @@
             "required": true
           },
           {
+            "type": "integer",
+            "name": "X-User-Id",
+            "in": "header"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
               "type": "object",
-              "required": [
-                "name",
-                "description",
-                "userId",
-                "baseUrl",
-                "apiKey",
-                "model",
-                "stream",
-                "temperature",
-                "topP",
-                "topK",
-                "enableThinking",
-                "repetitionPenalty",
-                "presencePenalty",
-                "maxTokens",
-                "seed",
-                "enableSearch",
-                "contextLength"
-              ],
               "properties": {
                 "apiKey": {
                   "type": "string"
@@ -549,9 +462,6 @@
                 },
                 "topP": {
                   "type": "number"
-                },
-                "userId": {
-                  "type": "integer"
                 }
               }
             }
@@ -584,6 +494,11 @@
             "name": "id",
             "in": "path",
             "required": true
+          },
+          {
+            "type": "integer",
+            "name": "X-User-Id",
+            "in": "header"
           }
         ],
         "responses": {
@@ -597,7 +512,7 @@
       }
     }
   },
-  "x-date": "2025-11-07 16:58:12",
+  "x-date": "2025-11-20 13:11:31",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

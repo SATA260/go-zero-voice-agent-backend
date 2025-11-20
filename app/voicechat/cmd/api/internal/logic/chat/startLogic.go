@@ -35,15 +35,17 @@ func NewStartLogic(ctx context.Context, svcCtx *svc.ServiceContext) *StartLogic 
 
 func (l *StartLogic) Start(req *types.StartVoiceRequest, r *http.Request, w http.ResponseWriter) (resp *types.Empty, err error) {
 	conn, err := websocket.NewConnection(w, r)
+	defer conn.Close()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to establish websocket connection")
 	}
-	go l.handleWebsocketMsg(l.ctx, conn)
+	l.handleWebsocketMsg(l.ctx, conn, req)
 
 	return
 }
 
-func (l *StartLogic) handleWebsocketMsg(ctx context.Context, conn *wsTool.Conn) {
+func (l *StartLogic) handleWebsocketMsg(ctx context.Context, conn *wsTool.Conn, req *types.StartVoiceRequest) {
+	ctx, cancel := context.WithCancel(ctx)
 	for {
 		select {
 		case <-ctx.Done():
@@ -63,12 +65,39 @@ func (l *StartLogic) handleWebsocketMsg(ctx context.Context, conn *wsTool.Conn) 
 				continue
 			}
 			if msg.Type == webrtc.WEBRTC_SIGNALING_OFFER {
-				webrtc.NewSignalingClient(conn, ctx, l.svcCtx.Config.RustPBXConfig.WebSocketUrl, webrtc.PBXMessage{
+				client, err := webrtc.NewSignalingClient(conn, ctx, l.svcCtx.Config.RustPBXConfig.WebSocketUrl, webrtc.PBXMessage{
 					Command: webrtc.WS_CALLBACK_EVENT_TYPE_INVITE,
 					Option: &webrtc.CallOptions{
-						
+						Asr: &webrtc.AsrConfig{
+							Language:  msg.AsrConfig.Language,
+							Provider:  msg.AsrConfig.Provider,
+							AppId:     msg.AsrConfig.AppId,
+							SecretId:  msg.AsrConfig.AppId,
+							SecretKey: msg.AsrConfig.SecretKey,
+						},
+						Tts: &webrtc.TtsConfig{
+							Provider:  msg.TtsConfig.Provider,
+							Speaker:   "601002",
+							Speed:     1,
+							Volume:    5,
+							AppId:     msg.TtsConfig.AppId,
+							SecretId:  msg.TtsConfig.SecretId,
+							SecretKey: msg.TtsConfig.SecretKey,
+						},
+						Offer: msg.SDP,
 					},
 				})
+				if err != nil {
+					l.Logger.Errorf("Failed to create signaling client: %v", err)
+					cancel()
+					continue
+				}
+				go client.Listen(msg.KnowledgeInfo)
+			}
+			err = conn.WriteMessage(typeVal, data)
+			if err != nil {
+				l.Logger.Errorf("Failed to write message: %v", err)
+				break
 			}
 		}
 	}

@@ -236,7 +236,10 @@
       }
     },
     "/voice/v1/asr/configs": {
-      "get": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -336,22 +339,6 @@
             "type": "integer",
             "name": "X-User-Id",
             "in": "header"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "llmConfigId"
-              ],
-              "properties": {
-                "llmConfigId": {
-                  "type": "string"
-                }
-              }
-            }
           }
         ],
         "responses": {
@@ -574,7 +561,10 @@
       }
     },
     "/voice/v1/tts/configs": {
-      "get": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -656,7 +646,7 @@
       }
     }
   },
-  "x-date": "2025-11-15 11:45:52",
+  "x-date": "2025-11-20 13:01:39",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",
