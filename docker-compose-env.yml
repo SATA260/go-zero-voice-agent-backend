@@ -72,6 +72,19 @@ services:
     command: [ "nginx", "-g", "daemon off;" ]
     networks:
       - gzva_net
+  
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.7
+    container_name: etcd
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    ports:
+      - "2379:2379"
+    volumes:
+      - ./data/etcd/data:/bitnami/etcd-data
+    networks:
+      - gzva_net
 
 networks:
   gzva_net:
