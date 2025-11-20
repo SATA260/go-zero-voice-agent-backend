@@ -44,6 +44,7 @@ func (l *UpdateTtsConfigLogic) UpdateTtsConfig(req *types.UpdateTtsConfigReq) (r
 	_, err = l.svcCtx.TtsConfigRpc.UpdateTtsConfig(l.ctx, &ttsconfigservice.UpdateTtsConfigRequest{
 		Config: &ttsconfigservice.TtsConfig{
 			Id:        req.Id,
+			UserId:    gr.Config.UserId,
 			Provider:  req.Provider,
 			AppId:     req.AppId,
 			SecretId:  req.SecretId,

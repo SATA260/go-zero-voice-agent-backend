@@ -44,6 +44,7 @@ func (l *UpdateAsrConfigLogic) UpdateAsrConfig(req *types.UpdateAsrConfigReq) (r
 	_, err = l.svcCtx.AsrConfigRpc.UpdateAsrConfig(l.ctx, &asrconfigservice.UpdateAsrConfigRequest{
 		Config: &asrconfigservice.AsrConfig{
 			Id:        req.Id,
+			UserId:    gr.Config.UserId,
 			Provider:  req.Provider,
 			AppId:     req.AppId,
 			SecretId:  req.SecretId,
