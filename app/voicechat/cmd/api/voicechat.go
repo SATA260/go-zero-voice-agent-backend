@@ -23,8 +23,8 @@ func main() {
 	flag.Parse()
 
 	if err := godotenv.Load(); err != nil {
-        logx.Errorf("Error loading .env file, please check if it exists: %v", err)
-    }
+		logx.Errorf("Error loading .env file, please check if it exists: %v", err)
+	}
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)

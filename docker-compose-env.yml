@@ -73,25 +73,6 @@ services:
     networks:
       - gzva_net
 
-  rustpbx:
-    image: ghcr.io/restsend/rustpbx:latest
-    container_name: rustpbx
-    ports:
-      - "8080:8080"
-      - "15060:15060/udp"
-      - "13050:13050/udp"
-      - "20000-30000:20000-30000/udp"
-    env_file:
-      - .env
-    volumes:
-      - ./deploy/rustpbx/db:/app/db
-      - ./deploy/rustpbx/config.toml:/app/config.toml
-      - ./deploy/rustpbx/config:/app/config
-      - ./deploy/rustpbx/recordings:/tmp/recorders
-    command: /app/rustpbx --conf /app/config.toml --super-user=YOUR --super-password=PASS
-    networks:
-      - gzva_net
-
 networks:
   gzva_net:
     driver: bridge

@@ -73,7 +73,7 @@ func toRpcListConfigReq(req *types.ListMyConfigReq) *llmconfigservice.ListConfig
 
 	return &llmconfigservice.ListConfigReq{
 		PageQuery:    toRpcPageQuery(req.PageQuery),
-		Filter: toRpcChatConfigFilter(req.Filter),
+		Filter: toRpcChatConfigFilter(req.Filter, req.UserId),
 	}
 }
 
@@ -85,12 +85,12 @@ func toRpcPageQuery(query types.PageQuery) *llmconfigservice.PageQuery {
 	}
 }
 
-func toRpcChatConfigFilter(filter types.ChatConfigQueryFilter) *llmconfigservice.ListConfigFilter {
+func toRpcChatConfigFilter(filter types.ChatConfigQueryFilter, userId int64) *llmconfigservice.ListConfigFilter {
 	return &llmconfigservice.ListConfigFilter{
 		Id:                filter.Id,
 		Name:              filter.Name,
 		Description:       filter.Description,
-		UserId:            filter.UserId,
+		UserId:            userId,
 	}
 }
 

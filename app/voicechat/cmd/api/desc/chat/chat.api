@@ -1,32 +1,7 @@
 type Empty {}
 
-type AsrConfig {
-	provider  string `json:"provider"`
-	appId     string `json:"appId"`
-	secretId  string `json:"secretId"`
-	secretKey string `json:"secretKey"`
-	language  string `json:"language"`
-}
-
-type TtsConfig {
-	provider  string `json:"provider"`
-	appId     string `json:"appId"`
-	secretId  string `json:"secretId"`
-	secretKey string `json:"secretKey"`
-}
-
-type LlmConfig {
-	model      string `json:"model"`
-	apiKey     string `json:"apiKey"`
-	apiBaseUrl string `json:"apiBaseUrl"`
-}
-
 type StartVoiceRequest {
-	userId        int64     `header:"X-User-Id"`
-	knowledgeInfo string    `json:"knowledgeInfo"`
-	asrConfig     AsrConfig `json:"asrConfig"`
-	ttsConfig     TtsConfig `json:"ttsConfig"`
-	llmConfig     LlmConfig `json:"llmConfig"`
+	userId int64 `header:"X-User-Id"`
 }
 
 type WebSocketMsg {

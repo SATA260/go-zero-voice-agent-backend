@@ -99,8 +99,7 @@ type ListTtsConfigResp struct {
 }
 
 type StartVoiceRequest struct {
-	UserId      int64  `header:"X-User-Id"`
-	LlmConfigId string `json:"llmConfigId"`
+	UserId int64 `header:"X-User-Id"`
 }
 
 type UpdateAsrConfigReq struct {

@@ -16,4 +16,4 @@ VoiceChatRpcConf:
 
 RustPBXConfig:
   Url: ${RUST_PBX_URL}
-  WebSocketUrl: ${RUST_PBX_WEBSOCKET_URL}
+  WebSocketUrl: ws://localhost:8080/ws

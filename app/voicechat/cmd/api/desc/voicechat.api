@@ -47,7 +47,7 @@ service voicechat {
 
 	@doc "分页获取ASR配置列表"
 	@handler listAsrConfig
-	get /configs (ListAsrConfigReq) returns (ListAsrConfigResp)
+	post /configs (ListAsrConfigReq) returns (ListAsrConfigResp)
 }
 
 @server (
@@ -73,6 +73,6 @@ service voicechat {
 
 	@doc "分页获取TTS配置列表"
 	@handler listTtsConfig
-	get /configs (ListTtsConfigReq) returns (ListTtsConfigResp)
+	post /configs (ListTtsConfigReq) returns (ListTtsConfigResp)
 }
 
