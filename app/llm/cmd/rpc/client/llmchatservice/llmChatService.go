@@ -24,7 +24,6 @@ type (
 	CreateConfigResp = pb.CreateConfigResp
 	DeleteConfigReq  = pb.DeleteConfigReq
 	DeleteConfigResp = pb.DeleteConfigResp
-	Function         = pb.Function
 	GetConfigReq     = pb.GetConfigReq
 	GetConfigResp    = pb.GetConfigResp
 	ListConfigFilter = pb.ListConfigFilter
@@ -34,7 +33,6 @@ type (
 	PageQuery        = pb.PageQuery
 	StreamDelta      = pb.StreamDelta
 	StreamOptions    = pb.StreamOptions
-	Tool             = pb.Tool
 	ToolCallDelta    = pb.ToolCallDelta
 	UpdateConfigReq  = pb.UpdateConfigReq
 	UpdateConfigResp = pb.UpdateConfigResp

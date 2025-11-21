@@ -345,48 +345,9 @@ func buildChatCompletionRequest(in *pb.ChatStreamReq, messages []openai.ChatComp
 		req.MaxTokens = int(cfg.GetMaxTokens())
 	}
 
-	if len(in.Tools) > 0 {
-		if tools, err := convertTools(in.Tools); err == nil {
-			req.Tools = tools
-		}
-	}
-
 	return req
 }
 
-func convertTools(pbTools []*pb.Tool) ([]openai.Tool, error) {
-	result := make([]openai.Tool, 0, len(pbTools))
-	for _, t := range pbTools {
-		if t == nil || t.Function == nil {
-			continue
-		}
-
-		toolType := openai.ToolTypeFunction
-		if t.Type != "" {
-			toolType = openai.ToolType(t.Type)
-		}
-
-		var params json.RawMessage
-		if t.Function.Parameters != nil {
-			// Proto Struct 转 JSON Schema，便于透传给 OpenAI
-			raw, err := json.Marshal(t.Function.Parameters.AsMap())
-			if err != nil {
-				return nil, err
-			}
-			params = raw
-		}
-
-		result = append(result, openai.Tool{
-			Type: toolType,
-			Function: &openai.FunctionDefinition{
-				Name:        t.Function.Name,
-				Description: t.Function.Description,
-				Parameters:  params,
-			},
-		})
-	}
-	return result, nil
-}
 
 func buildUsage(usage *openai.Usage) *pb.UsageData {
 	if usage == nil {

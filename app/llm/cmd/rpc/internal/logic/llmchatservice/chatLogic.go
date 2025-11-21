@@ -42,10 +42,6 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 		return nil, status.Error(codes.InvalidArgument, "model is required")
 	}
 
-	if len(in.GetTools()) > 0 {
-		return nil, status.Error(codes.Unimplemented, "tools are not supported in sync chat mode")
-	}
-
 	if err := l.ctx.Err(); err != nil {
 		return nil, err
 	}
@@ -101,9 +97,12 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 	historySnapshot := cloneSyncMessages(historyMsgs)
 	go l.svcCtx.CacheConversation(conversationID, historySnapshot, assistantMsg)
 
+	respMsgs := make([]*pb.ChatMsg, 0)
+	respMsgs = append(respMsgs, assistantMsg)
+
 	return &pb.ChatResp{
 		Id:      conversationID,
-		RespMsg: assistantMsg,
+		RespMsg: respMsgs,
 	}, nil
 }
 
