@@ -16,3 +16,5 @@ Asynq:
   Host: localhost:36379
   Pass: GwAGt4UmTwcMhjun
   DB: 1
+
+Timeout: 30000

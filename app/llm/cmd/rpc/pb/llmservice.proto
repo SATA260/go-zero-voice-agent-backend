@@ -3,8 +3,6 @@ syntax = "proto3";
 package pb;
 option go_package="./pb";
 
-import "google/protobuf/struct.proto";
-
 // 分页查询
 message PageQuery {
     int64 page = 1;
@@ -22,57 +20,36 @@ message LlmConfig {
     string apiKey = 2;
     // 模型名称 (必选)
     string model = 3;
-    // 是否流式输出 (可选)
-    bool stream = 4;
     // 采样温度，控制模型生成文本的多样性 (可选)
-    double temperature = 5;
+    double temperature = 4;
     // 核采样的概率阈值 (可选)
-    double top_p = 6;
+    double top_p = 5;
     // 生成过程中采样候选集的大小 (可选)
-    int64 top_k = 7;
+    int64 top_k = 6;
     // 是否开启思考模式 (可选)
-    bool enable_thinking = 8;
+    bool enable_thinking = 7;
     // 控制模型生成文本时的内容重复度（已弃用，请使用presence_penalty）(可选)
-    double repetition_penalty = 9;
+    double repetition_penalty = 8;
     // 控制模型生成文本时的内容重复度 (可选)
-    double presence_penalty = 10;
+    double presence_penalty = 9;
     // 返回内容的格式, e.g., "text", "json_object" (可选)
-    string response_format = 11;
+    string response_format = 10;
     // 流式输出特定选项 (可选)
-    StreamOptions stream_options = 12;
+    StreamOptions stream_options = 11;
     // 本次请求返回的最大 Token 数 (可选)
-    int64 max_tokens = 13;
+    int64 max_tokens = 12;
     // 随机种子，用于结果可复现 (可选)
-    int64 seed = 14;
+    int64 seed = 13;
     // 是否启用互联网搜索 (可选)
-    bool enable_search = 15;
+    bool enable_search = 14;
     // 上下文长度 (可选)
-    int64 content_length = 16;
+    int64 content_length = 15;
 }
 
 // 流式输出选项
 message StreamOptions {
     // 是否在输出的最后一行显示所使用的Token数 (可选)
     bool include_usage = 1;
-}
-
-// 可供模型调用的工具
-message Tool {
-    // 工具类型，目前仅支持 "function"
-    string type = 1;
-    // 函数定义
-    Function function = 2;
-}
-
-// 函数定义
-message Function {
-    // 函数名称
-    string name = 1;
-    // 函数功能的描述，模型将根据此描述决定何时以及如何调用该函数
-    string description = 2;
-    // 函数接受的参数，以 JSON Schema 格式描述。
-    // 使用 google.protobuf.Struct 可以灵活地表示任意JSON对象结构。
-    google.protobuf.Struct parameters = 3;
 }
 
 message ChatMsg {
@@ -86,17 +63,15 @@ message ChatReq {
     string conversation_id = 1;
     // 当前大模型请求配置
     LlmConfig llmConfig = 2;
-    // 模型可用工具定义（可选）
-    repeated Tool tools = 3;
     // 当创建新会话时的上下文消息（继续会话时可选）
-    repeated ChatMsg messages = 4;
+    repeated ChatMsg messages = 3;
     // 是否允许服务端自动回填历史记录（默认 true）
-    bool auto_fill_history = 5;
+    bool auto_fill_history = 4;
 }
 
 message ChatResp {
     string id = 1;
-    ChatMsg respMsg = 2;
+    repeated ChatMsg respMsg = 2;
 }
 
 message ChatStreamReq {
@@ -104,12 +79,10 @@ message ChatStreamReq {
     string conversation_id = 1;
     // 当前大模型请求配置
     LlmConfig llmConfig = 2;
-    // 模型可用工具定义（可选）
-    repeated Tool tools = 3;
     // 当创建新会话时的上下文消息（继续会话时可选）
-    repeated ChatMsg messages = 4;
+    repeated ChatMsg messages = 3;
     // 是否允许服务端自动回填历史记录（默认 true）
-    bool auto_fill_history = 5;
+    bool auto_fill_history = 4;
 }
 
 // 流式内容增量
