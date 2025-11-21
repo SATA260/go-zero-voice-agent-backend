@@ -135,3 +135,49 @@ func (s *SignalingClient) Listen(knowledgeInfo string) {
 		}
 	}
 }
+
+func (s *SignalingClient) HandleEvtMsg() {
+	for {
+		select {
+		case <-s.ctx.Done():
+			return
+		case evt := <-s.EvtMsgChan:
+			s.logx.Infof("Handling event: %s", evt.Event)
+			switch evt.Event {
+			case WS_CALLBACK_EVENT_TYPE_ANSWER:
+				// 转发 WebRTC answer 事件
+				s.logx.Info("Received WebRTC answer event")
+				var message = WebRTCMessage{
+					SDP: evt.SDP,
+					Type: WS_CALLBACK_EVENT_TYPE_ANSWER,
+				}
+				answerMsgBytes, err := json.Marshal(message)
+				if err != nil {
+					s.logx.Errorf("Failed to marshal WebRTC answer message: %v", err)
+					continue
+				}
+				if err := s.outConn.WriteMessage(websocket.TextMessage, answerMsgBytes); err != nil {
+					s.logx.Errorf("Failed to send WebRTC answer message: %v", err)
+					continue
+				}
+
+				// 发送 TTS 消息，让机器人说第一句话
+				sayHello := PBXMessage{
+					Command: WS_CALLBACK_EVENT_TYPE_TTS,
+					Text:    "嗯?你好啊,我是你的个人助理,喵！",
+				}
+				sayHelloMsgBytes, err := json.Marshal(sayHello)
+				if err != nil {
+					s.logx.Errorf("Failed to marshal TTS message: %v", err)
+					continue
+				}
+				s.inConn.WriteMessage(websocket.TextMessage, sayHelloMsgBytes)
+			case WS_CALLBACK_EVENT_TYPE_ASRFINAL:
+				// 处理 ASR final 事件
+				s.logx.Infof("Received ASR final event: %s", evt.Text)
+			default:
+				s.logx.Infof("warn: Unknown event type: %s", evt.Event)
+			}
+		}
+	}
+}
