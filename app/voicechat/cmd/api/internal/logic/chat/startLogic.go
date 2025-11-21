@@ -72,12 +72,12 @@ func (l *StartLogic) handleWebsocketMsg(ctx context.Context, conn *wsTool.Conn, 
 							Language:  msg.AsrConfig.Language,
 							Provider:  msg.AsrConfig.Provider,
 							AppId:     msg.AsrConfig.AppId,
-							SecretId:  msg.AsrConfig.AppId,
+							SecretId:  msg.AsrConfig.SecretId,
 							SecretKey: msg.AsrConfig.SecretKey,
 						},
 						Tts: &webrtc.TtsConfig{
 							Provider:  msg.TtsConfig.Provider,
-							Speaker:   "601002",
+							Speaker:   "603004",
 							Speed:     1,
 							Volume:    5,
 							AppId:     msg.TtsConfig.AppId,
@@ -93,6 +93,7 @@ func (l *StartLogic) handleWebsocketMsg(ctx context.Context, conn *wsTool.Conn, 
 					continue
 				}
 				go client.Listen(msg.KnowledgeInfo)
+				go client.HandleEvtMsg()
 			}
 			err = conn.WriteMessage(typeVal, data)
 			if err != nil {
