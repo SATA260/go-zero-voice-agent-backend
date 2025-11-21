@@ -9,7 +9,6 @@ import (
 	"go-zero-voice-agent/app/llm/cmd/api/internal/logic/config"
 	"go-zero-voice-agent/app/llm/cmd/api/internal/svc"
 	"go-zero-voice-agent/app/llm/cmd/api/internal/types"
-	"go-zero-voice-agent/pkg/tool"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
@@ -22,13 +21,6 @@ func UpdateConfigHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
-
-		userId, err := tool.GetUserIdInt64FromHeader(r)
-		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
-			return
-		}
-		req.UserId = userId
 
 		l := config.NewUpdateConfigLogic(r.Context(), svcCtx)
 		resp, err := l.UpdateConfig(&req)
