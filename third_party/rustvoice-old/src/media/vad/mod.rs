@@ -44,11 +44,11 @@ impl Default for VADOption {
             #[cfg(not(any(feature = "vad_webrtc", feature = "vad_silero")))]
             r#type: VadType::Other("nop".to_string()),
             samplerate: 16000,
-            // Python defaults: min_speech_duration_ms=250, min_silence_duration_ms=100, speech_pad_ms=30
-            speech_padding: 250,  // min_speech_duration_ms
-            silence_padding: 100, // min_silence_duration_ms
+            // Python defaults: min_speech_duration_ms=300, min_silence_duration_ms=1200, speech_pad_ms=30
+            speech_padding: 300,  // min_speech_duration_ms
+            silence_padding: 1200, // min_silence_duration_ms
             ratio: 0.5,
-            voice_threshold: 0.5,
+            voice_threshold: 0.8,
             max_buffer_duration_secs: 50,
             endpoint: None,
             secret_key: None,
