@@ -61,12 +61,14 @@ message ChatMsg {
 message ChatReq {
     // 已存在的会话标识，用于继续对话（可选）
     string conversation_id = 1;
+    // 用户标识，用于权限校验（必选）
+    int64 user_id = 2;
     // 当前大模型请求配置
-    LlmConfig llmConfig = 2;
+    LlmConfig llmConfig = 3;
     // 当创建新会话时的上下文消息（继续会话时可选）
-    repeated ChatMsg messages = 3;
+    repeated ChatMsg messages = 4;
     // 是否允许服务端自动回填历史记录（默认 true）
-    bool auto_fill_history = 4;
+    bool auto_fill_history = 5;
 }
 
 message ChatResp {
@@ -77,12 +79,14 @@ message ChatResp {
 message ChatStreamReq {
     // 已存在的会话标识，用于继续对话（可选）
     string conversation_id = 1;
+    // 用户标识，用于权限校验（必选）
+    int64 user_id = 2;
     // 当前大模型请求配置
-    LlmConfig llmConfig = 2;
+    LlmConfig llmConfig = 3;
     // 当创建新会话时的上下文消息（继续会话时可选）
-    repeated ChatMsg messages = 3;
+    repeated ChatMsg messages = 4;
     // 是否允许服务端自动回填历史记录（默认 true）
-    bool auto_fill_history = 4;
+    bool auto_fill_history = 5;
 }
 
 // 流式内容增量

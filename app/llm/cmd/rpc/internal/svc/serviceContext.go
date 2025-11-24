@@ -6,6 +6,7 @@ import (
 	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
 	"go-zero-voice-agent/app/llm/model"
 	"go-zero-voice-agent/app/mqueue/cmd/job/jobtype"
+	"time"
 
 	"github.com/hibiken/asynq"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -17,8 +18,8 @@ import (
 )
 
 type ServiceContext struct {
-	Config          config.Config
-	ChatConfigModel model.ChatConfigModel
+	Config           config.Config
+	ChatConfigModel  model.ChatConfigModel
 	ChatSessionModel model.ChatSessionModel
 	ChatMessageModel model.ChatMessageModel
 
@@ -35,18 +36,21 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	asynqClient := asynq.NewClient(asynq.RedisClientOpt{
 		Addr:     c.Asynq.Host,
 		Password: c.Asynq.Pass,
+		DB:       c.Asynq.DB,
 	})
 
 	return &ServiceContext{
-		Config:          c,
-		RedisClient:     redisClient,
-		AsynqClient:     asynqClient,
-		ChatConfigModel: model.NewChatConfigModel(sqlConn, c.Cache),
+		Config:           c,
+		RedisClient:      redisClient,
+		AsynqClient:      asynqClient,
+		ChatConfigModel:  model.NewChatConfigModel(sqlConn, c.Cache),
 		ChatSessionModel: model.NewChatSessionModel(sqlConn, c.Cache),
 		ChatMessageModel: model.NewChatMessageModel(sqlConn, c.Cache),
 	}
 }
 
+// CacheConversation 缓存对话记录并异步同步到数据库
+// 采用增量追加到 Redis + 延迟任务同步数据库的策略
 func (svc *ServiceContext) CacheConversation(conversationId string, userMsgs []*pb.ChatMsg, aiRespMsg *pb.ChatMsg) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -55,34 +59,48 @@ func (svc *ServiceContext) CacheConversation(conversationId string, userMsgs []*
 	}()
 
 	cacheKey := publicconsts.ChatCacheKeyPrefix + conversationId
-	if _, err := svc.RedisClient.Del(cacheKey); err != nil {
-		logx.Errorf("failed to clear conversation cache, key: %s, err: %v", cacheKey, err)
+
+	// 1. 构造需要追加的新消息列表（增量更新，保留 Redis 中的历史上下文）
+	msgsToAppend := make([]*pb.ChatMsg, 0, len(userMsgs)+1)
+	msgsToAppend = append(msgsToAppend, userMsgs...)
+	if aiRespMsg != nil {
+		msgsToAppend = append(msgsToAppend, aiRespMsg)
 	}
 
-	fullConversation := make([]*pb.ChatMsg, 0, len(userMsgs)+1)
-	fullConversation = append(fullConversation, userMsgs...)
-	fullConversation = append(fullConversation, aiRespMsg)
-	for _, msg := range fullConversation {
+	for _, msg := range msgsToAppend {
 		msgBytes, err := json.Marshal(msg)
 		if err != nil {
 			logx.Errorf("failed to marshal message, err: %v", err)
 			continue
 		}
 
+		// 使用 Rpush 将新消息追加到列表末尾
 		if _, err = svc.RedisClient.Rpush(cacheKey, string(msgBytes)); err != nil {
 			logx.Errorf("fail to push message to Redis, key: %s, err: %v", cacheKey, err)
 		}
 	}
 
+	// 刷新过期时间，保证活跃会话不丢失
 	svc.RedisClient.Expire(cacheKey, chatconsts.ChatCacheExpireSeconds)
 
+	// 2. 异步同步任务 (防抖)
 	task, err := jobtype.NewSyncChatMsgTask(conversationId)
 	if err != nil {
 		logx.Errorf("failed to create sync task for conversation %s, err: %v", conversationId, err)
 		return
 	}
 
-	if _, err = svc.AsynqClient.Enqueue(task, asynq.Queue(jobtype.SyncChatMsgToDb)); err != nil {
-		logx.Errorf("failed to enqueue sync task for conversation %s, err: %v", conversationId, err)
+	// 使用 TaskID 确保同一会话在短时间内只有一个同步任务在队列中
+	// 延迟 5 秒执行，让 Redis 积累几条消息后，由消费者一次性批量同步到 MySQL
+	taskID := "sync:chat:" + conversationId
+	if _, err = svc.AsynqClient.Enqueue(
+		task,
+		asynq.TaskID(taskID),
+		asynq.ProcessIn(5*time.Second),
+	); err != nil {
+		// 如果错误是 TaskID 冲突，说明已有任务在排队，这是预期的，忽略即可
+		if err != asynq.ErrTaskIDConflict {
+			logx.Errorf("failed to enqueue sync task for conversation %s, err: %v", conversationId, err)
+		}
 	}
 }

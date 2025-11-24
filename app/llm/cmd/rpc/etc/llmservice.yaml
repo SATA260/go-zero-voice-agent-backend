@@ -12,6 +12,12 @@ Cache:
     Type: node
     Pass: GwAGt4UmTwcMhjun
 
+Redis:
+  Host: localhost:36379
+  Type: node
+  Pass: GwAGt4UmTwcMhjun
+  Key:  
+
 Asynq:
   Host: localhost:36379
   Pass: GwAGt4UmTwcMhjun

@@ -8,5 +8,5 @@ const (
 )
 
 const (
-	ChatCacheExpireSeconds = 60 * 60
+	ChatCacheExpireSeconds = 5 * 60
 )

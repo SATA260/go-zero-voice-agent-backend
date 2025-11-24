@@ -18,9 +18,9 @@ import (
 
 // SyncChatMsgToDbLogic 用于将缓存中的 chat 消息同步到数据库
 type SyncChatMsgToDbLogic struct {
-	ctx         context.Context     
-	svcCtx      *svc.ServiceContext 
-	logx.Logger                     
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
+	logx.Logger
 }
 
 func NewSyncChatMsgToDbLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SyncChatMsgToDbLogic {
@@ -38,57 +38,48 @@ func (l *SyncChatMsgToDbLogic) Sync(payload *jobtype.SyncChatMsgPayload) error {
 		return nil
 	}
 
-	// 2. 从 Redis 读取该会话的所有消息
-	cacheKey := publicconsts.ChatCacheKeyPrefix + payload.ConversationID
-	values, err := l.svcCtx.ChatCacheRedis.Lrange(cacheKey, 0, -1)
-	if err != nil {
-		return errors.Wrapf(err, "read conversation cache failed, key: %s", cacheKey)
-	}
-
-	// 3. 如果缓存为空，直接返回
-	if len(values) == 0 {
-		return nil
-	}
-
-	// 4. 反序列化缓存中的每条消息
-	messages := make([]*pb.ChatMsg, 0, len(values))
-	for idx, raw := range values {
-		var msg pb.ChatMsg
-		if err := json.Unmarshal([]byte(raw), &msg); err != nil {
-			return errors.Wrapf(err, "decode cached message failed, key: %s, index: %d", cacheKey, idx)
-		}
-		messages = append(messages, &msg)
-	}
-
-	// 5. 确保会话 session 存在（没有则新建）
+	// 2. 确保会话 session 存在（没有则新建）
+	// 调整顺序：先拿到 sessionID，以便查询 DB 中的消息数量
 	sessionID, err := l.ensureSession(payload.ConversationID)
 	if err != nil {
 		return err
 	}
 
-	// 6. 查询数据库中已存在的消息数量，避免重复写入
+	// 3. 查询数据库中已存在的消息数量
 	existingCount, err := l.countExistingMessages(sessionID)
 	if err != nil {
 		return err
 	}
 
-	// 7. 如果缓存消息数量 <= 已有数量，说明无新消息
-	if int64(len(messages)) <= existingCount {
+	// 4. 只从 Redis 读取新增的消息 (Offset = existingCount)
+	// 优化：避免拉取全量数据，只拉取 DB 中没有的部分
+	cacheKey := publicconsts.ChatCacheKeyPrefix + payload.ConversationID
+	values, err := l.svcCtx.RedisClient.Lrange(cacheKey, int(existingCount), -1)
+	if err != nil {
+		return errors.Wrapf(err, "read conversation cache failed, key: %s", cacheKey)
+	}
+
+	// 5. 如果没有新消息，直接返回
+	if len(values) == 0 {
 		return nil
 	}
 
-	// 8. 跳过已存在的消息，持久化新增部分
-	newMessages := messages[existingCount:]
-    if err := l.persistMessages(sessionID, newMessages); err != nil {
-        return errors.Wrapf(err, "failed to persist new messages for session %d", sessionID)
-    }
+	// 6. 反序列化新增消息
+	newMessages := make([]*pb.ChatMsg, 0, len(values))
+	for idx, raw := range values {
+		var msg pb.ChatMsg
+		if err := json.Unmarshal([]byte(raw), &msg); err != nil {
+			return errors.Wrapf(err, "decode cached message failed, key: %s, index: %d", cacheKey, int(existingCount)+idx)
+		}
+		newMessages = append(newMessages, &msg)
+	}
 
-	// // 9. 持久化后清理缓存
-	// if _, err := l.svcCtx.ChatCacheRedis.Del(cacheKey); err != nil {
-	// 	l.Logger.Errorf("delete cache key failed, key: %s, err: %v", cacheKey, err)
-	// }
+	// 7. 批量持久化新增消息
+	if err := l.persistMessages(sessionID, newMessages); err != nil {
+		return errors.Wrapf(err, "failed to persist new messages for session %d", sessionID)
+	}
 
-	// 10. 日志记录同步结果
+	// 8. 日志记录同步结果
 	logx.Infof("successfully synced %d new messages for conversation %s", len(newMessages), payload.ConversationID)
 
 	return nil
