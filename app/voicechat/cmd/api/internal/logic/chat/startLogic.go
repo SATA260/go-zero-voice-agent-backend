@@ -46,6 +46,10 @@ func (l *StartLogic) Start(req *types.StartVoiceRequest, r *http.Request, w http
 
 func (l *StartLogic) handleWebsocketMsg(ctx context.Context, conn *wsTool.Conn, req *types.StartVoiceRequest) {
 	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	var isClientCreated bool
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -65,40 +69,48 @@ func (l *StartLogic) handleWebsocketMsg(ctx context.Context, conn *wsTool.Conn, 
 				continue
 			}
 			if msg.Type == webrtc.WEBRTC_SIGNALING_OFFER {
-				client, err := webrtc.NewSignalingClient(conn, ctx, l.svcCtx.Config.RustPBXConfig.WebSocketUrl, webrtc.PBXMessage{
-					Command: webrtc.WS_CALLBACK_EVENT_TYPE_INVITE,
-					Option: &webrtc.CallOptions{
-						Asr: &webrtc.AsrConfig{
-							Language:  msg.AsrConfig.Language,
-							Provider:  msg.AsrConfig.Provider,
-							AppId:     msg.AsrConfig.AppId,
-							SecretId:  msg.AsrConfig.SecretId,
-							SecretKey: msg.AsrConfig.SecretKey,
+				if isClientCreated {
+					l.Logger.Info("Client already created, ignoring offer")
+					continue
+				}
+
+				client, err := webrtc.NewSignalingClient(
+					ctx,
+					l.svcCtx.LlmChatServiceRpc,
+					msg.LlmConfig,
+					msg.SystemPrompt,
+					conn,
+					l.svcCtx.Config.RustPBXConfig.WebSocketUrl,
+					webrtc.PBXMessage{
+						Command: webrtc.WS_CALLBACK_EVENT_TYPE_INVITE,
+						Option: &webrtc.CallOptions{
+							Asr: &webrtc.AsrConfig{
+								Language:  msg.AsrConfig.Language,
+								Provider:  msg.AsrConfig.Provider,
+								AppId:     msg.AsrConfig.AppId,
+								SecretId:  msg.AsrConfig.SecretId,
+								SecretKey: msg.AsrConfig.SecretKey,
+							},
+							Tts: &webrtc.TtsConfig{
+								Provider:  msg.TtsConfig.Provider,
+								Speaker:   "603004",
+								Speed:     1,
+								Volume:    5,
+								AppId:     msg.TtsConfig.AppId,
+								SecretId:  msg.TtsConfig.SecretId,
+								SecretKey: msg.TtsConfig.SecretKey,
+							},
+							Offer: msg.SDP,
 						},
-						Tts: &webrtc.TtsConfig{
-							Provider:  msg.TtsConfig.Provider,
-							Speaker:   "603004",
-							Speed:     1,
-							Volume:    5,
-							AppId:     msg.TtsConfig.AppId,
-							SecretId:  msg.TtsConfig.SecretId,
-							SecretKey: msg.TtsConfig.SecretKey,
-						},
-						Offer: msg.SDP,
-					},
-				})
+					})
 				if err != nil {
 					l.Logger.Errorf("Failed to create signaling client: %v", err)
 					cancel()
 					continue
 				}
+				isClientCreated = true
 				go client.Listen(msg.KnowledgeInfo)
 				go client.HandleEvtMsg()
-			}
-			err = conn.WriteMessage(typeVal, data)
-			if err != nil {
-				l.Logger.Errorf("Failed to write message: %v", err)
-				break
 			}
 		}
 	}
