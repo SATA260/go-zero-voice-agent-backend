@@ -78,11 +78,13 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 		chatSession = *newSession
 	}
 
-	historyMsgs, err := l.collectHistory(in)
+	historyMsgs, err := l.collectHistory(in, &chatSession)
 	if err != nil {
 		l.Logger.Errorf("collectHistory error: %v", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
+	l.Logger.Infof("Collected %d history messages for conversation %s", len(historyMsgs), chatSession.ConvId)
+	l.Logger.Debugf("History messages: %+v", historyMsgs)
 
 	if len(in.Messages) > 0 {
 		historyMsgs = append(historyMsgs, in.Messages...)
@@ -119,8 +121,8 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 	}
 	l.Logger.Infof("LLM response content: %s", choice.Message.Content)
 
-	historySnapshot := cloneSyncMessages(historyMsgs)
-	go l.svcCtx.CacheConversation(chatSession.ConvId, historySnapshot, assistantMsg)
+	// Only cache new messages (user input + assistant response) to avoid duplication
+	go l.svcCtx.CacheConversation(chatSession.ConvId, in.Messages, assistantMsg)
 
 	respMsgs := make([]*pb.ChatMsg, 0)
 	respMsgs = append(respMsgs, assistantMsg)
@@ -131,7 +133,7 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 	}, nil
 }
 
-func (l *ChatLogic) collectHistory(in *pb.ChatReq) ([]*pb.ChatMsg, error) {
+func (l *ChatLogic) collectHistory(in *pb.ChatReq, session *model.ChatSession) ([]*pb.ChatMsg, error) {
 	if in.ConversationId == "" {
 		return []*pb.ChatMsg{}, nil
 	}
@@ -144,7 +146,7 @@ func (l *ChatLogic) collectHistory(in *pb.ChatReq) ([]*pb.ChatMsg, error) {
 	cacheKey := publicconsts.ChatCacheKeyPrefix + in.GetConversationId()
 	length := int(in.GetLlmConfig().GetContentLength())
 	if length <= 0 {
-		length = 50
+		length = 20
 	}
 
 	rawMsgs, err := l.svcCtx.RedisClient.Lrange(cacheKey, -length, -1)
@@ -161,19 +163,18 @@ func (l *ChatLogic) collectHistory(in *pb.ChatReq) ([]*pb.ChatMsg, error) {
 		if len(messages) > 0 {
 			return messages, nil
 		}
+	} else {
+		l.Logger.Errorf("failed to get history from redis: %v", err)
 	}
 
-	session, err := l.svcCtx.ChatSessionModel.FindOneByConvId(l.ctx, in.GetConversationId())
-	if err != nil {
-		if errors.Is(err, model.ErrNotFound) {
-			return []*pb.ChatMsg{}, nil
-		}
-		return nil, err
+	if session == nil {
+		return []*pb.ChatMsg{}, nil
 	}
 
 	queryBuilder := l.svcCtx.ChatMessageModel.SelectBuilder().Where(squirrel.Eq{"session_id": session.Id})
 	pageMsgs, err := l.svcCtx.ChatMessageModel.FindPageListByPage(l.ctx, queryBuilder, 1, int64(length), "id DESC")
 	if err != nil {
+		l.Logger.Errorf("failed to get history from db: %v", err)
 		return nil, err
 	}
 
