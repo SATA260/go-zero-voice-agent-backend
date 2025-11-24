@@ -2,6 +2,7 @@ package llmchatservicelogic
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"strings"
@@ -35,6 +36,8 @@ func NewChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatLogic {
 }
 
 func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
+	l.Logger.Infof("Chat request: %+v", in)
+
 	if in == nil || in.LlmConfig == nil {
 		return nil, status.Error(codes.InvalidArgument, "missing llm config")
 	}
@@ -46,8 +49,38 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 		return nil, err
 	}
 
+	var chatSession model.ChatSession
+
+	if in.ConversationId != "" {
+		session, err := l.svcCtx.ChatSessionModel.FindOneByConvId(l.ctx, in.ConversationId)
+		if err != nil {
+			if errors.Is(err, model.ErrNotFound) {
+				return nil, status.Errorf(codes.NotFound, "conversation ID %s not found", in.ConversationId)
+			}
+			return nil, status.Errorf(codes.Internal, "failed to fetch conversation ID %s: %v", in.ConversationId, err)
+		}
+
+		if session.UserId.Int64 != in.UserId {
+			return nil, status.Errorf(codes.PermissionDenied, "conversation ID %s does not belong to user %d", in.ConversationId, in.UserId)
+		}
+
+		chatSession = *session
+	} else {
+		newSession := &model.ChatSession{
+			ConvId: generateConversationID(),
+			UserId: sql.NullInt64{Int64: in.UserId, Valid: true},
+		}
+		_, err := l.svcCtx.ChatSessionModel.Insert(l.ctx, nil, newSession)
+		if err != nil {
+			l.Logger.Errorf("failed to create new conversation: %v", err)
+			return nil, status.Errorf(codes.Internal, "failed to create new conversation: %v", err)
+		}
+		chatSession = *newSession
+	}
+
 	historyMsgs, err := l.collectHistory(in)
 	if err != nil {
+		l.Logger.Errorf("collectHistory error: %v", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -55,21 +88,20 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 		historyMsgs = append(historyMsgs, in.Messages...)
 	}
 
-	if len(historyMsgs) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "no messages to process")
-	}
-
 	openaiMsgs := buildSyncMessages(historyMsgs)
 
 	client, err := l.newSyncOpenAIClient(in.LlmConfig)
 	if err != nil {
+		l.Logger.Errorf("newSyncOpenAIClient error: %v", err)
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	req := buildSyncChatCompletionRequest(in, openaiMsgs)
+	l.Logger.Infof("OpenAI request: %+v", req)
 
 	completion, err := client.CreateChatCompletion(l.ctx, req)
 	if err != nil {
+		l.Logger.Errorf("CreateChatCompletion error: %v", err)
 		return nil, status.Errorf(codes.Internal, "create chat completion failed: %v", err)
 	}
 	if len(completion.Choices) == 0 {
@@ -81,38 +113,31 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 		return nil, status.Error(codes.Unimplemented, "tool calls are not supported in sync chat mode")
 	}
 
-	conversationID := in.GetConversationId()
-	if conversationID == "" {
-		conversationID = completion.ID
-	}
-	if conversationID == "" {
-		conversationID = generateConversationID()
-	}
-
 	assistantMsg := &pb.ChatMsg{
 		Role:    chatconsts.ChatMessageRoleAssistant,
 		Content: choice.Message.Content,
 	}
+	l.Logger.Infof("LLM response content: %s", choice.Message.Content)
 
 	historySnapshot := cloneSyncMessages(historyMsgs)
-	go l.svcCtx.CacheConversation(conversationID, historySnapshot, assistantMsg)
+	go l.svcCtx.CacheConversation(chatSession.ConvId, historySnapshot, assistantMsg)
 
 	respMsgs := make([]*pb.ChatMsg, 0)
 	respMsgs = append(respMsgs, assistantMsg)
 
 	return &pb.ChatResp{
-		Id:      conversationID,
+		Id:      chatSession.ConvId,
 		RespMsg: respMsgs,
 	}, nil
 }
 
 func (l *ChatLogic) collectHistory(in *pb.ChatReq) ([]*pb.ChatMsg, error) {
-	autoFill := in.GetAutoFillHistory()
-	if !autoFill && in.GetConversationId() != "" && len(in.GetMessages()) == 0 {
-		autoFill = true
+	if in.ConversationId == "" {
+		return []*pb.ChatMsg{}, nil
 	}
 
-	if in.GetConversationId() == "" || !autoFill {
+	autoFill := in.GetAutoFillHistory()
+	if autoFill == false {
 		return []*pb.ChatMsg{}, nil
 	}
 

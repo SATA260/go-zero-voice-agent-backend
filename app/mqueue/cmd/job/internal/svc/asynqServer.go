@@ -8,14 +8,18 @@ import (
 )
 
 func newAsynqServer(c config.Config) *asynq.Server {
-	return asynq.NewServer(
-		asynq.RedisClientOpt{Addr: c.Redis.Host, Password: c.Redis.Pass},
-		asynq.Config{
-			IsFailure: func(err error) bool {
-				logx.Errorf("asynq server exec task IsFailure ======== >>>>>>>>>>>  err : %+v \n", err)
-				return true
-			},
-			Concurrency: 20, //max concurrent process job task num
-		},
-	)
+    return asynq.NewServer(
+        asynq.RedisClientOpt{
+            Addr:     c.Asynq.Host,
+            Password: c.Asynq.Pass,
+            DB:       c.Asynq.DB,
+        },
+        asynq.Config{
+            IsFailure: func(err error) bool {
+                logx.Errorf("asynq server exec task err: %+v", err)
+                return true
+            },
+            Concurrency: 20,
+        },
+    )
 }

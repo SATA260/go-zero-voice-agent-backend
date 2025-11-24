@@ -357,12 +357,14 @@ type ChatReq struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// 已存在的会话标识，用于继续对话（可选）
 	ConversationId string `protobuf:"bytes,1,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
+	// 用户标识，用于权限校验（必选）
+	UserId int64 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	// 当前大模型请求配置
-	LlmConfig *LlmConfig `protobuf:"bytes,2,opt,name=llmConfig,proto3" json:"llmConfig,omitempty"`
+	LlmConfig *LlmConfig `protobuf:"bytes,3,opt,name=llmConfig,proto3" json:"llmConfig,omitempty"`
 	// 当创建新会话时的上下文消息（继续会话时可选）
-	Messages []*ChatMsg `protobuf:"bytes,3,rep,name=messages,proto3" json:"messages,omitempty"`
+	Messages []*ChatMsg `protobuf:"bytes,4,rep,name=messages,proto3" json:"messages,omitempty"`
 	// 是否允许服务端自动回填历史记录（默认 true）
-	AutoFillHistory bool `protobuf:"varint,4,opt,name=auto_fill_history,json=autoFillHistory,proto3" json:"auto_fill_history,omitempty"`
+	AutoFillHistory bool `protobuf:"varint,5,opt,name=auto_fill_history,json=autoFillHistory,proto3" json:"auto_fill_history,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -402,6 +404,13 @@ func (x *ChatReq) GetConversationId() string {
 		return x.ConversationId
 	}
 	return ""
+}
+
+func (x *ChatReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
 }
 
 func (x *ChatReq) GetLlmConfig() *LlmConfig {
@@ -481,12 +490,14 @@ type ChatStreamReq struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// 已存在的会话标识，用于继续对话（可选）
 	ConversationId string `protobuf:"bytes,1,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
+	// 用户标识，用于权限校验（必选）
+	UserId int64 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	// 当前大模型请求配置
-	LlmConfig *LlmConfig `protobuf:"bytes,2,opt,name=llmConfig,proto3" json:"llmConfig,omitempty"`
+	LlmConfig *LlmConfig `protobuf:"bytes,3,opt,name=llmConfig,proto3" json:"llmConfig,omitempty"`
 	// 当创建新会话时的上下文消息（继续会话时可选）
-	Messages []*ChatMsg `protobuf:"bytes,3,rep,name=messages,proto3" json:"messages,omitempty"`
+	Messages []*ChatMsg `protobuf:"bytes,4,rep,name=messages,proto3" json:"messages,omitempty"`
 	// 是否允许服务端自动回填历史记录（默认 true）
-	AutoFillHistory bool `protobuf:"varint,4,opt,name=auto_fill_history,json=autoFillHistory,proto3" json:"auto_fill_history,omitempty"`
+	AutoFillHistory bool `protobuf:"varint,5,opt,name=auto_fill_history,json=autoFillHistory,proto3" json:"auto_fill_history,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -526,6 +537,13 @@ func (x *ChatStreamReq) GetConversationId() string {
 		return x.ConversationId
 	}
 	return ""
+}
+
+func (x *ChatStreamReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
 }
 
 func (x *ChatStreamReq) GetLlmConfig() *LlmConfig {
@@ -1859,20 +1877,22 @@ const file_llmservice_proto_rawDesc = "" +
 	"\rinclude_usage\x18\x01 \x01(\bR\fincludeUsage\"7\n" +
 	"\aChatMsg\x12\x12\n" +
 	"\x04role\x18\x01 \x01(\tR\x04role\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\"\xb4\x01\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\"\xcd\x01\n" +
 	"\aChatReq\x12'\n" +
-	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\x12+\n" +
-	"\tllmConfig\x18\x02 \x01(\v2\r.pb.LlmConfigR\tllmConfig\x12'\n" +
-	"\bmessages\x18\x03 \x03(\v2\v.pb.ChatMsgR\bmessages\x12*\n" +
-	"\x11auto_fill_history\x18\x04 \x01(\bR\x0fautoFillHistory\"A\n" +
+	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12+\n" +
+	"\tllmConfig\x18\x03 \x01(\v2\r.pb.LlmConfigR\tllmConfig\x12'\n" +
+	"\bmessages\x18\x04 \x03(\v2\v.pb.ChatMsgR\bmessages\x12*\n" +
+	"\x11auto_fill_history\x18\x05 \x01(\bR\x0fautoFillHistory\"A\n" +
 	"\bChatResp\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
-	"\arespMsg\x18\x02 \x03(\v2\v.pb.ChatMsgR\arespMsg\"\xba\x01\n" +
+	"\arespMsg\x18\x02 \x03(\v2\v.pb.ChatMsgR\arespMsg\"\xd3\x01\n" +
 	"\rChatStreamReq\x12'\n" +
-	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\x12+\n" +
-	"\tllmConfig\x18\x02 \x01(\v2\r.pb.LlmConfigR\tllmConfig\x12'\n" +
-	"\bmessages\x18\x03 \x03(\v2\v.pb.ChatMsgR\bmessages\x12*\n" +
-	"\x11auto_fill_history\x18\x04 \x01(\bR\x0fautoFillHistory\"E\n" +
+	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12+\n" +
+	"\tllmConfig\x18\x03 \x01(\v2\r.pb.LlmConfigR\tllmConfig\x12'\n" +
+	"\bmessages\x18\x04 \x03(\v2\v.pb.ChatMsgR\bmessages\x12*\n" +
+	"\x11auto_fill_history\x18\x05 \x01(\bR\x0fautoFillHistory\"E\n" +
 	"\vStreamDelta\x12\x18\n" +
 	"\acontent\x18\x01 \x01(\tR\acontent\x12\x1c\n" +
 	"\tcompleted\x18\x02 \x01(\bR\tcompleted\"\xb5\x01\n" +

@@ -8,11 +8,15 @@ Redis:
   Host: localhost:36379
   Type: node
   Pass: GwAGt4UmTwcMhjun
-  DB: 1
-ChatCache:
+
+Asynq:
   Host: localhost:36379
-  Type: node
   Pass: GwAGt4UmTwcMhjun
-  DB: 0
+  DB: 1
+
 DB:
   DataSource: root:f4FMhWc6FdzuBCHf@tcp(localhost:3306)/gzva_llmservice?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+Cache:
+  - Host: localhost:36379
+    Type: node
+    Pass: GwAGt4UmTwcMhjun

@@ -142,7 +142,6 @@ func (s *SignalingClient) HandleEvtMsg() {
 		case <-s.ctx.Done():
 			return
 		case evt := <-s.EvtMsgChan:
-			s.logx.Infof("Handling event: %s", evt.Event)
 			switch evt.Event {
 			case WS_CALLBACK_EVENT_TYPE_ANSWER:
 				// 转发 WebRTC answer 事件
@@ -175,9 +174,25 @@ func (s *SignalingClient) HandleEvtMsg() {
 			case WS_CALLBACK_EVENT_TYPE_ASRFINAL:
 				// 处理 ASR final 事件
 				s.logx.Infof("Received ASR final event: %s", evt.Text)
+			case WS_CALLBACK_EVENT_TYPE_TRACK_START:
+				s.logx.Infof("Track started: %s", evt.TrackId)
+			case WS_CALLBACK_EVENT_TYPE_TRACK_END:
+				s.logx.Infof("Track ended: %s, duration: %d ms", evt.TrackId, evt.Duration)
+			case WS_CALLBACK_EVENT_TYPE_METRICS:
+				s.logx.Infof("Received metrics event: %v", evt.Data)
+			case WS_CALLBACK_EVENT_TYPE_ASRDELTA:
+				s.logx.Infof("Received ASR delta event: %s", evt.Text)
 			default:
 				s.logx.Infof("warn: Unknown event type: %s", evt.Event)
 			}
 		}
 	}
+}
+
+func (s *SignalingClient) handleAsrFinal(msg EventMessage) {
+
+}
+
+func (s *SignalingClient) handleLlmChat() {
+
 }

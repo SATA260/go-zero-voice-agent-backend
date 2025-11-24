@@ -5,7 +5,6 @@ import (
 	"go-zero-voice-agent/app/mqueue/cmd/job/internal/config"
 
 	"github.com/hibiken/asynq"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -13,19 +12,19 @@ import (
 type ServiceContext struct {
 	Config           config.Config
 	AsynqServer      *asynq.Server
-	ChatCacheRedis   *redis.Redis
+	RedisClient   	 *redis.Redis
 	ChatSessionModel model.ChatSessionModel
 	ChatMessageModel model.ChatMessageModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	sqlConn := sqlx.NewMysql(c.DB.DataSource)
-	chatCacheRedis := redis.MustNewRedis(c.ChatCache)
+	redisClient := redis.MustNewRedis(c.Redis)
 	return &ServiceContext{
 		Config:           c,
 		AsynqServer:      newAsynqServer(c),
-		ChatCacheRedis:   chatCacheRedis,
-		ChatSessionModel: model.NewChatSessionModel(sqlConn, cache.CacheConf{}),
-		ChatMessageModel: model.NewChatMessageModel(sqlConn, cache.CacheConf{}),
+		RedisClient:      redisClient,
+		ChatSessionModel: model.NewChatSessionModel(sqlConn, c.Cache),
+		ChatMessageModel: model.NewChatMessageModel(sqlConn, c.Cache),
 	}
 }
