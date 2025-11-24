@@ -4,19 +4,29 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"go-zero-voice-agent/app/llm/cmd/rpc/client/llmchatservice"
+	"strings"
 
 	"github.com/gorilla/websocket"
 	"github.com/zeromicro/go-zero/core/logx"
+	chatconsts "go-zero-voice-agent/app/llm/pkg/consts"
 )
+
+const defaultSystemPrompt = ""
 
 type SignalingClient struct {
 	outConn    *websocket.Conn
-	inConn       *websocket.Conn
+	inConn     *websocket.Conn
 	ctx        context.Context
+	logx       logx.Logger
 	cancel     context.CancelFunc
 	recvDone   chan struct{}
 	EvtMsgChan chan EventMessage
-	logx       logx.Logger
+
+	LlmChatServiceRpc llmchatservice.LlmChatService
+	LlmConversationID string
+	LlmConfig         llmchatservice.LlmConfig
+	LlmSystemPromt    string
 }
 
 type PBXMessage struct {
@@ -65,21 +75,28 @@ type EventMessage struct {
 	Text      string                 `json:"text,omitempty"`
 }
 
-
 type WebRTCMessage struct {
-	Type         string  `json:"type"`          // 消息类型: offer / answer / ice-candidate
-	SDP          string  `json:"sdp,omitempty"` // SDP 内容（仅 offer / answer 时有）
-	Text         string  `json:"text,omitempty"`
-	Candidate    string  `json:"candidate,omitempty"` // ICE 候选（仅 ice-candidate 时有）
-	AssistantID  int64   `json:"assistantId,omitempty"`
-	SystemPrompt string  `json:"systemPrompt,omitempty"`
+	Type          string `json:"type"`          // 消息类型: offer / answer / ice-candidate
+	SDP           string `json:"sdp,omitempty"` // SDP 内容（仅 offer / answer 时有）
+	Text          string `json:"text,omitempty"`
+	Candidate     string `json:"candidate,omitempty"` // ICE 候选（仅 ice-candidate 时有）
+	AssistantID   int64  `json:"assistantId,omitempty"`
+	SystemPrompt  string `json:"systemPrompt,omitempty"`
 	KnowledgeInfo string `json:"knowledgeInfo,omitempty"`
 
-	AsrConfig AsrConfig `json:"asrConfig,omitempty"`
-	TtsConfig TtsConfig `json:"ttsConfig,omitempty"`
+	AsrConfig AsrConfig                `json:"asrConfig,omitempty"`
+	TtsConfig TtsConfig                `json:"ttsConfig,omitempty"`
+	LlmConfig llmchatservice.LlmConfig `json:"llmConfig,omitempty"`
 }
 
-func NewSignalingClient(Conn *websocket.Conn, ctx context.Context, serverAddr string, initial PBXMessage) (*SignalingClient, error) {
+func NewSignalingClient(
+	ctx context.Context,
+	llmServiceRpc llmchatservice.LlmChatService,
+	llmConfig llmchatservice.LlmConfig,
+	llmSystemPrompt string,
+	Conn *websocket.Conn,
+	serverAddr string,
+	initial PBXMessage) (*SignalingClient, error) {
 	ctx, cancel := context.WithCancel(ctx)
 
 	conn, _, err := websocket.DefaultDialer.Dial(serverAddr, nil)
@@ -99,13 +116,17 @@ func NewSignalingClient(Conn *websocket.Conn, ctx context.Context, serverAddr st
 	}
 
 	client := &SignalingClient{
-		outConn:  Conn,
-		inConn:   conn,
-		ctx:      ctx,
-		cancel:   cancel,
-		recvDone: make(chan struct{}),
-		logx:     logx.WithContext(ctx),
+		outConn:    Conn,
+		inConn:     conn,
+		ctx:        ctx,
+		cancel:     cancel,
+		recvDone:   make(chan struct{}),
+		logx:       logx.WithContext(ctx),
 		EvtMsgChan: make(chan EventMessage, 1024),
+
+		LlmChatServiceRpc: llmServiceRpc,
+		LlmConfig:         llmConfig,
+		LlmSystemPromt:    llmSystemPrompt,
 	}
 	client.logx.Info("Send invite command to RustPBX....")
 
@@ -147,7 +168,7 @@ func (s *SignalingClient) HandleEvtMsg() {
 				// 转发 WebRTC answer 事件
 				s.logx.Info("Received WebRTC answer event")
 				var message = WebRTCMessage{
-					SDP: evt.SDP,
+					SDP:  evt.SDP,
 					Type: WS_CALLBACK_EVENT_TYPE_ANSWER,
 				}
 				answerMsgBytes, err := json.Marshal(message)
@@ -161,19 +182,14 @@ func (s *SignalingClient) HandleEvtMsg() {
 				}
 
 				// 发送 TTS 消息，让机器人说第一句话
-				sayHello := PBXMessage{
-					Command: WS_CALLBACK_EVENT_TYPE_TTS,
-					Text:    "嗯?你好啊,我是你的个人助理,喵！",
-				}
-				sayHelloMsgBytes, err := json.Marshal(sayHello)
-				if err != nil {
-					s.logx.Errorf("Failed to marshal TTS message: %v", err)
+				if err := s.sendTTSMessage("嗯？你好啊，我是你的个人语音助手"); err != nil {
+					s.logx.Errorf("Failed to send TTS message: %v", err)
 					continue
 				}
-				s.inConn.WriteMessage(websocket.TextMessage, sayHelloMsgBytes)
 			case WS_CALLBACK_EVENT_TYPE_ASRFINAL:
 				// 处理 ASR final 事件
 				s.logx.Infof("Received ASR final event: %s", evt.Text)
+				s.handleAsrFinal(evt)
 			case WS_CALLBACK_EVENT_TYPE_TRACK_START:
 				s.logx.Infof("Track started: %s", evt.TrackId)
 			case WS_CALLBACK_EVENT_TYPE_TRACK_END:
@@ -189,10 +205,95 @@ func (s *SignalingClient) HandleEvtMsg() {
 	}
 }
 
-func (s *SignalingClient) handleAsrFinal(msg EventMessage) {
-
+// 调用tts服务的方法
+func (s *SignalingClient) sendTTSMessage(text string) error {
+	sayHello := PBXMessage{
+		Command: WS_CALLBACK_EVENT_TYPE_TTS,
+		Text:    text,
+	}
+	sayHelloMsgBytes, err := json.Marshal(sayHello)
+	if err != nil {
+		return err
+	}
+	s.inConn.WriteMessage(websocket.TextMessage, sayHelloMsgBytes)
+	return nil
 }
 
-func (s *SignalingClient) handleLlmChat() {
+func (s *SignalingClient) handleAsrFinal(evt EventMessage) {
+	if strings.Trim(evt.Text, " ") == "" {
+		s.logx.Debugf("AsrFinal text is empty, ignore.")
+		return
+	}
 
+	// 将识别到的文字通过websocket连接发送到前端
+	asrMsg := WebRTCMessage{
+		Type: chatconsts.ChatMessageRoleUser,
+		Text: evt.Text,
+	}
+	asrMsgBytes, err := json.Marshal(asrMsg)
+	if err != nil {
+		s.logx.Errorf("Failed to marshal ASR final message: %v", err)
+		return
+	}
+	s.outConn.WriteMessage(websocket.TextMessage, asrMsgBytes)
+
+	// 如果没有进行过对话，则填充系统提示词
+	chatMsgs := make([]*llmchatservice.ChatMsg, 0)
+	if s.LlmConversationID == "" {
+		if strings.Trim(s.LlmSystemPromt, " ") == "" {
+			msg := llmchatservice.ChatMsg{
+				Role:    chatconsts.ChatMessageRoleSystem,
+				Content: defaultSystemPrompt,
+			}
+			chatMsgs = append(chatMsgs, &msg)
+		} else {
+			msg := llmchatservice.ChatMsg{
+				Role:    chatconsts.ChatMessageRoleSystem,
+				Content: s.LlmSystemPromt,
+			}
+			chatMsgs = append(chatMsgs, &msg)
+		}
+	}
+
+	// 填充用户输入信息
+	chatMsgs = append(chatMsgs, &llmchatservice.ChatMsg{
+		Role:    chatconsts.ChatMessageRoleUser,
+		Content: evt.Text,
+	})
+
+	// 发送聊天请求到 LLM 服务
+	chatReq := &llmchatservice.ChatReq{
+		ConversationId:  s.LlmConversationID,
+		LlmConfig:       &llmchatservice.LlmConfig{
+			BaseUrl:   s.LlmConfig.BaseUrl,
+			ApiKey:    s.LlmConfig.ApiKey,
+			Model:     s.LlmConfig.Model,
+		},
+		Messages:        chatMsgs,
+		AutoFillHistory: true,
+	}
+	chatResp, err := s.LlmChatServiceRpc.Chat(s.ctx, chatReq)
+	if err != nil {
+		s.logx.Errorf("LlmChatServiceRpc.Chat error: %v", err)
+		return
+	}
+
+	// 填充conversation-id
+	s.LlmConversationID = chatResp.Id
+
+	// 发送 TTS 消息
+	llmMsg := chatResp.RespMsg[len(chatResp.RespMsg)-1].Content
+	s.sendTTSMessage(llmMsg)
+
+	// 发送ai回复到前端
+	aiMsg := WebRTCMessage{
+		Type: chatconsts.ChatMessageRoleAssistant,
+		Text: llmMsg,
+	}
+	aiMsgBytes, err := json.Marshal(aiMsg)
+	if err != nil {
+		s.logx.Errorf("Failed to marshal AI message: %v", err)
+		return
+	}
+	s.outConn.WriteMessage(websocket.TextMessage, aiMsgBytes)
 }
