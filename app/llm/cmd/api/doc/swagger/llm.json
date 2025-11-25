@@ -84,34 +84,16 @@
                     "required": [
                       "id",
                       "sessionId",
-                      "configId",
                       "role",
                       "content",
-                      "extra",
-                      "version",
-                      "delState",
-                      "createTime",
-                      "updateTime",
-                      "deleteTime"
+                      "createTime"
                     ],
                     "properties": {
-                      "configId": {
-                        "type": "integer"
-                      },
                       "content": {
                         "type": "string"
                       },
                       "createTime": {
                         "type": "integer"
-                      },
-                      "delState": {
-                        "type": "integer"
-                      },
-                      "deleteTime": {
-                        "type": "integer"
-                      },
-                      "extra": {
-                        "type": "string"
                       },
                       "id": {
                         "type": "integer"
@@ -120,12 +102,6 @@
                         "type": "string"
                       },
                       "sessionId": {
-                        "type": "integer"
-                      },
-                      "updateTime": {
-                        "type": "integer"
-                      },
-                      "version": {
                         "type": "integer"
                       }
                     }
@@ -257,11 +233,7 @@
                       "convId",
                       "userId",
                       "title",
-                      "version",
-                      "delState",
-                      "createTime",
-                      "updateTime",
-                      "deleteTime"
+                      "createTime"
                     ],
                     "properties": {
                       "convId": {
@@ -270,25 +242,13 @@
                       "createTime": {
                         "type": "integer"
                       },
-                      "delState": {
-                        "type": "integer"
-                      },
-                      "deleteTime": {
-                        "type": "integer"
-                      },
                       "id": {
                         "type": "integer"
                       },
                       "title": {
                         "type": "string"
                       },
-                      "updateTime": {
-                        "type": "integer"
-                      },
                       "userId": {
-                        "type": "integer"
-                      },
-                      "version": {
                         "type": "integer"
                       }
                     }
@@ -339,11 +299,7 @@
                     "convId",
                     "userId",
                     "title",
-                    "version",
-                    "delState",
-                    "createTime",
-                    "updateTime",
-                    "deleteTime"
+                    "createTime"
                   ],
                   "properties": {
                     "convId": {
@@ -352,25 +308,13 @@
                     "createTime": {
                       "type": "integer"
                     },
-                    "delState": {
-                      "type": "integer"
-                    },
-                    "deleteTime": {
-                      "type": "integer"
-                    },
                     "id": {
                       "type": "integer"
                     },
                     "title": {
                       "type": "string"
                     },
-                    "updateTime": {
-                      "type": "integer"
-                    },
                     "userId": {
-                      "type": "integer"
-                    },
-                    "version": {
                       "type": "integer"
                     }
                   }
@@ -912,7 +856,7 @@
       }
     }
   },
-  "x-date": "2025-11-25 19:54:18",
+  "x-date": "2025-11-25 20:12:14",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

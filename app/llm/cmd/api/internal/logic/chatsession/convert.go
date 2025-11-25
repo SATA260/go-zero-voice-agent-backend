@@ -53,10 +53,6 @@ func toTypesChatSession(session *chatsessionservice.ChatSession) types.ChatSessi
 		ConvId:     session.ConvId,
 		UserId:     session.UserId,
 		Title:      session.Title,
-		Version:    session.Version,
-		DelState:   session.DelState,
 		CreateTime: session.CreateTime,
-		UpdateTime: session.UpdateTime,
-		DeleteTime: session.DeleteTime,
 	}
 }
