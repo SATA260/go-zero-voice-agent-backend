@@ -69,6 +69,7 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 		newSession := &model.ChatSession{
 			ConvId: generateConversationID(),
 			UserId: sql.NullInt64{Int64: in.UserId, Valid: true},
+			Title:  "New Conversation",
 		}
 		_, err := l.svcCtx.ChatSessionModel.Insert(l.ctx, nil, newSession)
 		if err != nil {

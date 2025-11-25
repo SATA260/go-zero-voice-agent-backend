@@ -9,6 +9,7 @@ import (
 	"go-zero-voice-agent/app/llm/cmd/api/internal/svc"
 	"go-zero-voice-agent/app/llm/cmd/api/internal/types"
 	"go-zero-voice-agent/app/llm/cmd/rpc/client/chatsessionservice"
+	"go-zero-voice-agent/app/llm/pkg/consts"
 
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -68,6 +69,10 @@ func (l *ListChatMessageBySessionLogic) ListChatMessageBySession(req *types.List
 			continue
 		}
 		messages = append(messages, toTypesChatMessage(msg))
+	}
+
+	if messages[0].Role == consts.ChatMessageRoleSystem {
+		messages = messages[1:]
 	}
 
 	return &types.ListChatMessageBySessionResp{
