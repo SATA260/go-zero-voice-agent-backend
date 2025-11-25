@@ -15,25 +15,35 @@ import (
 
 type (
 	ChatConfig                = pb.ChatConfig
+	ChatMessage               = pb.ChatMessage
 	ChatMsg                   = pb.ChatMsg
 	ChatReq                   = pb.ChatReq
 	ChatResp                  = pb.ChatResp
 	ChatSession               = pb.ChatSession
 	ChatStreamReq             = pb.ChatStreamReq
 	ChatStreamResp            = pb.ChatStreamResp
+	CreateChatMessageReq      = pb.CreateChatMessageReq
+	CreateChatMessageResp     = pb.CreateChatMessageResp
 	CreateChatSessionReq      = pb.CreateChatSessionReq
 	CreateChatSessionResp     = pb.CreateChatSessionResp
 	CreateConfigReq           = pb.CreateConfigReq
 	CreateConfigResp          = pb.CreateConfigResp
+	DeleteChatMessageReq      = pb.DeleteChatMessageReq
+	DeleteChatMessageResp     = pb.DeleteChatMessageResp
 	DeleteChatSessionReq      = pb.DeleteChatSessionReq
 	DeleteChatSessionResp     = pb.DeleteChatSessionResp
 	DeleteConfigReq           = pb.DeleteConfigReq
 	DeleteConfigResp          = pb.DeleteConfigResp
+	GetChatMessageReq         = pb.GetChatMessageReq
+	GetChatMessageResp        = pb.GetChatMessageResp
 	GetChatSessionByConvIdReq = pb.GetChatSessionByConvIdReq
 	GetChatSessionReq         = pb.GetChatSessionReq
 	GetChatSessionResp        = pb.GetChatSessionResp
 	GetConfigReq              = pb.GetConfigReq
 	GetConfigResp             = pb.GetConfigResp
+	ListChatMessageFilter     = pb.ListChatMessageFilter
+	ListChatMessageReq        = pb.ListChatMessageReq
+	ListChatMessageResp       = pb.ListChatMessageResp
 	ListChatSessionFilter     = pb.ListChatSessionFilter
 	ListChatSessionReq        = pb.ListChatSessionReq
 	ListChatSessionResp       = pb.ListChatSessionResp
@@ -45,6 +55,8 @@ type (
 	StreamDelta               = pb.StreamDelta
 	StreamOptions             = pb.StreamOptions
 	ToolCallDelta             = pb.ToolCallDelta
+	UpdateChatMessageReq      = pb.UpdateChatMessageReq
+	UpdateChatMessageResp     = pb.UpdateChatMessageResp
 	UpdateChatSessionReq      = pb.UpdateChatSessionReq
 	UpdateChatSessionResp     = pb.UpdateChatSessionResp
 	UpdateConfigReq           = pb.UpdateConfigReq
