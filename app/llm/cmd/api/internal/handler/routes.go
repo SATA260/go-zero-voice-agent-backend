@@ -6,6 +6,7 @@ package handler
 import (
 	"net/http"
 
+	chatsession "go-zero-voice-agent/app/llm/cmd/api/internal/handler/chatsession"
 	config "go-zero-voice-agent/app/llm/cmd/api/internal/handler/config"
 	"go-zero-voice-agent/app/llm/cmd/api/internal/svc"
 
@@ -13,6 +14,30 @@ import (
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				// 查询会话详情
+				Method:  http.MethodGet,
+				Path:    "/:id",
+				Handler: chatsession.GetChatSessionHandler(serverCtx),
+			},
+			{
+				// 删除会话
+				Method:  http.MethodDelete,
+				Path:    "/:id",
+				Handler: chatsession.DeleteChatSessionHandler(serverCtx),
+			},
+			{
+				// 分页查询会话列表
+				Method:  http.MethodPost,
+				Path:    "/list",
+				Handler: chatsession.ListChatSessionHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/llm/v1/chat-session"),
+	)
+
 	server.AddRoutes(
 		[]rest.Route{
 			{
