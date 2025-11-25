@@ -15,6 +15,406 @@
   },
   "basePath": "/",
   "paths": {
+    "/llm/v1/chat-message/list": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "根据会话分页查询消息",
+        "operationId": "chatmessageListChatMessageBySession",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "X-User-Id",
+            "in": "header"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "sessionId",
+                "pageQuery"
+              ],
+              "properties": {
+                "pageQuery": {
+                  "type": "object",
+                  "required": [
+                    "page",
+                    "pageSize",
+                    "orderBy"
+                  ],
+                  "properties": {
+                    "orderBy": {
+                      "type": "string"
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "sessionId": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "messages": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "sessionId",
+                      "configId",
+                      "role",
+                      "content",
+                      "extra",
+                      "version",
+                      "delState",
+                      "createTime",
+                      "updateTime",
+                      "deleteTime"
+                    ],
+                    "properties": {
+                      "configId": {
+                        "type": "integer"
+                      },
+                      "content": {
+                        "type": "string"
+                      },
+                      "createTime": {
+                        "type": "integer"
+                      },
+                      "delState": {
+                        "type": "integer"
+                      },
+                      "deleteTime": {
+                        "type": "integer"
+                      },
+                      "extra": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "role": {
+                        "type": "string"
+                      },
+                      "sessionId": {
+                        "type": "integer"
+                      },
+                      "updateTime": {
+                        "type": "integer"
+                      },
+                      "version": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/llm/v1/chat-message/{id}": {
+      "delete": {
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "删除聊天消息",
+        "operationId": "chatmessageDeleteChatMessage",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "name": "X-User-Id",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/llm/v1/chat-session/list": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "分页查询会话列表",
+        "operationId": "chatsessionListChatSession",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "X-User-Id",
+            "in": "header"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "pageQuery"
+              ],
+              "properties": {
+                "filter": {
+                  "type": "object",
+                  "properties": {
+                    "convId": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "pageQuery": {
+                  "type": "object",
+                  "required": [
+                    "page",
+                    "pageSize",
+                    "orderBy"
+                  ],
+                  "properties": {
+                    "orderBy": {
+                      "type": "string"
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sessions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "convId",
+                      "userId",
+                      "title",
+                      "version",
+                      "delState",
+                      "createTime",
+                      "updateTime",
+                      "deleteTime"
+                    ],
+                    "properties": {
+                      "convId": {
+                        "type": "string"
+                      },
+                      "createTime": {
+                        "type": "integer"
+                      },
+                      "delState": {
+                        "type": "integer"
+                      },
+                      "deleteTime": {
+                        "type": "integer"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "updateTime": {
+                        "type": "integer"
+                      },
+                      "userId": {
+                        "type": "integer"
+                      },
+                      "version": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/llm/v1/chat-session/{id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "查询会话详情",
+        "operationId": "chatsessionGetChatSession",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "name": "X-User-Id",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "convId",
+                    "userId",
+                    "title",
+                    "version",
+                    "delState",
+                    "createTime",
+                    "updateTime",
+                    "deleteTime"
+                  ],
+                  "properties": {
+                    "convId": {
+                      "type": "string"
+                    },
+                    "createTime": {
+                      "type": "integer"
+                    },
+                    "delState": {
+                      "type": "integer"
+                    },
+                    "deleteTime": {
+                      "type": "integer"
+                    },
+                    "id": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "updateTime": {
+                      "type": "integer"
+                    },
+                    "userId": {
+                      "type": "integer"
+                    },
+                    "version": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "删除会话",
+        "operationId": "chatsessionDeleteChatSession",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "name": "X-User-Id",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
     "/llm/v1/config/create": {
       "post": {
         "consumes": [
@@ -512,7 +912,7 @@
       }
     }
   },
-  "x-date": "2025-11-20 13:11:31",
+  "x-date": "2025-11-25 19:54:18",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",
