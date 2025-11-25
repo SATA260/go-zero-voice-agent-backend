@@ -2,7 +2,7 @@
 // goctl 1.9.2
 // Source: llmservice.proto
 
-package llmchatservice
+package chatmessageservice
 
 import (
 	"context"
@@ -63,28 +63,46 @@ type (
 	UpdateConfigResp          = pb.UpdateConfigResp
 	UsageData                 = pb.UsageData
 
-	LlmChatService interface {
-		Chat(ctx context.Context, in *ChatReq, opts ...grpc.CallOption) (*ChatResp, error)
-		ChatStream(ctx context.Context, in *ChatStreamReq, opts ...grpc.CallOption) (pb.LlmChatService_ChatStreamClient, error)
+	ChatMessageService interface {
+		CreateChatMessage(ctx context.Context, in *CreateChatMessageReq, opts ...grpc.CallOption) (*CreateChatMessageResp, error)
+		DeleteChatMessage(ctx context.Context, in *DeleteChatMessageReq, opts ...grpc.CallOption) (*DeleteChatMessageResp, error)
+		UpdateChatMessage(ctx context.Context, in *UpdateChatMessageReq, opts ...grpc.CallOption) (*UpdateChatMessageResp, error)
+		GetChatMessage(ctx context.Context, in *GetChatMessageReq, opts ...grpc.CallOption) (*GetChatMessageResp, error)
+		ListChatMessage(ctx context.Context, in *ListChatMessageReq, opts ...grpc.CallOption) (*ListChatMessageResp, error)
 	}
 
-	defaultLlmChatService struct {
+	defaultChatMessageService struct {
 		cli zrpc.Client
 	}
 )
 
-func NewLlmChatService(cli zrpc.Client) LlmChatService {
-	return &defaultLlmChatService{
+func NewChatMessageService(cli zrpc.Client) ChatMessageService {
+	return &defaultChatMessageService{
 		cli: cli,
 	}
 }
 
-func (m *defaultLlmChatService) Chat(ctx context.Context, in *ChatReq, opts ...grpc.CallOption) (*ChatResp, error) {
-	client := pb.NewLlmChatServiceClient(m.cli.Conn())
-	return client.Chat(ctx, in, opts...)
+func (m *defaultChatMessageService) CreateChatMessage(ctx context.Context, in *CreateChatMessageReq, opts ...grpc.CallOption) (*CreateChatMessageResp, error) {
+	client := pb.NewChatMessageServiceClient(m.cli.Conn())
+	return client.CreateChatMessage(ctx, in, opts...)
 }
 
-func (m *defaultLlmChatService) ChatStream(ctx context.Context, in *ChatStreamReq, opts ...grpc.CallOption) (pb.LlmChatService_ChatStreamClient, error) {
-	client := pb.NewLlmChatServiceClient(m.cli.Conn())
-	return client.ChatStream(ctx, in, opts...)
+func (m *defaultChatMessageService) DeleteChatMessage(ctx context.Context, in *DeleteChatMessageReq, opts ...grpc.CallOption) (*DeleteChatMessageResp, error) {
+	client := pb.NewChatMessageServiceClient(m.cli.Conn())
+	return client.DeleteChatMessage(ctx, in, opts...)
+}
+
+func (m *defaultChatMessageService) UpdateChatMessage(ctx context.Context, in *UpdateChatMessageReq, opts ...grpc.CallOption) (*UpdateChatMessageResp, error) {
+	client := pb.NewChatMessageServiceClient(m.cli.Conn())
+	return client.UpdateChatMessage(ctx, in, opts...)
+}
+
+func (m *defaultChatMessageService) GetChatMessage(ctx context.Context, in *GetChatMessageReq, opts ...grpc.CallOption) (*GetChatMessageResp, error) {
+	client := pb.NewChatMessageServiceClient(m.cli.Conn())
+	return client.GetChatMessage(ctx, in, opts...)
+}
+
+func (m *defaultChatMessageService) ListChatMessage(ctx context.Context, in *ListChatMessageReq, opts ...grpc.CallOption) (*ListChatMessageResp, error) {
+	client := pb.NewChatMessageServiceClient(m.cli.Conn())
+	return client.ListChatMessage(ctx, in, opts...)
 }

@@ -707,3 +707,257 @@ var ChatSessionService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "llmservice.proto",
 }
+
+const (
+	ChatMessageService_CreateChatMessage_FullMethodName = "/pb.ChatMessageService/CreateChatMessage"
+	ChatMessageService_DeleteChatMessage_FullMethodName = "/pb.ChatMessageService/DeleteChatMessage"
+	ChatMessageService_UpdateChatMessage_FullMethodName = "/pb.ChatMessageService/UpdateChatMessage"
+	ChatMessageService_GetChatMessage_FullMethodName    = "/pb.ChatMessageService/GetChatMessage"
+	ChatMessageService_ListChatMessage_FullMethodName   = "/pb.ChatMessageService/ListChatMessage"
+)
+
+// ChatMessageServiceClient is the client API for ChatMessageService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ChatMessageServiceClient interface {
+	CreateChatMessage(ctx context.Context, in *CreateChatMessageReq, opts ...grpc.CallOption) (*CreateChatMessageResp, error)
+	DeleteChatMessage(ctx context.Context, in *DeleteChatMessageReq, opts ...grpc.CallOption) (*DeleteChatMessageResp, error)
+	UpdateChatMessage(ctx context.Context, in *UpdateChatMessageReq, opts ...grpc.CallOption) (*UpdateChatMessageResp, error)
+	GetChatMessage(ctx context.Context, in *GetChatMessageReq, opts ...grpc.CallOption) (*GetChatMessageResp, error)
+	ListChatMessage(ctx context.Context, in *ListChatMessageReq, opts ...grpc.CallOption) (*ListChatMessageResp, error)
+}
+
+type chatMessageServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewChatMessageServiceClient(cc grpc.ClientConnInterface) ChatMessageServiceClient {
+	return &chatMessageServiceClient{cc}
+}
+
+func (c *chatMessageServiceClient) CreateChatMessage(ctx context.Context, in *CreateChatMessageReq, opts ...grpc.CallOption) (*CreateChatMessageResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateChatMessageResp)
+	err := c.cc.Invoke(ctx, ChatMessageService_CreateChatMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatMessageServiceClient) DeleteChatMessage(ctx context.Context, in *DeleteChatMessageReq, opts ...grpc.CallOption) (*DeleteChatMessageResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteChatMessageResp)
+	err := c.cc.Invoke(ctx, ChatMessageService_DeleteChatMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatMessageServiceClient) UpdateChatMessage(ctx context.Context, in *UpdateChatMessageReq, opts ...grpc.CallOption) (*UpdateChatMessageResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateChatMessageResp)
+	err := c.cc.Invoke(ctx, ChatMessageService_UpdateChatMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatMessageServiceClient) GetChatMessage(ctx context.Context, in *GetChatMessageReq, opts ...grpc.CallOption) (*GetChatMessageResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetChatMessageResp)
+	err := c.cc.Invoke(ctx, ChatMessageService_GetChatMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatMessageServiceClient) ListChatMessage(ctx context.Context, in *ListChatMessageReq, opts ...grpc.CallOption) (*ListChatMessageResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListChatMessageResp)
+	err := c.cc.Invoke(ctx, ChatMessageService_ListChatMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ChatMessageServiceServer is the server API for ChatMessageService service.
+// All implementations must embed UnimplementedChatMessageServiceServer
+// for forward compatibility.
+type ChatMessageServiceServer interface {
+	CreateChatMessage(context.Context, *CreateChatMessageReq) (*CreateChatMessageResp, error)
+	DeleteChatMessage(context.Context, *DeleteChatMessageReq) (*DeleteChatMessageResp, error)
+	UpdateChatMessage(context.Context, *UpdateChatMessageReq) (*UpdateChatMessageResp, error)
+	GetChatMessage(context.Context, *GetChatMessageReq) (*GetChatMessageResp, error)
+	ListChatMessage(context.Context, *ListChatMessageReq) (*ListChatMessageResp, error)
+	mustEmbedUnimplementedChatMessageServiceServer()
+}
+
+// UnimplementedChatMessageServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedChatMessageServiceServer struct{}
+
+func (UnimplementedChatMessageServiceServer) CreateChatMessage(context.Context, *CreateChatMessageReq) (*CreateChatMessageResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateChatMessage not implemented")
+}
+func (UnimplementedChatMessageServiceServer) DeleteChatMessage(context.Context, *DeleteChatMessageReq) (*DeleteChatMessageResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteChatMessage not implemented")
+}
+func (UnimplementedChatMessageServiceServer) UpdateChatMessage(context.Context, *UpdateChatMessageReq) (*UpdateChatMessageResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateChatMessage not implemented")
+}
+func (UnimplementedChatMessageServiceServer) GetChatMessage(context.Context, *GetChatMessageReq) (*GetChatMessageResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetChatMessage not implemented")
+}
+func (UnimplementedChatMessageServiceServer) ListChatMessage(context.Context, *ListChatMessageReq) (*ListChatMessageResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListChatMessage not implemented")
+}
+func (UnimplementedChatMessageServiceServer) mustEmbedUnimplementedChatMessageServiceServer() {}
+func (UnimplementedChatMessageServiceServer) testEmbeddedByValue()                            {}
+
+// UnsafeChatMessageServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ChatMessageServiceServer will
+// result in compilation errors.
+type UnsafeChatMessageServiceServer interface {
+	mustEmbedUnimplementedChatMessageServiceServer()
+}
+
+func RegisterChatMessageServiceServer(s grpc.ServiceRegistrar, srv ChatMessageServiceServer) {
+	// If the following call pancis, it indicates UnimplementedChatMessageServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&ChatMessageService_ServiceDesc, srv)
+}
+
+func _ChatMessageService_CreateChatMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateChatMessageReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatMessageServiceServer).CreateChatMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatMessageService_CreateChatMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatMessageServiceServer).CreateChatMessage(ctx, req.(*CreateChatMessageReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatMessageService_DeleteChatMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteChatMessageReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatMessageServiceServer).DeleteChatMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatMessageService_DeleteChatMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatMessageServiceServer).DeleteChatMessage(ctx, req.(*DeleteChatMessageReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatMessageService_UpdateChatMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateChatMessageReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatMessageServiceServer).UpdateChatMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatMessageService_UpdateChatMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatMessageServiceServer).UpdateChatMessage(ctx, req.(*UpdateChatMessageReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatMessageService_GetChatMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChatMessageReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatMessageServiceServer).GetChatMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatMessageService_GetChatMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatMessageServiceServer).GetChatMessage(ctx, req.(*GetChatMessageReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatMessageService_ListChatMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListChatMessageReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatMessageServiceServer).ListChatMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatMessageService_ListChatMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatMessageServiceServer).ListChatMessage(ctx, req.(*ListChatMessageReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ChatMessageService_ServiceDesc is the grpc.ServiceDesc for ChatMessageService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ChatMessageService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.ChatMessageService",
+	HandlerType: (*ChatMessageServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateChatMessage",
+			Handler:    _ChatMessageService_CreateChatMessage_Handler,
+		},
+		{
+			MethodName: "DeleteChatMessage",
+			Handler:    _ChatMessageService_DeleteChatMessage_Handler,
+		},
+		{
+			MethodName: "UpdateChatMessage",
+			Handler:    _ChatMessageService_UpdateChatMessage_Handler,
+		},
+		{
+			MethodName: "GetChatMessage",
+			Handler:    _ChatMessageService_GetChatMessage_Handler,
+		},
+		{
+			MethodName: "ListChatMessage",
+			Handler:    _ChatMessageService_ListChatMessage_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "llmservice.proto",
+}

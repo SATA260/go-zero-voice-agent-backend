@@ -301,6 +301,81 @@ message ListChatSessionResp {
 }
 
 
+// --- Chat Message Management ---
+
+message ChatMessage {
+    int64 id = 1;
+    int64 session_id = 2;
+    int64 config_id = 3;
+    string role = 4;
+    string content = 5;
+    string extra = 6;
+    int64 version = 7;
+    int64 del_state = 8;
+    int64 create_time = 9;
+    int64 update_time = 10;
+    int64 delete_time = 11;
+}
+
+message CreateChatMessageReq {
+    int64 session_id = 1;
+    int64 config_id = 2;
+    string role = 3;
+    string content = 4;
+    string extra = 5;
+}
+
+message CreateChatMessageResp {
+    int64 id = 1;
+}
+
+message DeleteChatMessageReq {
+    int64 id = 1;
+    int64 version = 2;
+}
+
+message DeleteChatMessageResp {
+}
+
+message UpdateChatMessageReq {
+    int64 id = 1;
+    int64 session_id = 2;
+    int64 config_id = 3;
+    string role = 4;
+    string content = 5;
+    string extra = 6;
+    int64 version = 7;
+}
+
+message UpdateChatMessageResp {
+}
+
+message GetChatMessageReq {
+    int64 id = 1;
+}
+
+message GetChatMessageResp {
+    ChatMessage message = 1;
+}
+
+message ListChatMessageFilter {
+    int64 id = 1;
+    int64 session_id = 2;
+    int64 config_id = 3;
+    string role = 4;
+}
+
+message ListChatMessageReq {
+    PageQuery pageQuery = 1;
+    ListChatMessageFilter filter = 2;
+}
+
+message ListChatMessageResp {
+    int64 total = 1;
+    repeated ChatMessage messages = 2;
+}
+
+
 service LlmChatService {
     rpc Chat(ChatReq) returns (ChatResp);
     rpc ChatStream(ChatStreamReq) returns (stream ChatStreamResp);
@@ -321,4 +396,12 @@ service ChatSessionService {
     rpc GetChatSession(GetChatSessionReq) returns (GetChatSessionResp);
     rpc GetChatSessionByConvId(GetChatSessionByConvIdReq) returns (GetChatSessionResp);
     rpc ListChatSession(ListChatSessionReq) returns (ListChatSessionResp);
+}
+
+service ChatMessageService {
+    rpc CreateChatMessage(CreateChatMessageReq) returns (CreateChatMessageResp);
+    rpc DeleteChatMessage(DeleteChatMessageReq) returns (DeleteChatMessageResp);
+    rpc UpdateChatMessage(UpdateChatMessageReq) returns (UpdateChatMessageResp);
+    rpc GetChatMessage(GetChatMessageReq) returns (GetChatMessageResp);
+    rpc ListChatMessage(ListChatMessageReq) returns (ListChatMessageResp);
 }

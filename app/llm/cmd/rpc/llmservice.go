@@ -8,6 +8,7 @@ import (
 	llmchatserviceServer "go-zero-voice-agent/app/llm/cmd/rpc/internal/server/llmchatservice"
 	llmconfigserviceServer "go-zero-voice-agent/app/llm/cmd/rpc/internal/server/llmconfigservice"
 	chatsessionserviceServer "go-zero-voice-agent/app/llm/cmd/rpc/internal/server/chatsessionservice"
+	chatmessageserviceServer "go-zero-voice-agent/app/llm/cmd/rpc/internal/server/chatmessageservice"
 	"go-zero-voice-agent/app/llm/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
 
@@ -31,6 +32,7 @@ func main() {
 		pb.RegisterLlmChatServiceServer(grpcServer, llmchatserviceServer.NewLlmChatServiceServer(ctx))
 		pb.RegisterLlmConfigServiceServer(grpcServer, llmconfigserviceServer.NewLlmConfigServiceServer(ctx))
 		pb.RegisterChatSessionServiceServer(grpcServer, chatsessionserviceServer.NewChatSessionServiceServer(ctx))
+		pb.RegisterChatMessageServiceServer(grpcServer, chatmessageserviceServer.NewChatMessageServiceServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
