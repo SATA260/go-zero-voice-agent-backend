@@ -5,6 +5,7 @@ package svc
 
 import (
 	"go-zero-voice-agent/app/llm/cmd/api/internal/config"
+	"go-zero-voice-agent/app/llm/cmd/rpc/client/chatmessageservice"
 	"go-zero-voice-agent/app/llm/cmd/rpc/client/chatsessionservice"
 	"go-zero-voice-agent/app/llm/cmd/rpc/client/llmconfigservice"
 
@@ -15,6 +16,7 @@ type ServiceContext struct {
 	Config         config.Config
 	LlmConfigRpc   llmconfigservice.LlmConfigService
 	ChatSessionRpc chatsessionservice.ChatSessionService
+	ChatMessageRpc chatmessageservice.ChatMessageService
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -22,5 +24,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:         c,
 		LlmConfigRpc:   llmconfigservice.NewLlmConfigService(zrpc.MustNewClient(c.LlmRpcConf)),
 		ChatSessionRpc: chatsessionservice.NewChatSessionService(zrpc.MustNewClient(c.LlmRpcConf)),
+		ChatMessageRpc: chatmessageservice.NewChatMessageService(zrpc.MustNewClient(c.LlmRpcConf)),
 	}
 }
