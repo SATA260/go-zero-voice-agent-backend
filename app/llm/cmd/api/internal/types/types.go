@@ -33,15 +33,9 @@ type ChatConfigQueryFilter struct {
 type ChatMessage struct {
 	Id         int64  `json:"id"`
 	SessionId  int64  `json:"sessionId"`
-	ConfigId   int64  `json:"configId"`
 	Role       string `json:"role"`
 	Content    string `json:"content"`
-	Extra      string `json:"extra"`
-	Version    int64  `json:"version"`
-	DelState   int64  `json:"delState"`
 	CreateTime int64  `json:"createTime"`
-	UpdateTime int64  `json:"updateTime"`
-	DeleteTime int64  `json:"deleteTime"`
 }
 
 type ChatSession struct {
@@ -49,11 +43,7 @@ type ChatSession struct {
 	ConvId     string `json:"convId"`
 	UserId     int64  `json:"userId"`
 	Title      string `json:"title"`
-	Version    int64  `json:"version"`
-	DelState   int64  `json:"delState"`
 	CreateTime int64  `json:"createTime"`
-	UpdateTime int64  `json:"updateTime"`
-	DeleteTime int64  `json:"deleteTime"`
 }
 
 type ChatSessionFilter struct {

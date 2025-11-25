@@ -44,14 +44,8 @@ func toTypesChatMessage(message *chatmessageservice.ChatMessage) types.ChatMessa
 	return types.ChatMessage{
 		Id:         message.Id,
 		SessionId:  message.SessionId,
-		ConfigId:   message.ConfigId,
 		Role:       message.Role,
 		Content:    message.Content,
-		Extra:      message.Extra,
-		Version:    message.Version,
-		DelState:   message.DelState,
 		CreateTime: message.CreateTime,
-		UpdateTime: message.UpdateTime,
-		DeleteTime: message.DeleteTime,
 	}
 }

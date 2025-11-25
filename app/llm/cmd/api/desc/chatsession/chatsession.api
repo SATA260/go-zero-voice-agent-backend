@@ -6,11 +6,7 @@ type (
 		ConvId     string `json:"convId"`
 		UserId     int64  `json:"userId"`
 		Title      string `json:"title"`
-		Version    int64  `json:"version"`
-		DelState   int64  `json:"delState"`
 		CreateTime int64  `json:"createTime"`
-		UpdateTime int64  `json:"updateTime"`
-		DeleteTime int64  `json:"deleteTime"`
 	}
 )
 
