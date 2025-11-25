@@ -9,6 +9,7 @@ info (
 )
 
 import (
+	"chatsession/chatsession.api"
 	"llm/llmconfig.api"
 )
 
@@ -37,5 +38,23 @@ service llm {
 	@doc "分页查询我的配置"
 	@handler ListMyConfig
 	post /list (ListMyConfigReq) returns (ListMyConfigResp)
+}
+
+@server (
+	group:  chatsession
+	prefix: llm/v1/chat-session
+)
+service llm {
+	@doc "查询会话详情"
+	@handler GetChatSession
+	get /:id (GetChatSessionReq) returns (GetChatSessionResp)
+
+	@doc "分页查询会话列表"
+	@handler ListChatSession
+	post /list (ListChatSessionReq) returns (ListChatSessionResp)
+
+	@doc "删除会话"
+	@handler DeleteChatSession
+	delete /:id (DeleteChatSessionReq) returns (DeleteChatSessionResp)
 }
 

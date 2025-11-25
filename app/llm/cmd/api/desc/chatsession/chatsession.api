@@ -1,0 +1,51 @@
+syntax = "v1"
+
+type (
+	ChatSession {
+		Id         int64  `json:"id"`
+		ConvId     string `json:"convId"`
+		UserId     int64  `json:"userId"`
+		Title      string `json:"title"`
+		Version    int64  `json:"version"`
+		DelState   int64  `json:"delState"`
+		CreateTime int64  `json:"createTime"`
+		UpdateTime int64  `json:"updateTime"`
+		DeleteTime int64  `json:"deleteTime"`
+	}
+)
+
+type (
+	GetChatSessionReq {
+		Id     int64 `path:"id"`
+		UserId int64 `header:"X-User-Id"`
+	}
+	GetChatSessionResp {
+		Session ChatSession `json:"session"`
+	}
+)
+
+type (
+	ChatSessionFilter {
+		Id     int64  `json:"id,optional"`
+		ConvId string `json:"convId,optional"`
+		Title  string `json:"title,optional"`
+	}
+	ListChatSessionReq {
+		UserId    int64             `header:"X-User-Id"`
+		PageQuery PageQuery         `json:"pageQuery"`
+		Filter    ChatSessionFilter `json:"filter,optional"`
+	}
+	ListChatSessionResp {
+		Total    int64         `json:"total"`
+		Sessions []ChatSession `json:"sessions"`
+	}
+)
+
+type (
+	DeleteChatSessionReq {
+		Id     int64 `path:"id"`
+		UserId int64 `header:"X-User-Id"`
+	}
+	DeleteChatSessionResp  {}
+)
+
