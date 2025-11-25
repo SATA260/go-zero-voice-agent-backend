@@ -13,4 +13,7 @@ const (
 	WS_CALLBACK_EVENT_TYPE_TRACK_END   = "trackEnd"
 	WS_CALLBACK_EVENT_TYPE_METRICS     = "metrics"
 	WS_CALLBACK_EVENT_TYPE_ASRDELTA    = "asrDelta"
+
+	LLM_USER_MESSAGE_ROLE      = "llmUser"
+	LLM_ASSISTANT_MESSAGE_ROLE = "llmAssistant"
 )

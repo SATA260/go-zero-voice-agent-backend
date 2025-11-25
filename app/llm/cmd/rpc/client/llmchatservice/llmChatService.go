@@ -14,29 +14,42 @@ import (
 )
 
 type (
-	ChatConfig       = pb.ChatConfig
-	ChatMsg          = pb.ChatMsg
-	ChatReq          = pb.ChatReq
-	ChatResp         = pb.ChatResp
-	ChatStreamReq    = pb.ChatStreamReq
-	ChatStreamResp   = pb.ChatStreamResp
-	CreateConfigReq  = pb.CreateConfigReq
-	CreateConfigResp = pb.CreateConfigResp
-	DeleteConfigReq  = pb.DeleteConfigReq
-	DeleteConfigResp = pb.DeleteConfigResp
-	GetConfigReq     = pb.GetConfigReq
-	GetConfigResp    = pb.GetConfigResp
-	ListConfigFilter = pb.ListConfigFilter
-	ListConfigReq    = pb.ListConfigReq
-	ListConfigResp   = pb.ListConfigResp
-	LlmConfig        = pb.LlmConfig
-	PageQuery        = pb.PageQuery
-	StreamDelta      = pb.StreamDelta
-	StreamOptions    = pb.StreamOptions
-	ToolCallDelta    = pb.ToolCallDelta
-	UpdateConfigReq  = pb.UpdateConfigReq
-	UpdateConfigResp = pb.UpdateConfigResp
-	UsageData        = pb.UsageData
+	ChatConfig                = pb.ChatConfig
+	ChatMsg                   = pb.ChatMsg
+	ChatReq                   = pb.ChatReq
+	ChatResp                  = pb.ChatResp
+	ChatSession               = pb.ChatSession
+	ChatStreamReq             = pb.ChatStreamReq
+	ChatStreamResp            = pb.ChatStreamResp
+	CreateChatSessionReq      = pb.CreateChatSessionReq
+	CreateChatSessionResp     = pb.CreateChatSessionResp
+	CreateConfigReq           = pb.CreateConfigReq
+	CreateConfigResp          = pb.CreateConfigResp
+	DeleteChatSessionReq      = pb.DeleteChatSessionReq
+	DeleteChatSessionResp     = pb.DeleteChatSessionResp
+	DeleteConfigReq           = pb.DeleteConfigReq
+	DeleteConfigResp          = pb.DeleteConfigResp
+	GetChatSessionByConvIdReq = pb.GetChatSessionByConvIdReq
+	GetChatSessionReq         = pb.GetChatSessionReq
+	GetChatSessionResp        = pb.GetChatSessionResp
+	GetConfigReq              = pb.GetConfigReq
+	GetConfigResp             = pb.GetConfigResp
+	ListChatSessionFilter     = pb.ListChatSessionFilter
+	ListChatSessionReq        = pb.ListChatSessionReq
+	ListChatSessionResp       = pb.ListChatSessionResp
+	ListConfigFilter          = pb.ListConfigFilter
+	ListConfigReq             = pb.ListConfigReq
+	ListConfigResp            = pb.ListConfigResp
+	LlmConfig                 = pb.LlmConfig
+	PageQuery                 = pb.PageQuery
+	StreamDelta               = pb.StreamDelta
+	StreamOptions             = pb.StreamOptions
+	ToolCallDelta             = pb.ToolCallDelta
+	UpdateChatSessionReq      = pb.UpdateChatSessionReq
+	UpdateChatSessionResp     = pb.UpdateChatSessionResp
+	UpdateConfigReq           = pb.UpdateConfigReq
+	UpdateConfigResp          = pb.UpdateConfigResp
+	UsageData                 = pb.UsageData
 
 	LlmChatService interface {
 		Chat(ctx context.Context, in *ChatReq, opts ...grpc.CallOption) (*ChatResp, error)

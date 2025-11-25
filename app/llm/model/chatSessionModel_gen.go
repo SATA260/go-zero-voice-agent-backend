@@ -67,6 +67,7 @@ type (
 		Version    int64         `db:"version"`
 		ConvId     string        `db:"conv_id"`
 		UserId     sql.NullInt64 `db:"user_id"`
+		Title      string        `db:"title"`
 	}
 )
 
@@ -136,11 +137,11 @@ func (m *defaultChatSessionModel) Insert(ctx context.Context, session sqlx.Sessi
 	gzvaLlmserviceChatSessionConvIdKey := fmt.Sprintf("%s%v", cacheGzvaLlmserviceChatSessionConvIdPrefix, data.ConvId)
 	gzvaLlmserviceChatSessionIdKey := fmt.Sprintf("%s%v", cacheGzvaLlmserviceChatSessionIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, chatSessionRowsExpectAutoSet)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, chatSessionRowsExpectAutoSet)
 		if session != nil {
-			return session.ExecCtx(ctx, query, data.DelState, data.Version, data.ConvId, data.UserId)
+			return session.ExecCtx(ctx, query, data.DelState, data.Version, data.ConvId, data.UserId, data.Title)
 		}
-		return conn.ExecCtx(ctx, query, data.DelState, data.Version, data.ConvId, data.UserId)
+		return conn.ExecCtx(ctx, query, data.DelState, data.Version, data.ConvId, data.UserId, data.Title)
 	}, gzvaLlmserviceChatSessionConvIdKey, gzvaLlmserviceChatSessionIdKey)
 	return ret, err
 }
@@ -155,9 +156,9 @@ func (m *defaultChatSessionModel) Update(ctx context.Context, session sqlx.Sessi
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, chatSessionRowsWithPlaceHolder)
 		if session != nil {
-			return session.ExecCtx(ctx, query, newData.DelState, newData.Version, newData.ConvId, newData.UserId, newData.Id)
+			return session.ExecCtx(ctx, query, newData.DelState, newData.Version, newData.ConvId, newData.UserId, newData.Title, newData.Id)
 		}
-		return conn.ExecCtx(ctx, query, newData.DelState, newData.Version, newData.ConvId, newData.UserId, newData.Id)
+		return conn.ExecCtx(ctx, query, newData.DelState, newData.Version, newData.ConvId, newData.UserId, newData.Title, newData.Id)
 	}, gzvaLlmserviceChatSessionConvIdKey, gzvaLlmserviceChatSessionIdKey)
 }
 
@@ -178,9 +179,9 @@ func (m *defaultChatSessionModel) UpdateWithVersion(ctx context.Context, session
 	sqlResult, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ? and version = ? ", m.table, chatSessionRowsWithPlaceHolder)
 		if session != nil {
-			return session.ExecCtx(ctx, query, newData.DelState, newData.Version, newData.ConvId, newData.UserId, newData.Id, oldVersion)
+			return session.ExecCtx(ctx, query, newData.DelState, newData.Version, newData.ConvId, newData.UserId, newData.Title, newData.Id, oldVersion)
 		}
-		return conn.ExecCtx(ctx, query, newData.DelState, newData.Version, newData.ConvId, newData.UserId, newData.Id, oldVersion)
+		return conn.ExecCtx(ctx, query, newData.DelState, newData.Version, newData.ConvId, newData.UserId, newData.Title, newData.Id, oldVersion)
 	}, gzvaLlmserviceChatSessionConvIdKey, gzvaLlmserviceChatSessionIdKey)
 	if err != nil {
 		return err

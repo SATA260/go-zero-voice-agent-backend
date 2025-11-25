@@ -415,3 +415,295 @@ var LlmConfigService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "llmservice.proto",
 }
+
+const (
+	ChatSessionService_CreateChatSession_FullMethodName      = "/pb.ChatSessionService/CreateChatSession"
+	ChatSessionService_DeleteChatSession_FullMethodName      = "/pb.ChatSessionService/DeleteChatSession"
+	ChatSessionService_UpdateChatSession_FullMethodName      = "/pb.ChatSessionService/UpdateChatSession"
+	ChatSessionService_GetChatSession_FullMethodName         = "/pb.ChatSessionService/GetChatSession"
+	ChatSessionService_GetChatSessionByConvId_FullMethodName = "/pb.ChatSessionService/GetChatSessionByConvId"
+	ChatSessionService_ListChatSession_FullMethodName        = "/pb.ChatSessionService/ListChatSession"
+)
+
+// ChatSessionServiceClient is the client API for ChatSessionService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ChatSessionServiceClient interface {
+	CreateChatSession(ctx context.Context, in *CreateChatSessionReq, opts ...grpc.CallOption) (*CreateChatSessionResp, error)
+	DeleteChatSession(ctx context.Context, in *DeleteChatSessionReq, opts ...grpc.CallOption) (*DeleteChatSessionResp, error)
+	UpdateChatSession(ctx context.Context, in *UpdateChatSessionReq, opts ...grpc.CallOption) (*UpdateChatSessionResp, error)
+	GetChatSession(ctx context.Context, in *GetChatSessionReq, opts ...grpc.CallOption) (*GetChatSessionResp, error)
+	GetChatSessionByConvId(ctx context.Context, in *GetChatSessionByConvIdReq, opts ...grpc.CallOption) (*GetChatSessionResp, error)
+	ListChatSession(ctx context.Context, in *ListChatSessionReq, opts ...grpc.CallOption) (*ListChatSessionResp, error)
+}
+
+type chatSessionServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewChatSessionServiceClient(cc grpc.ClientConnInterface) ChatSessionServiceClient {
+	return &chatSessionServiceClient{cc}
+}
+
+func (c *chatSessionServiceClient) CreateChatSession(ctx context.Context, in *CreateChatSessionReq, opts ...grpc.CallOption) (*CreateChatSessionResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateChatSessionResp)
+	err := c.cc.Invoke(ctx, ChatSessionService_CreateChatSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatSessionServiceClient) DeleteChatSession(ctx context.Context, in *DeleteChatSessionReq, opts ...grpc.CallOption) (*DeleteChatSessionResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteChatSessionResp)
+	err := c.cc.Invoke(ctx, ChatSessionService_DeleteChatSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatSessionServiceClient) UpdateChatSession(ctx context.Context, in *UpdateChatSessionReq, opts ...grpc.CallOption) (*UpdateChatSessionResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateChatSessionResp)
+	err := c.cc.Invoke(ctx, ChatSessionService_UpdateChatSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatSessionServiceClient) GetChatSession(ctx context.Context, in *GetChatSessionReq, opts ...grpc.CallOption) (*GetChatSessionResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetChatSessionResp)
+	err := c.cc.Invoke(ctx, ChatSessionService_GetChatSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatSessionServiceClient) GetChatSessionByConvId(ctx context.Context, in *GetChatSessionByConvIdReq, opts ...grpc.CallOption) (*GetChatSessionResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetChatSessionResp)
+	err := c.cc.Invoke(ctx, ChatSessionService_GetChatSessionByConvId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatSessionServiceClient) ListChatSession(ctx context.Context, in *ListChatSessionReq, opts ...grpc.CallOption) (*ListChatSessionResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListChatSessionResp)
+	err := c.cc.Invoke(ctx, ChatSessionService_ListChatSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ChatSessionServiceServer is the server API for ChatSessionService service.
+// All implementations must embed UnimplementedChatSessionServiceServer
+// for forward compatibility.
+type ChatSessionServiceServer interface {
+	CreateChatSession(context.Context, *CreateChatSessionReq) (*CreateChatSessionResp, error)
+	DeleteChatSession(context.Context, *DeleteChatSessionReq) (*DeleteChatSessionResp, error)
+	UpdateChatSession(context.Context, *UpdateChatSessionReq) (*UpdateChatSessionResp, error)
+	GetChatSession(context.Context, *GetChatSessionReq) (*GetChatSessionResp, error)
+	GetChatSessionByConvId(context.Context, *GetChatSessionByConvIdReq) (*GetChatSessionResp, error)
+	ListChatSession(context.Context, *ListChatSessionReq) (*ListChatSessionResp, error)
+	mustEmbedUnimplementedChatSessionServiceServer()
+}
+
+// UnimplementedChatSessionServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedChatSessionServiceServer struct{}
+
+func (UnimplementedChatSessionServiceServer) CreateChatSession(context.Context, *CreateChatSessionReq) (*CreateChatSessionResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateChatSession not implemented")
+}
+func (UnimplementedChatSessionServiceServer) DeleteChatSession(context.Context, *DeleteChatSessionReq) (*DeleteChatSessionResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteChatSession not implemented")
+}
+func (UnimplementedChatSessionServiceServer) UpdateChatSession(context.Context, *UpdateChatSessionReq) (*UpdateChatSessionResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateChatSession not implemented")
+}
+func (UnimplementedChatSessionServiceServer) GetChatSession(context.Context, *GetChatSessionReq) (*GetChatSessionResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetChatSession not implemented")
+}
+func (UnimplementedChatSessionServiceServer) GetChatSessionByConvId(context.Context, *GetChatSessionByConvIdReq) (*GetChatSessionResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetChatSessionByConvId not implemented")
+}
+func (UnimplementedChatSessionServiceServer) ListChatSession(context.Context, *ListChatSessionReq) (*ListChatSessionResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListChatSession not implemented")
+}
+func (UnimplementedChatSessionServiceServer) mustEmbedUnimplementedChatSessionServiceServer() {}
+func (UnimplementedChatSessionServiceServer) testEmbeddedByValue()                            {}
+
+// UnsafeChatSessionServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ChatSessionServiceServer will
+// result in compilation errors.
+type UnsafeChatSessionServiceServer interface {
+	mustEmbedUnimplementedChatSessionServiceServer()
+}
+
+func RegisterChatSessionServiceServer(s grpc.ServiceRegistrar, srv ChatSessionServiceServer) {
+	// If the following call pancis, it indicates UnimplementedChatSessionServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&ChatSessionService_ServiceDesc, srv)
+}
+
+func _ChatSessionService_CreateChatSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateChatSessionReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatSessionServiceServer).CreateChatSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatSessionService_CreateChatSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatSessionServiceServer).CreateChatSession(ctx, req.(*CreateChatSessionReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatSessionService_DeleteChatSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteChatSessionReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatSessionServiceServer).DeleteChatSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatSessionService_DeleteChatSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatSessionServiceServer).DeleteChatSession(ctx, req.(*DeleteChatSessionReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatSessionService_UpdateChatSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateChatSessionReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatSessionServiceServer).UpdateChatSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatSessionService_UpdateChatSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatSessionServiceServer).UpdateChatSession(ctx, req.(*UpdateChatSessionReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatSessionService_GetChatSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChatSessionReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatSessionServiceServer).GetChatSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatSessionService_GetChatSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatSessionServiceServer).GetChatSession(ctx, req.(*GetChatSessionReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatSessionService_GetChatSessionByConvId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChatSessionByConvIdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatSessionServiceServer).GetChatSessionByConvId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatSessionService_GetChatSessionByConvId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatSessionServiceServer).GetChatSessionByConvId(ctx, req.(*GetChatSessionByConvIdReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatSessionService_ListChatSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListChatSessionReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatSessionServiceServer).ListChatSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatSessionService_ListChatSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatSessionServiceServer).ListChatSession(ctx, req.(*ListChatSessionReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ChatSessionService_ServiceDesc is the grpc.ServiceDesc for ChatSessionService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ChatSessionService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.ChatSessionService",
+	HandlerType: (*ChatSessionServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateChatSession",
+			Handler:    _ChatSessionService_CreateChatSession_Handler,
+		},
+		{
+			MethodName: "DeleteChatSession",
+			Handler:    _ChatSessionService_DeleteChatSession_Handler,
+		},
+		{
+			MethodName: "UpdateChatSession",
+			Handler:    _ChatSessionService_UpdateChatSession_Handler,
+		},
+		{
+			MethodName: "GetChatSession",
+			Handler:    _ChatSessionService_GetChatSession_Handler,
+		},
+		{
+			MethodName: "GetChatSessionByConvId",
+			Handler:    _ChatSessionService_GetChatSessionByConvId_Handler,
+		},
+		{
+			MethodName: "ListChatSession",
+			Handler:    _ChatSessionService_ListChatSession_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "llmservice.proto",
+}
