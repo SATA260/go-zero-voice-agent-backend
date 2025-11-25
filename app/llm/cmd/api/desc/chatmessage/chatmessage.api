@@ -1,0 +1,38 @@
+syntax = "v1"
+
+type (
+	ChatMessage {
+		Id         int64  `json:"id"`
+		SessionId  int64  `json:"sessionId"`
+		ConfigId   int64  `json:"configId"`
+		Role       string `json:"role"`
+		Content    string `json:"content"`
+		Extra      string `json:"extra"`
+		Version    int64  `json:"version"`
+		DelState   int64  `json:"delState"`
+		CreateTime int64  `json:"createTime"`
+		UpdateTime int64  `json:"updateTime"`
+		DeleteTime int64  `json:"deleteTime"`
+	}
+)
+
+type (
+	ListChatMessageBySessionReq {
+		UserId    int64     `header:"X-User-Id"`
+		SessionId int64     `json:"sessionId"`
+		PageQuery PageQuery `json:"pageQuery"`
+	}
+	ListChatMessageBySessionResp {
+		Total    int64         `json:"total"`
+		Messages []ChatMessage `json:"messages"`
+	}
+)
+
+type (
+	DeleteChatMessageReq {
+		Id     int64 `path:"id"`
+		UserId int64 `header:"X-User-Id"`
+	}
+	DeleteChatMessageResp  {}
+)
+

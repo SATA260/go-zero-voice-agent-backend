@@ -9,6 +9,7 @@ info (
 )
 
 import (
+	"chatmessage/chatmessage.api"
 	"chatsession/chatsession.api"
 	"llm/llmconfig.api"
 )
@@ -56,5 +57,19 @@ service llm {
 	@doc "删除会话"
 	@handler DeleteChatSession
 	delete /:id (DeleteChatSessionReq) returns (DeleteChatSessionResp)
+}
+
+@server (
+	group:  chatmessage
+	prefix: llm/v1/chat-message
+)
+service llm {
+	@doc "根据会话分页查询消息"
+	@handler ListChatMessageBySession
+	post /list (ListChatMessageBySessionReq) returns (ListChatMessageBySessionResp)
+
+	@doc "删除聊天消息"
+	@handler DeleteChatMessage
+	delete /:id (DeleteChatMessageReq) returns (DeleteChatMessageResp)
 }
 

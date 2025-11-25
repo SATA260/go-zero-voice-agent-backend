@@ -30,6 +30,20 @@ type ChatConfigQueryFilter struct {
 	Description string `json:"description,optional"`
 }
 
+type ChatMessage struct {
+	Id         int64  `json:"id"`
+	SessionId  int64  `json:"sessionId"`
+	ConfigId   int64  `json:"configId"`
+	Role       string `json:"role"`
+	Content    string `json:"content"`
+	Extra      string `json:"extra"`
+	Version    int64  `json:"version"`
+	DelState   int64  `json:"delState"`
+	CreateTime int64  `json:"createTime"`
+	UpdateTime int64  `json:"updateTime"`
+	DeleteTime int64  `json:"deleteTime"`
+}
+
 type ChatSession struct {
 	Id         int64  `json:"id"`
 	ConvId     string `json:"convId"`
@@ -72,6 +86,14 @@ type CreateConfigResp struct {
 	Id int64 `json:"id"`
 }
 
+type DeleteChatMessageReq struct {
+	Id     int64 `path:"id"`
+	UserId int64 `header:"X-User-Id"`
+}
+
+type DeleteChatMessageResp struct {
+}
+
 type DeleteChatSessionReq struct {
 	Id     int64 `path:"id"`
 	UserId int64 `header:"X-User-Id"`
@@ -104,6 +126,17 @@ type GetConfigReq struct {
 
 type GetConfigResp struct {
 	Config ChatConfig `json:"config"`
+}
+
+type ListChatMessageBySessionReq struct {
+	UserId    int64     `header:"X-User-Id"`
+	SessionId int64     `json:"sessionId"`
+	PageQuery PageQuery `json:"pageQuery"`
+}
+
+type ListChatMessageBySessionResp struct {
+	Total    int64         `json:"total"`
+	Messages []ChatMessage `json:"messages"`
 }
 
 type ListChatSessionReq struct {
