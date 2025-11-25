@@ -1846,6 +1846,714 @@ func (x *ListConfigResp) GetConfigs() []*ChatConfig {
 	return nil
 }
 
+type ChatSession struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	ConvId        string                 `protobuf:"bytes,2,opt,name=conv_id,json=convId,proto3" json:"conv_id,omitempty"`
+	UserId        int64                  `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Title         string                 `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
+	Version       int64                  `protobuf:"varint,5,opt,name=version,proto3" json:"version,omitempty"`
+	DelState      int64                  `protobuf:"varint,6,opt,name=del_state,json=delState,proto3" json:"del_state,omitempty"`
+	CreateTime    int64                  `protobuf:"varint,7,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
+	UpdateTime    int64                  `protobuf:"varint,8,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	DeleteTime    int64                  `protobuf:"varint,9,opt,name=delete_time,json=deleteTime,proto3" json:"delete_time,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ChatSession) Reset() {
+	*x = ChatSession{}
+	mi := &file_llmservice_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChatSession) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChatSession) ProtoMessage() {}
+
+func (x *ChatSession) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChatSession.ProtoReflect.Descriptor instead.
+func (*ChatSession) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *ChatSession) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *ChatSession) GetConvId() string {
+	if x != nil {
+		return x.ConvId
+	}
+	return ""
+}
+
+func (x *ChatSession) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *ChatSession) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *ChatSession) GetVersion() int64 {
+	if x != nil {
+		return x.Version
+	}
+	return 0
+}
+
+func (x *ChatSession) GetDelState() int64 {
+	if x != nil {
+		return x.DelState
+	}
+	return 0
+}
+
+func (x *ChatSession) GetCreateTime() int64 {
+	if x != nil {
+		return x.CreateTime
+	}
+	return 0
+}
+
+func (x *ChatSession) GetUpdateTime() int64 {
+	if x != nil {
+		return x.UpdateTime
+	}
+	return 0
+}
+
+func (x *ChatSession) GetDeleteTime() int64 {
+	if x != nil {
+		return x.DeleteTime
+	}
+	return 0
+}
+
+type CreateChatSessionReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ConvId        string                 `protobuf:"bytes,1,opt,name=conv_id,json=convId,proto3" json:"conv_id,omitempty"`
+	UserId        int64                  `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateChatSessionReq) Reset() {
+	*x = CreateChatSessionReq{}
+	mi := &file_llmservice_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateChatSessionReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateChatSessionReq) ProtoMessage() {}
+
+func (x *CreateChatSessionReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateChatSessionReq.ProtoReflect.Descriptor instead.
+func (*CreateChatSessionReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *CreateChatSessionReq) GetConvId() string {
+	if x != nil {
+		return x.ConvId
+	}
+	return ""
+}
+
+func (x *CreateChatSessionReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *CreateChatSessionReq) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+type CreateChatSessionResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateChatSessionResp) Reset() {
+	*x = CreateChatSessionResp{}
+	mi := &file_llmservice_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateChatSessionResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateChatSessionResp) ProtoMessage() {}
+
+func (x *CreateChatSessionResp) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateChatSessionResp.ProtoReflect.Descriptor instead.
+func (*CreateChatSessionResp) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *CreateChatSessionResp) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type DeleteChatSessionReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteChatSessionReq) Reset() {
+	*x = DeleteChatSessionReq{}
+	mi := &file_llmservice_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteChatSessionReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteChatSessionReq) ProtoMessage() {}
+
+func (x *DeleteChatSessionReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteChatSessionReq.ProtoReflect.Descriptor instead.
+func (*DeleteChatSessionReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *DeleteChatSessionReq) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type DeleteChatSessionResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteChatSessionResp) Reset() {
+	*x = DeleteChatSessionResp{}
+	mi := &file_llmservice_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteChatSessionResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteChatSessionResp) ProtoMessage() {}
+
+func (x *DeleteChatSessionResp) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteChatSessionResp.ProtoReflect.Descriptor instead.
+func (*DeleteChatSessionResp) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{27}
+}
+
+type UpdateChatSessionReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	ConvId        string                 `protobuf:"bytes,2,opt,name=conv_id,json=convId,proto3" json:"conv_id,omitempty"`
+	UserId        int64                  `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Title         string                 `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
+	Version       int64                  `protobuf:"varint,5,opt,name=version,proto3" json:"version,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateChatSessionReq) Reset() {
+	*x = UpdateChatSessionReq{}
+	mi := &file_llmservice_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateChatSessionReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateChatSessionReq) ProtoMessage() {}
+
+func (x *UpdateChatSessionReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateChatSessionReq.ProtoReflect.Descriptor instead.
+func (*UpdateChatSessionReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *UpdateChatSessionReq) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *UpdateChatSessionReq) GetConvId() string {
+	if x != nil {
+		return x.ConvId
+	}
+	return ""
+}
+
+func (x *UpdateChatSessionReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *UpdateChatSessionReq) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *UpdateChatSessionReq) GetVersion() int64 {
+	if x != nil {
+		return x.Version
+	}
+	return 0
+}
+
+type UpdateChatSessionResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateChatSessionResp) Reset() {
+	*x = UpdateChatSessionResp{}
+	mi := &file_llmservice_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateChatSessionResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateChatSessionResp) ProtoMessage() {}
+
+func (x *UpdateChatSessionResp) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateChatSessionResp.ProtoReflect.Descriptor instead.
+func (*UpdateChatSessionResp) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{29}
+}
+
+type GetChatSessionReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetChatSessionReq) Reset() {
+	*x = GetChatSessionReq{}
+	mi := &file_llmservice_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChatSessionReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChatSessionReq) ProtoMessage() {}
+
+func (x *GetChatSessionReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetChatSessionReq.ProtoReflect.Descriptor instead.
+func (*GetChatSessionReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *GetChatSessionReq) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type GetChatSessionByConvIdReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ConvId        string                 `protobuf:"bytes,1,opt,name=conv_id,json=convId,proto3" json:"conv_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetChatSessionByConvIdReq) Reset() {
+	*x = GetChatSessionByConvIdReq{}
+	mi := &file_llmservice_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChatSessionByConvIdReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChatSessionByConvIdReq) ProtoMessage() {}
+
+func (x *GetChatSessionByConvIdReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetChatSessionByConvIdReq.ProtoReflect.Descriptor instead.
+func (*GetChatSessionByConvIdReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *GetChatSessionByConvIdReq) GetConvId() string {
+	if x != nil {
+		return x.ConvId
+	}
+	return ""
+}
+
+type GetChatSessionResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Session       *ChatSession           `protobuf:"bytes,1,opt,name=session,proto3" json:"session,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetChatSessionResp) Reset() {
+	*x = GetChatSessionResp{}
+	mi := &file_llmservice_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChatSessionResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChatSessionResp) ProtoMessage() {}
+
+func (x *GetChatSessionResp) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetChatSessionResp.ProtoReflect.Descriptor instead.
+func (*GetChatSessionResp) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *GetChatSessionResp) GetSession() *ChatSession {
+	if x != nil {
+		return x.Session
+	}
+	return nil
+}
+
+type ListChatSessionFilter struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	ConvId        string                 `protobuf:"bytes,2,opt,name=conv_id,json=convId,proto3" json:"conv_id,omitempty"`
+	UserId        int64                  `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Title         string                 `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListChatSessionFilter) Reset() {
+	*x = ListChatSessionFilter{}
+	mi := &file_llmservice_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListChatSessionFilter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListChatSessionFilter) ProtoMessage() {}
+
+func (x *ListChatSessionFilter) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListChatSessionFilter.ProtoReflect.Descriptor instead.
+func (*ListChatSessionFilter) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *ListChatSessionFilter) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *ListChatSessionFilter) GetConvId() string {
+	if x != nil {
+		return x.ConvId
+	}
+	return ""
+}
+
+func (x *ListChatSessionFilter) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *ListChatSessionFilter) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+type ListChatSessionReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PageQuery     *PageQuery             `protobuf:"bytes,1,opt,name=pageQuery,proto3" json:"pageQuery,omitempty"`
+	Filter        *ListChatSessionFilter `protobuf:"bytes,2,opt,name=filter,proto3" json:"filter,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListChatSessionReq) Reset() {
+	*x = ListChatSessionReq{}
+	mi := &file_llmservice_proto_msgTypes[34]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListChatSessionReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListChatSessionReq) ProtoMessage() {}
+
+func (x *ListChatSessionReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[34]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListChatSessionReq.ProtoReflect.Descriptor instead.
+func (*ListChatSessionReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{34}
+}
+
+func (x *ListChatSessionReq) GetPageQuery() *PageQuery {
+	if x != nil {
+		return x.PageQuery
+	}
+	return nil
+}
+
+func (x *ListChatSessionReq) GetFilter() *ListChatSessionFilter {
+	if x != nil {
+		return x.Filter
+	}
+	return nil
+}
+
+type ListChatSessionResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Total         int64                  `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
+	Sessions      []*ChatSession         `protobuf:"bytes,2,rep,name=sessions,proto3" json:"sessions,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListChatSessionResp) Reset() {
+	*x = ListChatSessionResp{}
+	mi := &file_llmservice_proto_msgTypes[35]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListChatSessionResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListChatSessionResp) ProtoMessage() {}
+
+func (x *ListChatSessionResp) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[35]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListChatSessionResp.ProtoReflect.Descriptor instead.
+func (*ListChatSessionResp) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{35}
+}
+
+func (x *ListChatSessionResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *ListChatSessionResp) GetSessions() []*ChatSession {
+	if x != nil {
+		return x.Sessions
+	}
+	return nil
+}
+
 var File_llmservice_proto protoreflect.FileDescriptor
 
 const file_llmservice_proto_rawDesc = "" +
@@ -1997,7 +2705,53 @@ const file_llmservice_proto_rawDesc = "" +
 	"\x06filter\x18\x02 \x01(\v2\x14.pb.ListConfigFilterR\x06filter\"P\n" +
 	"\x0eListConfigResp\x12\x14\n" +
 	"\x05total\x18\x01 \x01(\x03R\x05total\x12(\n" +
-	"\aconfigs\x18\x02 \x03(\v2\x0e.pb.ChatConfigR\aconfigs2j\n" +
+	"\aconfigs\x18\x02 \x03(\v2\x0e.pb.ChatConfigR\aconfigs\"\xff\x01\n" +
+	"\vChatSession\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x17\n" +
+	"\aconv_id\x18\x02 \x01(\tR\x06convId\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\x03R\x06userId\x12\x14\n" +
+	"\x05title\x18\x04 \x01(\tR\x05title\x12\x18\n" +
+	"\aversion\x18\x05 \x01(\x03R\aversion\x12\x1b\n" +
+	"\tdel_state\x18\x06 \x01(\x03R\bdelState\x12\x1f\n" +
+	"\vcreate_time\x18\a \x01(\x03R\n" +
+	"createTime\x12\x1f\n" +
+	"\vupdate_time\x18\b \x01(\x03R\n" +
+	"updateTime\x12\x1f\n" +
+	"\vdelete_time\x18\t \x01(\x03R\n" +
+	"deleteTime\"^\n" +
+	"\x14CreateChatSessionReq\x12\x17\n" +
+	"\aconv_id\x18\x01 \x01(\tR\x06convId\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12\x14\n" +
+	"\x05title\x18\x03 \x01(\tR\x05title\"'\n" +
+	"\x15CreateChatSessionResp\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"&\n" +
+	"\x14DeleteChatSessionReq\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"\x17\n" +
+	"\x15DeleteChatSessionResp\"\x88\x01\n" +
+	"\x14UpdateChatSessionReq\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x17\n" +
+	"\aconv_id\x18\x02 \x01(\tR\x06convId\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\x03R\x06userId\x12\x14\n" +
+	"\x05title\x18\x04 \x01(\tR\x05title\x12\x18\n" +
+	"\aversion\x18\x05 \x01(\x03R\aversion\"\x17\n" +
+	"\x15UpdateChatSessionResp\"#\n" +
+	"\x11GetChatSessionReq\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"4\n" +
+	"\x19GetChatSessionByConvIdReq\x12\x17\n" +
+	"\aconv_id\x18\x01 \x01(\tR\x06convId\"?\n" +
+	"\x12GetChatSessionResp\x12)\n" +
+	"\asession\x18\x01 \x01(\v2\x0f.pb.ChatSessionR\asession\"o\n" +
+	"\x15ListChatSessionFilter\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x17\n" +
+	"\aconv_id\x18\x02 \x01(\tR\x06convId\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\x03R\x06userId\x12\x14\n" +
+	"\x05title\x18\x04 \x01(\tR\x05title\"t\n" +
+	"\x12ListChatSessionReq\x12+\n" +
+	"\tpageQuery\x18\x01 \x01(\v2\r.pb.PageQueryR\tpageQuery\x121\n" +
+	"\x06filter\x18\x02 \x01(\v2\x19.pb.ListChatSessionFilterR\x06filter\"X\n" +
+	"\x13ListChatSessionResp\x12\x14\n" +
+	"\x05total\x18\x01 \x01(\x03R\x05total\x12+\n" +
+	"\bsessions\x18\x02 \x03(\v2\x0f.pb.ChatSessionR\bsessions2j\n" +
 	"\x0eLlmChatService\x12!\n" +
 	"\x04Chat\x12\v.pb.ChatReq\x1a\f.pb.ChatResp\x125\n" +
 	"\n" +
@@ -2008,7 +2762,14 @@ const file_llmservice_proto_rawDesc = "" +
 	"\fUpdateConfig\x12\x13.pb.UpdateConfigReq\x1a\x14.pb.UpdateConfigResp\x120\n" +
 	"\tGetConfig\x12\x10.pb.GetConfigReq\x1a\x11.pb.GetConfigResp\x123\n" +
 	"\n" +
-	"ListConfig\x12\x11.pb.ListConfigReq\x1a\x12.pb.ListConfigRespB\x06Z\x04./pbb\x06proto3"
+	"ListConfig\x12\x11.pb.ListConfigReq\x1a\x12.pb.ListConfigResp2\xc8\x03\n" +
+	"\x12ChatSessionService\x12H\n" +
+	"\x11CreateChatSession\x12\x18.pb.CreateChatSessionReq\x1a\x19.pb.CreateChatSessionResp\x12H\n" +
+	"\x11DeleteChatSession\x12\x18.pb.DeleteChatSessionReq\x1a\x19.pb.DeleteChatSessionResp\x12H\n" +
+	"\x11UpdateChatSession\x12\x18.pb.UpdateChatSessionReq\x1a\x19.pb.UpdateChatSessionResp\x12?\n" +
+	"\x0eGetChatSession\x12\x15.pb.GetChatSessionReq\x1a\x16.pb.GetChatSessionResp\x12O\n" +
+	"\x16GetChatSessionByConvId\x12\x1d.pb.GetChatSessionByConvIdReq\x1a\x16.pb.GetChatSessionResp\x12B\n" +
+	"\x0fListChatSession\x12\x16.pb.ListChatSessionReq\x1a\x17.pb.ListChatSessionRespB\x06Z\x04./pbb\x06proto3"
 
 var (
 	file_llmservice_proto_rawDescOnce sync.Once
@@ -2022,31 +2783,44 @@ func file_llmservice_proto_rawDescGZIP() []byte {
 	return file_llmservice_proto_rawDescData
 }
 
-var file_llmservice_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
+var file_llmservice_proto_msgTypes = make([]protoimpl.MessageInfo, 36)
 var file_llmservice_proto_goTypes = []any{
-	(*PageQuery)(nil),        // 0: pb.PageQuery
-	(*LlmConfig)(nil),        // 1: pb.LlmConfig
-	(*StreamOptions)(nil),    // 2: pb.StreamOptions
-	(*ChatMsg)(nil),          // 3: pb.ChatMsg
-	(*ChatReq)(nil),          // 4: pb.ChatReq
-	(*ChatResp)(nil),         // 5: pb.ChatResp
-	(*ChatStreamReq)(nil),    // 6: pb.ChatStreamReq
-	(*StreamDelta)(nil),      // 7: pb.StreamDelta
-	(*ToolCallDelta)(nil),    // 8: pb.ToolCallDelta
-	(*UsageData)(nil),        // 9: pb.UsageData
-	(*ChatStreamResp)(nil),   // 10: pb.ChatStreamResp
-	(*ChatConfig)(nil),       // 11: pb.ChatConfig
-	(*CreateConfigReq)(nil),  // 12: pb.CreateConfigReq
-	(*CreateConfigResp)(nil), // 13: pb.CreateConfigResp
-	(*DeleteConfigReq)(nil),  // 14: pb.DeleteConfigReq
-	(*DeleteConfigResp)(nil), // 15: pb.DeleteConfigResp
-	(*UpdateConfigReq)(nil),  // 16: pb.UpdateConfigReq
-	(*UpdateConfigResp)(nil), // 17: pb.UpdateConfigResp
-	(*GetConfigReq)(nil),     // 18: pb.GetConfigReq
-	(*GetConfigResp)(nil),    // 19: pb.GetConfigResp
-	(*ListConfigFilter)(nil), // 20: pb.ListConfigFilter
-	(*ListConfigReq)(nil),    // 21: pb.ListConfigReq
-	(*ListConfigResp)(nil),   // 22: pb.ListConfigResp
+	(*PageQuery)(nil),                 // 0: pb.PageQuery
+	(*LlmConfig)(nil),                 // 1: pb.LlmConfig
+	(*StreamOptions)(nil),             // 2: pb.StreamOptions
+	(*ChatMsg)(nil),                   // 3: pb.ChatMsg
+	(*ChatReq)(nil),                   // 4: pb.ChatReq
+	(*ChatResp)(nil),                  // 5: pb.ChatResp
+	(*ChatStreamReq)(nil),             // 6: pb.ChatStreamReq
+	(*StreamDelta)(nil),               // 7: pb.StreamDelta
+	(*ToolCallDelta)(nil),             // 8: pb.ToolCallDelta
+	(*UsageData)(nil),                 // 9: pb.UsageData
+	(*ChatStreamResp)(nil),            // 10: pb.ChatStreamResp
+	(*ChatConfig)(nil),                // 11: pb.ChatConfig
+	(*CreateConfigReq)(nil),           // 12: pb.CreateConfigReq
+	(*CreateConfigResp)(nil),          // 13: pb.CreateConfigResp
+	(*DeleteConfigReq)(nil),           // 14: pb.DeleteConfigReq
+	(*DeleteConfigResp)(nil),          // 15: pb.DeleteConfigResp
+	(*UpdateConfigReq)(nil),           // 16: pb.UpdateConfigReq
+	(*UpdateConfigResp)(nil),          // 17: pb.UpdateConfigResp
+	(*GetConfigReq)(nil),              // 18: pb.GetConfigReq
+	(*GetConfigResp)(nil),             // 19: pb.GetConfigResp
+	(*ListConfigFilter)(nil),          // 20: pb.ListConfigFilter
+	(*ListConfigReq)(nil),             // 21: pb.ListConfigReq
+	(*ListConfigResp)(nil),            // 22: pb.ListConfigResp
+	(*ChatSession)(nil),               // 23: pb.ChatSession
+	(*CreateChatSessionReq)(nil),      // 24: pb.CreateChatSessionReq
+	(*CreateChatSessionResp)(nil),     // 25: pb.CreateChatSessionResp
+	(*DeleteChatSessionReq)(nil),      // 26: pb.DeleteChatSessionReq
+	(*DeleteChatSessionResp)(nil),     // 27: pb.DeleteChatSessionResp
+	(*UpdateChatSessionReq)(nil),      // 28: pb.UpdateChatSessionReq
+	(*UpdateChatSessionResp)(nil),     // 29: pb.UpdateChatSessionResp
+	(*GetChatSessionReq)(nil),         // 30: pb.GetChatSessionReq
+	(*GetChatSessionByConvIdReq)(nil), // 31: pb.GetChatSessionByConvIdReq
+	(*GetChatSessionResp)(nil),        // 32: pb.GetChatSessionResp
+	(*ListChatSessionFilter)(nil),     // 33: pb.ListChatSessionFilter
+	(*ListChatSessionReq)(nil),        // 34: pb.ListChatSessionReq
+	(*ListChatSessionResp)(nil),       // 35: pb.ListChatSessionResp
 }
 var file_llmservice_proto_depIdxs = []int32{
 	2,  // 0: pb.LlmConfig.stream_options:type_name -> pb.StreamOptions
@@ -2062,25 +2836,41 @@ var file_llmservice_proto_depIdxs = []int32{
 	0,  // 10: pb.ListConfigReq.pageQuery:type_name -> pb.PageQuery
 	20, // 11: pb.ListConfigReq.filter:type_name -> pb.ListConfigFilter
 	11, // 12: pb.ListConfigResp.configs:type_name -> pb.ChatConfig
-	4,  // 13: pb.LlmChatService.Chat:input_type -> pb.ChatReq
-	6,  // 14: pb.LlmChatService.ChatStream:input_type -> pb.ChatStreamReq
-	12, // 15: pb.LlmConfigService.CreateConfig:input_type -> pb.CreateConfigReq
-	14, // 16: pb.LlmConfigService.DeleteConfig:input_type -> pb.DeleteConfigReq
-	16, // 17: pb.LlmConfigService.UpdateConfig:input_type -> pb.UpdateConfigReq
-	18, // 18: pb.LlmConfigService.GetConfig:input_type -> pb.GetConfigReq
-	21, // 19: pb.LlmConfigService.ListConfig:input_type -> pb.ListConfigReq
-	5,  // 20: pb.LlmChatService.Chat:output_type -> pb.ChatResp
-	10, // 21: pb.LlmChatService.ChatStream:output_type -> pb.ChatStreamResp
-	13, // 22: pb.LlmConfigService.CreateConfig:output_type -> pb.CreateConfigResp
-	15, // 23: pb.LlmConfigService.DeleteConfig:output_type -> pb.DeleteConfigResp
-	17, // 24: pb.LlmConfigService.UpdateConfig:output_type -> pb.UpdateConfigResp
-	19, // 25: pb.LlmConfigService.GetConfig:output_type -> pb.GetConfigResp
-	22, // 26: pb.LlmConfigService.ListConfig:output_type -> pb.ListConfigResp
-	20, // [20:27] is the sub-list for method output_type
-	13, // [13:20] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	23, // 13: pb.GetChatSessionResp.session:type_name -> pb.ChatSession
+	0,  // 14: pb.ListChatSessionReq.pageQuery:type_name -> pb.PageQuery
+	33, // 15: pb.ListChatSessionReq.filter:type_name -> pb.ListChatSessionFilter
+	23, // 16: pb.ListChatSessionResp.sessions:type_name -> pb.ChatSession
+	4,  // 17: pb.LlmChatService.Chat:input_type -> pb.ChatReq
+	6,  // 18: pb.LlmChatService.ChatStream:input_type -> pb.ChatStreamReq
+	12, // 19: pb.LlmConfigService.CreateConfig:input_type -> pb.CreateConfigReq
+	14, // 20: pb.LlmConfigService.DeleteConfig:input_type -> pb.DeleteConfigReq
+	16, // 21: pb.LlmConfigService.UpdateConfig:input_type -> pb.UpdateConfigReq
+	18, // 22: pb.LlmConfigService.GetConfig:input_type -> pb.GetConfigReq
+	21, // 23: pb.LlmConfigService.ListConfig:input_type -> pb.ListConfigReq
+	24, // 24: pb.ChatSessionService.CreateChatSession:input_type -> pb.CreateChatSessionReq
+	26, // 25: pb.ChatSessionService.DeleteChatSession:input_type -> pb.DeleteChatSessionReq
+	28, // 26: pb.ChatSessionService.UpdateChatSession:input_type -> pb.UpdateChatSessionReq
+	30, // 27: pb.ChatSessionService.GetChatSession:input_type -> pb.GetChatSessionReq
+	31, // 28: pb.ChatSessionService.GetChatSessionByConvId:input_type -> pb.GetChatSessionByConvIdReq
+	34, // 29: pb.ChatSessionService.ListChatSession:input_type -> pb.ListChatSessionReq
+	5,  // 30: pb.LlmChatService.Chat:output_type -> pb.ChatResp
+	10, // 31: pb.LlmChatService.ChatStream:output_type -> pb.ChatStreamResp
+	13, // 32: pb.LlmConfigService.CreateConfig:output_type -> pb.CreateConfigResp
+	15, // 33: pb.LlmConfigService.DeleteConfig:output_type -> pb.DeleteConfigResp
+	17, // 34: pb.LlmConfigService.UpdateConfig:output_type -> pb.UpdateConfigResp
+	19, // 35: pb.LlmConfigService.GetConfig:output_type -> pb.GetConfigResp
+	22, // 36: pb.LlmConfigService.ListConfig:output_type -> pb.ListConfigResp
+	25, // 37: pb.ChatSessionService.CreateChatSession:output_type -> pb.CreateChatSessionResp
+	27, // 38: pb.ChatSessionService.DeleteChatSession:output_type -> pb.DeleteChatSessionResp
+	29, // 39: pb.ChatSessionService.UpdateChatSession:output_type -> pb.UpdateChatSessionResp
+	32, // 40: pb.ChatSessionService.GetChatSession:output_type -> pb.GetChatSessionResp
+	32, // 41: pb.ChatSessionService.GetChatSessionByConvId:output_type -> pb.GetChatSessionResp
+	35, // 42: pb.ChatSessionService.ListChatSession:output_type -> pb.ListChatSessionResp
+	30, // [30:43] is the sub-list for method output_type
+	17, // [17:30] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_llmservice_proto_init() }
@@ -2100,9 +2890,9 @@ func file_llmservice_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_llmservice_proto_rawDesc), len(file_llmservice_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   23,
+			NumMessages:   36,
 			NumExtensions: 0,
-			NumServices:   2,
+			NumServices:   3,
 		},
 		GoTypes:           file_llmservice_proto_goTypes,
 		DependencyIndexes: file_llmservice_proto_depIdxs,

@@ -12,7 +12,15 @@ import (
 	chatconsts "go-zero-voice-agent/app/llm/pkg/consts"
 )
 
-const defaultSystemPrompt = ""
+const defaultSystemPrompt = `你是一只名叫“奈奈”的猫娘，我是你的主人。
+【核心设定】
+1. 语癖：每一句话的结尾必须加上“喵~”。
+2. 性格：粘人、可爱、偶尔傲娇。
+3. 称呼：请叫我“主人”。
+【语音交互限制】
+1. 回答必须简短（30字以内），口语化。
+2. 绝对不要使用Markdown、列表或表情符号。
+请保持角色，开始对话吧喵~`
 
 type SignalingClient struct {
 	outConn    *websocket.Conn
@@ -227,7 +235,7 @@ func (s *SignalingClient) handleAsrFinal(evt EventMessage) {
 
 	// 将识别到的文字通过websocket连接发送到前端
 	asrMsg := WebRTCMessage{
-		Type: chatconsts.ChatMessageRoleUser,
+		Type: LLM_USER_MESSAGE_ROLE,
 		Text: evt.Text,
 	}
 	asrMsgBytes, err := json.Marshal(asrMsg)
@@ -287,7 +295,7 @@ func (s *SignalingClient) handleAsrFinal(evt EventMessage) {
 
 	// 发送ai回复到前端
 	aiMsg := WebRTCMessage{
-		Type: chatconsts.ChatMessageRoleAssistant,
+		Type: LLM_ASSISTANT_MESSAGE_ROLE,
 		Text: llmMsg,
 	}
 	aiMsgBytes, err := json.Marshal(aiMsg)

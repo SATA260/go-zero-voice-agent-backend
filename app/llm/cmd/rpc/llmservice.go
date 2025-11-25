@@ -7,6 +7,7 @@ import (
 	"go-zero-voice-agent/app/llm/cmd/rpc/internal/config"
 	llmchatserviceServer "go-zero-voice-agent/app/llm/cmd/rpc/internal/server/llmchatservice"
 	llmconfigserviceServer "go-zero-voice-agent/app/llm/cmd/rpc/internal/server/llmconfigservice"
+	chatsessionserviceServer "go-zero-voice-agent/app/llm/cmd/rpc/internal/server/chatsessionservice"
 	"go-zero-voice-agent/app/llm/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
 
@@ -29,6 +30,7 @@ func main() {
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		pb.RegisterLlmChatServiceServer(grpcServer, llmchatserviceServer.NewLlmChatServiceServer(ctx))
 		pb.RegisterLlmConfigServiceServer(grpcServer, llmconfigserviceServer.NewLlmConfigServiceServer(ctx))
+		pb.RegisterChatSessionServiceServer(grpcServer, chatsessionserviceServer.NewChatSessionServiceServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

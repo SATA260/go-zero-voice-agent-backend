@@ -229,6 +229,78 @@ message ListConfigResp {
 }
 
 
+// --- Chat Session Management ---
+
+message ChatSession {
+    int64 id = 1;
+    string conv_id = 2;
+    int64 user_id = 3;
+    string title = 4;
+    int64 version = 5;
+    int64 del_state = 6;
+    int64 create_time = 7;
+    int64 update_time = 8;
+    int64 delete_time = 9;
+}
+
+message CreateChatSessionReq {
+    string conv_id = 1;
+    int64 user_id = 2;
+    string title = 3;
+}
+
+message CreateChatSessionResp {
+    int64 id = 1;
+}
+
+message DeleteChatSessionReq {
+    int64 id = 1;
+}
+
+message DeleteChatSessionResp {
+}
+
+message UpdateChatSessionReq {
+    int64 id = 1;
+    string conv_id = 2;
+    int64 user_id = 3;
+    string title = 4;
+    int64 version = 5;
+}
+
+message UpdateChatSessionResp {
+}
+
+message GetChatSessionReq {
+    int64 id = 1;
+}
+
+message GetChatSessionByConvIdReq {
+    string conv_id = 1;
+}
+
+message GetChatSessionResp {
+    ChatSession session = 1;
+}
+
+message ListChatSessionFilter {
+    int64 id = 1;
+    string conv_id = 2;
+    int64 user_id = 3;
+    string title = 4;
+}
+
+message ListChatSessionReq {
+    PageQuery pageQuery = 1;
+    ListChatSessionFilter filter = 2;
+}
+
+message ListChatSessionResp {
+    int64 total = 1;
+    repeated ChatSession sessions = 2;
+}
+
+
 service LlmChatService {
     rpc Chat(ChatReq) returns (ChatResp);
     rpc ChatStream(ChatStreamReq) returns (stream ChatStreamResp);
@@ -240,4 +312,13 @@ service LlmConfigService {
     rpc UpdateConfig(UpdateConfigReq) returns (UpdateConfigResp);
     rpc GetConfig(GetConfigReq) returns (GetConfigResp);
     rpc ListConfig(ListConfigReq) returns (ListConfigResp);
+}
+
+service ChatSessionService {
+    rpc CreateChatSession(CreateChatSessionReq) returns (CreateChatSessionResp);
+    rpc DeleteChatSession(DeleteChatSessionReq) returns (DeleteChatSessionResp);
+    rpc UpdateChatSession(UpdateChatSessionReq) returns (UpdateChatSessionResp);
+    rpc GetChatSession(GetChatSessionReq) returns (GetChatSessionResp);
+    rpc GetChatSessionByConvId(GetChatSessionByConvIdReq) returns (GetChatSessionResp);
+    rpc ListChatSession(ListChatSessionReq) returns (ListChatSessionResp);
 }
