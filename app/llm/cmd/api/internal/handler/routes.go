@@ -6,6 +6,7 @@ package handler
 import (
 	"net/http"
 
+	chat "go-zero-voice-agent/app/llm/cmd/api/internal/handler/chat"
 	chatmessage "go-zero-voice-agent/app/llm/cmd/api/internal/handler/chatmessage"
 	chatsession "go-zero-voice-agent/app/llm/cmd/api/internal/handler/chatsession"
 	config "go-zero-voice-agent/app/llm/cmd/api/internal/handler/config"
@@ -15,6 +16,18 @@ import (
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				// 进行文字对话
+				Method:  http.MethodPost,
+				Path:    "/text",
+				Handler: chat.TextChatHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/llm/v1/chat"),
+	)
+
 	server.AddRoutes(
 		[]rest.Route{
 			{

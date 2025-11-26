@@ -11,10 +11,21 @@ info (
 import (
 	"chatmessage/chatmessage.api"
 	"chatsession/chatsession.api"
-	"llm/llmconfig.api"
+	"llmconfig/llmconfig.api"
+	"llmchat/llmchat.api"
 )
 
 // Server & Service
+@server (
+	group:  chat
+	prefix: llm/v1/chat
+)
+service llm {
+	@doc "进行文字对话"
+	@handler TextChat
+	post /text (TextChatReq) returns (TextChatResp)
+}
+
 @server (
 	group:  config
 	prefix: llm/v1/config
