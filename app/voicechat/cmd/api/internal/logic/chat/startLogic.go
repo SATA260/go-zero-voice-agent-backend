@@ -7,7 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-
+	
 	"go-zero-voice-agent/app/voicechat/cmd/api/internal/svc"
 	"go-zero-voice-agent/app/voicechat/cmd/api/internal/types"
 	"go-zero-voice-agent/app/voicechat/cmd/api/internal/webrtc"
@@ -74,14 +74,16 @@ func (l *StartLogic) handleWebsocketMsg(ctx context.Context, conn *wsTool.Conn, 
 					continue
 				}
 
-				client, err := webrtc.NewSignalingClient(
-					ctx,
-					l.svcCtx.LlmChatServiceRpc,
-					msg.LlmConfig,
-					msg.SystemPrompt,
-					conn,
-					l.svcCtx.Config.RustPBXConfig.WebSocketUrl,
-					webrtc.PBXMessage{
+				signalingClientParams := webrtc.SignalingClientParams{
+					Ctx:               ctx,
+					LlmService:        l.svcCtx.LlmChatServiceRpc,
+					LlmConfig:         msg.LlmConfig,
+					LlmConversationID: msg.LlmConversationID,
+					SystemPrompt:      msg.SystemPrompt,
+					UserID:            req.UserId,
+					OutConn:           conn,
+					ServerAddr:        l.svcCtx.Config.RustPBXConfig.WebSocketUrl,
+					Initial: webrtc.PBXMessage{
 						Command: webrtc.WS_CALLBACK_EVENT_TYPE_INVITE,
 						Option: &webrtc.CallOptions{
 							Asr: &webrtc.AsrConfig{
@@ -102,7 +104,10 @@ func (l *StartLogic) handleWebsocketMsg(ctx context.Context, conn *wsTool.Conn, 
 							},
 							Offer: msg.SDP,
 						},
-					})
+					},
+				}
+
+				client, err := webrtc.NewSignalingClient(signalingClientParams)
 				if err != nil {
 					l.Logger.Errorf("Failed to create signaling client: %v", err)
 					cancel()

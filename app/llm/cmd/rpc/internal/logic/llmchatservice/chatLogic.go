@@ -151,7 +151,12 @@ func (l *ChatLogic) collectHistory(in *pb.ChatReq, session *model.ChatSession) (
 	}
 
 	rawMsgs, err := l.svcCtx.RedisClient.Lrange(cacheKey, -length, -1)
-	if err == nil {
+	if err != nil {
+		l.Logger.Errorf("failed to get history from redis: %v", err)
+	}
+
+	// 优先使用缓存中的历史记录
+	if len(rawMsgs) > 0 {
 		messages := make([]*pb.ChatMsg, 0, len(rawMsgs))
 		for idx, raw := range rawMsgs {
 			var decoded pb.ChatMsg
@@ -164,26 +169,55 @@ func (l *ChatLogic) collectHistory(in *pb.ChatReq, session *model.ChatSession) (
 		if len(messages) > 0 {
 			return messages, nil
 		}
-	} else {
-		l.Logger.Errorf("failed to get history from redis: %v", err)
 	}
 
-	if session == nil {
-		return []*pb.ChatMsg{}, nil
-	}
-
+	// 当缓存中没有数据时，从数据库中获取历史记录
+	l.Logger.Infof("no cached history found in redis for key: %s", cacheKey)
 	queryBuilder := l.svcCtx.ChatMessageModel.SelectBuilder().Where(squirrel.Eq{"session_id": session.Id})
 	pageMsgs, err := l.svcCtx.ChatMessageModel.FindPageListByPage(l.ctx, queryBuilder, 1, int64(length), "id DESC")
 	if err != nil {
 		l.Logger.Errorf("failed to get history from db: %v", err)
 		return nil, err
 	}
-
 	messages := make([]*pb.ChatMsg, 0, len(pageMsgs))
 	for i := len(pageMsgs) - 1; i >= 0; i-- {
 		msg := pageMsgs[i]
 		messages = append(messages, &pb.ChatMsg{Role: msg.Role, Content: tool.NullStringToString(msg.Content)})
 	}
+
+	// 将历史记录重新缓存到 Redis 中
+	if len(messages) > 0 {
+		cachePayload := make([]string, 0, len(messages))
+		for idx, message := range messages {
+			if message == nil {
+				continue
+			}
+			encoded, marshalErr := json.Marshal(message)
+			if marshalErr != nil {
+				l.Logger.Errorf("marshal db message failed, key: %s, index: %d, err: %v", cacheKey, idx, marshalErr)
+				continue
+			}
+			cachePayload = append(cachePayload, string(encoded))
+		}
+
+		if len(cachePayload) > 0 {
+			if _, delErr := l.svcCtx.RedisClient.Del(cacheKey); delErr != nil {
+				l.Logger.Errorf("failed to clear redis history cache for key: %s, err: %v", cacheKey, delErr)
+			}
+
+			values := make([]any, 0, len(cachePayload))
+			for _, payload := range cachePayload {
+				values = append(values, payload)
+			}
+
+			if _, pushErr := l.svcCtx.RedisClient.Rpush(cacheKey, values...); pushErr != nil {
+				l.Logger.Errorf("failed to repopulate redis history cache for key: %s, err: %v", cacheKey, pushErr)
+			} else {
+				l.svcCtx.RedisClient.Expire(cacheKey, chatconsts.ChatCacheExpireSeconds)
+			}
+		}
+	}
+
 	return messages, nil
 }
 

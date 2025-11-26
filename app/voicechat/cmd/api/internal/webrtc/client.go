@@ -23,6 +23,7 @@ const defaultSystemPrompt = `你是一只名叫“奈奈”的猫娘，我是你
 请保持角色，开始对话吧喵~`
 
 type SignalingClient struct {
+	userId     int64
 	outConn    *websocket.Conn
 	inConn     *websocket.Conn
 	ctx        context.Context
@@ -92,28 +93,34 @@ type WebRTCMessage struct {
 	SystemPrompt  string `json:"systemPrompt,omitempty"`
 	KnowledgeInfo string `json:"knowledgeInfo,omitempty"`
 
-	AsrConfig AsrConfig                `json:"asrConfig,omitempty"`
-	TtsConfig TtsConfig                `json:"ttsConfig,omitempty"`
-	LlmConfig llmchatservice.LlmConfig `json:"llmConfig,omitempty"`
+	AsrConfig         AsrConfig                `json:"asrConfig,omitempty"`
+	TtsConfig         TtsConfig                `json:"ttsConfig,omitempty"`
+	LlmConfig         llmchatservice.LlmConfig `json:"llmConfig,omitempty"`
+	LlmConversationID string                   `json:"llmConversationId,omitempty"`
 }
 
-func NewSignalingClient(
-	ctx context.Context,
-	llmServiceRpc llmchatservice.LlmChatService,
-	llmConfig llmchatservice.LlmConfig,
-	llmSystemPrompt string,
-	Conn *websocket.Conn,
-	serverAddr string,
-	initial PBXMessage) (*SignalingClient, error) {
-	ctx, cancel := context.WithCancel(ctx)
+type SignalingClientParams struct {
+	Ctx               context.Context
+	LlmService        llmchatservice.LlmChatService
+	LlmConfig         llmchatservice.LlmConfig
+	LlmConversationID string
+	SystemPrompt      string
+	UserID            int64
+	OutConn           *websocket.Conn
+	ServerAddr        string
+	Initial           PBXMessage
+}
 
-	conn, _, err := websocket.DefaultDialer.Dial(serverAddr, nil)
+func NewSignalingClient(params SignalingClientParams) (*SignalingClient, error) {
+	ctx, cancel := context.WithCancel(params.Ctx)
+
+	conn, _, err := websocket.DefaultDialer.Dial(params.ServerAddr, nil)
 	if err != nil {
 		cancel()
 		return nil, fmt.Errorf("websocket dial failed: %w", err)
 	}
 
-	msg, err := json.Marshal(initial)
+	msg, err := json.Marshal(params.Initial)
 	if err != nil {
 		cancel()
 		return nil, fmt.Errorf("failed to marshal initial PBXMessage: %w", err)
@@ -124,7 +131,8 @@ func NewSignalingClient(
 	}
 
 	client := &SignalingClient{
-		outConn:    Conn,
+		userId:     params.UserID,
+		outConn:    params.OutConn,
 		inConn:     conn,
 		ctx:        ctx,
 		cancel:     cancel,
@@ -132,9 +140,10 @@ func NewSignalingClient(
 		logx:       logx.WithContext(ctx),
 		EvtMsgChan: make(chan EventMessage, 1024),
 
-		LlmChatServiceRpc: llmServiceRpc,
-		LlmConfig:         llmConfig,
-		LlmSystemPromt:    llmSystemPrompt,
+		LlmChatServiceRpc: params.LlmService,
+		LlmConversationID: params.LlmConversationID,
+		LlmConfig:         params.LlmConfig,
+		LlmSystemPromt:    params.SystemPrompt,
 	}
 	client.logx.Info("Send invite command to RustPBX....")
 
@@ -271,11 +280,12 @@ func (s *SignalingClient) handleAsrFinal(evt EventMessage) {
 
 	// 发送聊天请求到 LLM 服务
 	chatReq := &llmchatservice.ChatReq{
-		ConversationId:  s.LlmConversationID,
-		LlmConfig:       &llmchatservice.LlmConfig{
-			BaseUrl:   s.LlmConfig.BaseUrl,
-			ApiKey:    s.LlmConfig.ApiKey,
-			Model:     s.LlmConfig.Model,
+		UserId:         s.userId,
+		ConversationId: s.LlmConversationID,
+		LlmConfig: &llmchatservice.LlmConfig{
+			BaseUrl: s.LlmConfig.BaseUrl,
+			ApiKey:  s.LlmConfig.ApiKey,
+			Model:   s.LlmConfig.Model,
 		},
 		Messages:        chatMsgs,
 		AutoFillHistory: true,
