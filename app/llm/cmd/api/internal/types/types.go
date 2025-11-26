@@ -157,6 +157,25 @@ type PageQuery struct {
 	OrderBy  string `json:"orderBy"`
 }
 
+type TextChatMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+type TextChatReq struct {
+	UserId          int64  `header:"X-User-Id"`
+	ConfigId        int64  `json:"configId"`
+	ConversationId  string `json:"conversationId,optional"`
+	Message         string `json:"message"`
+	SystemPrompt    string `json:"systemPrompt,optional"`
+	AutoFillHistory bool   `json:"autoFillHistory,optional"`
+}
+
+type TextChatResp struct {
+	ConversationId string            `json:"conversationId"`
+	Messages       []TextChatMessage `json:"messages"`
+}
+
 type UpdateConfigReq struct {
 	Id                int64   `path:"id"`
 	UserId            int64   `header:"X-User-Id"`
