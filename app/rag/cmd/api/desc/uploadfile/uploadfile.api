@@ -1,0 +1,11 @@
+syntax = "v1"
+
+type (
+	UploadDocReq {
+		UserId int64 `header:"X-User-Id"`
+	}
+	UploadDocResp {
+		Path string `json:"path"`
+	}
+)
+

@@ -1,0 +1,24 @@
+syntax = "v1"
+
+info (
+	title:   "rag实例"
+	desc:    "rag服务"
+	author:  "2penheimer"
+	email:   "2603237065@qq.com"
+	version: "v1"
+)
+
+import (
+	"uploadfile/uploadfile.api"
+)
+
+@server (
+	group:  doc
+	prefix: rag/v1/doc
+)
+service rag {
+	@doc "上传文件并向量化"
+	@handler UploadAndEmbed
+	post /upload (UploadDocReq) returns (UploadDocResp)
+}
+
