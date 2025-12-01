@@ -72,7 +72,7 @@ services:
     command: [ "nginx", "-g", "daemon off;" ]
     networks:
       - gzva_net
-  
+
   etcd:
     image: quay.io/coreos/etcd:v3.5.7
     container_name: etcd
@@ -84,6 +84,62 @@ services:
       - "2379:2379"
     volumes:
       - ./data/etcd/data:/bitnami/etcd-data
+    networks:
+      - gzva_net
+
+  kafka:
+    image: apache/kafka:4.1.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      # Enable KRaft mode so Kafka runs without ZooKeeper
+      - KAFKA_ENABLE_KRAFT=yes
+      # Define node roles within the cluster (must include broker,controller for single node)
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      # Unique identifier for this broker/controller node
+      - KAFKA_NODE_ID=1
+      - KAFKA_CFG_NODE_ID=1
+      # Controller quorum voters (nodeId@host:port) used by storage initialization
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      # Bootstrap servers for the controller quorum discovery
+      - KAFKA_CONTROLLER_QUORUM_BOOTSTRAP_SERVERS=kafka:9093
+      - KAFKA_CFG_CONTROLLER_QUORUM_BOOTSTRAP_SERVERS=kafka:9093
+      # Listener bindings for broker and controller endpoints
+      - KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      # Address advertised to external clients for the broker listener
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      # Security protocol mapping for each listener name
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      # Name of the controller listener that forms the quorum
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      # Listener used for broker-to-broker traffic
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    volumes:
+      - ./data/kafka/data:/bitnami/kafka
+    networks:
+      - gzva_net
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000" # API 端口
+      - "9001:9001" # Console 管理界面端口
+    environment:
+      MINIO_ROOT_USER: zhang
+      MINIO_ROOT_PASSWORD: epoch2025zhang
+    volumes:
+      - ./data/minio/data:/data
+    command: server /data --console-address ":9001"
     networks:
       - gzva_net
 

@@ -53,3 +53,9 @@ data/*
 **/*.sqlite3
 **/*.generated.toml
 **/*.bak
+
+
+# python
+**/__pycache__
+**/.venv
+
