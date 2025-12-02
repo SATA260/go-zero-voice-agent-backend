@@ -5,6 +5,14 @@ Etcd:
   - 127.0.0.1:2379
   Key: rag.rpc
 
+DB:
+  DataSource: root:f4FMhWc6FdzuBCHf@tcp(localhost:3306)/gzva_rag?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+Cache:
+  - Host: localhost:36379
+    Type: node
+    Pass: GwAGt4UmTwcMhjun
+
 MinioConfig:
   EndPoint: localhost:9000
   AccessKey: zhang
