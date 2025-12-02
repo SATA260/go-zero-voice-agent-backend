@@ -1,3 +1,9 @@
 Name: rag
 Host: 0.0.0.0
-Port: 8888
+Port: 3084
+
+RagRpcConf:
+  Etcd:
+    Hosts:
+    - localhost:2379
+    Key: rag.rpc

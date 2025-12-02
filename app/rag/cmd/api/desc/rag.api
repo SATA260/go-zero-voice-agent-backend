@@ -9,7 +9,7 @@ info (
 )
 
 import (
-	"uploadfile/uploadfile.api"
+	"docfile/docfile.api"
 )
 
 @server (
