@@ -2,13 +2,18 @@ package docservicelogic
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"io"
+	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 
 	"go-zero-voice-agent/app/rag/cmd/rpc/internal/consts"
 	"go-zero-voice-agent/app/rag/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/rag/cmd/rpc/pb"
+	"go-zero-voice-agent/app/rag/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -133,6 +138,41 @@ func (l *UploadFileLogic) UploadFile(stream pb.DocService_UploadFileServer) erro
 	objectKey := filePath
 	if uploadInfo.Key != "" {
 		objectKey = uploadInfo.Key
+	}
+
+	var userIDValue sql.NullInt64
+	if userID != "" {
+		if parsed, parseErr := strconv.ParseInt(userID, 10, 64); parseErr == nil && parsed > 0 {
+			userIDValue = sql.NullInt64{Int64: parsed, Valid: true}
+		} else {
+			l.Logger.Infof("invalid user id, skip storing: %q, err: %v", userID, parseErr)
+		}
+	}
+
+	var fileFormat sql.NullString
+	if ext := strings.TrimPrefix(strings.ToLower(filepath.Ext(fileName)), "."); ext != "" {
+		fileFormat = sql.NullString{String: ext, Valid: true}
+	}
+
+	bucketName := sql.NullString{String: consts.MINIO_BUCKETNAME_RAG_DOCUMENT, Valid: true}
+
+	record := &model.FileUpload{
+		Version:    1,
+		UserId:     userIDValue,
+		BucketName: bucketName,
+		FileName:   fileName,
+		FileFormat: fileFormat,
+		FilePath:   objectKey,
+		StoreType:  consts.STORE_TYPE_MINIO,
+		Status:     0,
+	}
+
+	if _, err := l.svcCtx.FileUploadModel.Insert(l.ctx, nil, record); err != nil {
+		l.Logger.Errorf("insert file upload record failed: %v", err)
+		if rmErr := l.svcCtx.MinioClient.Remove(l.ctx, consts.MINIO_BUCKETNAME_RAG_DOCUMENT, objectKey); rmErr != nil {
+			l.Logger.Errorf("rollback minio object failed: %v", rmErr)
+		}
+		return err
 	}
 
 	return stream.SendAndClose(&pb.UploadFileResp{FilePath: objectKey})
