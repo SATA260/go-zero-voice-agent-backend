@@ -1,15 +1,20 @@
+"""扩展 LangChain 提供的 PGVector 功能，补充监控与便捷方法。"""
+
 import logging
 import os
 import time
 from typing import Optional, Any, Dict, List, Union
 from sqlalchemy import event
 from sqlalchemy import delete
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.engine import Engine
 from langchain_core.documents import Document
 from langchain_community.vectorstores.pgvector import PGVector
 
+
 class ExtendedPgVector(PGVector):
+    """在原有 PGVector 基础上新增查询日志、自定义删除等能力。"""
     _query_logging_setup = False
 
     def __init__(self, *args, **kwargs):
@@ -20,7 +25,7 @@ class ExtendedPgVector(PGVector):
     def _sanitize_parameters_for_logging(
         parameters: Union[Dict, List, tuple, Any]
     ) -> Any:
-        # 清理日志参数，截断过长的嵌入向量和字符串，防止日志过大。
+        """清理日志参数，避免输出高维向量或超长字符串。"""
         if parameters is None:
             return parameters
 
@@ -74,8 +79,7 @@ class ExtendedPgVector(PGVector):
             return parameters
 
     def setup_query_logging(self):
-        
-        # 设置查询日志记录。
+        """按需开启 SQL 执行日志，辅助调试性能问题。"""
 
         # Only setup logging if the environment variable is set to a truthy value
         debug_queries = os.getenv("DEBUG_PGVECTOR_QUERIES", "").lower()
@@ -120,17 +124,13 @@ class ExtendedPgVector(PGVector):
         ExtendedPgVector._query_logging_setup = True
 
     def get_all_ids(self) -> List[str]:
-        
-        # 获取所有存储的向量的自定义 ID 列表。
-        
+        """获取所有存储向量的自定义 ID 列表。"""
         with Session(self._bind) as session:
             results = session.execute(self.EmbeddingStore.custom_id).all()
             return [result[0] for result in results if result[0] is not None]
         
     def get_filtered_ids(self, ids: List[str]) -> List[str]:
-        
-        # 获取存储的向量中存在的自定义 ID 列表。
-        
+        """筛选输入列表，仅返回数据库中存在的 ID。"""
         with Session(self._bind) as session:
             query = session.query(self.EmbeddingStore.custom_id).filter(
                 self.EmbeddingStore.custom_id.in_(ids)
@@ -139,9 +139,7 @@ class ExtendedPgVector(PGVector):
             return [result[0] for result in results if result[0] is not None]
         
     def get_documents_by_ids(self, ids: list[str]) -> list[Document]:
-        
-        # 根据自定义 ID 列表获取对应的文档。
-        
+        """根据自定义 ID 列表返回 Document 对象。"""
         with Session(self._bind) as session:
             results = (
                 session.query(self.EmbeddingStore)
@@ -157,9 +155,7 @@ class ExtendedPgVector(PGVector):
     def _delete_multiple(
         self, ids: Optional[list[str]] = None, collection_only: bool = False
     ) -> None:
-        
-        # 批量删除文档。
-        
+        """支持按 ID 或集合批量删除嵌入记录。"""
         with Session(self._bind) as session:
             if ids is not None:
                 self.logger.debug(
@@ -178,3 +174,37 @@ class ExtendedPgVector(PGVector):
                 stmt = stmt.where(self.EmbeddingStore.custom_id.in_(ids))
                 session.execute(stmt)
             session.commit()
+
+    def delete_by_file_ids(self, file_ids: List[str]) -> int:
+        """根据文件 ID 删除对应的所有向量记录。"""
+        if not file_ids:
+            return 0
+
+        with Session(self._bind) as session:
+            stmt = delete(self.EmbeddingStore).where(
+                self.EmbeddingStore.cmetadata["file_id"].astext.in_(file_ids)
+            )
+            result = session.execute(stmt)
+            session.commit()
+            return result.rowcount if result is not None else 0
+
+    def get_chunk_digests_by_file_id(self, file_id: str) -> Dict[str, str]:
+        """返回指定文件 ID 下的自定义 ID 与分片哈希映射。"""
+        if not file_id:
+            return {}
+
+        with Session(self._bind) as session:
+            stmt = select(
+                self.EmbeddingStore.custom_id,
+                self.EmbeddingStore.cmetadata,
+            ).where(self.EmbeddingStore.cmetadata["file_id"].astext == file_id)
+            rows = session.execute(stmt).all()
+
+            digests: Dict[str, str] = {}
+            for custom_id, metadata in rows:
+                if not custom_id or not isinstance(metadata, dict):
+                    continue
+                digest = metadata.get("chunk_digest")
+                if isinstance(digest, str) and digest:
+                    digests[custom_id] = digest
+            return digests

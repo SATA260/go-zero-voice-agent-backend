@@ -1,3 +1,4 @@
+"""集中管理应用配置、日志与依赖初始化的模块。"""
 
 import datetime
 from enum import Enum
@@ -8,14 +9,17 @@ from urllib.parse import quote_plus
 from dotenv import load_dotenv, find_dotenv
 from starlette.middleware.base import BaseHTTPMiddleware
 from langchain_openai import OpenAIEmbeddings
+from minio import Minio
 
 from app.db.vector_store.factor import get_vector_store
+from app.services.document_service import configure_document_service
 
 
 
 load_dotenv(find_dotenv())
 
 class LogLevel(Enum):
+    """日志输出等级枚举，与 Python logging 保持一致。"""
     FATAL = "fatal"
     ERROR = "error"
     WARN = "warn"
@@ -24,14 +28,17 @@ class LogLevel(Enum):
     NOTSET = "notset"
 
 class VectorDBType(Enum):
+    """支持的向量数据库类型，目前仅 PGVector。"""
     PGVECTOR = "pgvector"
 
 class EmbeddingProvider(Enum):
+    """支持的嵌入模型提供方枚举。"""
     OPENAI = "openai"
 
 def get_env_variable(
     var_name: str, default_value: str = None, required: bool = False
 ) -> str:
+    """统一读取环境变量，可指定默认值与必填校验。"""
     value = os.getenv(var_name)
     if value is None:
         if default_value is None and required:
@@ -59,6 +66,18 @@ PG_DSN = f"postgresql://{pg_connection_suffix}"
 
 RAG_HOST = get_env_variable("RAG_HOST", "localhost", True)
 RAG_PORT = int(get_env_variable("RAG_PORT", "8000", True))
+
+# Minio configuration
+MINIO_ENDPOINT = get_env_variable("MINIO_ENDPOINT", required=True)
+MINIO_ACCESS_KEY = get_env_variable("MINIO_ACCESS_KEY", required=True)
+MINIO_SECRET_KEY = get_env_variable("MINIO_SECRET_KEY", required=True)
+MINIO_SECURE = get_env_variable("MINIO_SECURE", "false").lower() == "true"
+minio_client = Minio(
+    MINIO_ENDPOINT,
+    access_key=MINIO_ACCESS_KEY,
+    secret_key=MINIO_SECRET_KEY,
+    secure=MINIO_SECURE,
+)
 
 # Logging Configuration
 
@@ -125,7 +144,9 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 class LogMiddleware(BaseHTTPMiddleware):
+    """记录请求与响应日志，便于观察系统调用情况。"""
     async def dispatch(self, request, call_next):
+        """在请求处理前后打印路由及响应信息。"""
         response = await call_next(request)
 
         logger_method = logger.info
@@ -169,6 +190,14 @@ if VECTOR_DB_TYPE == VectorDBType.PGVECTOR:
         embeddings=embeddings,
         collection_name=COLLECTION_NAME,
         mode="async",
+    )
+    configure_document_service(
+        vector_store=vector_store,
+        embeddings=embeddings,
+        minio_client=minio_client,
+        chunk_size=CHUNK_SIZE,
+        chunk_overlap=CHUNK_OVERLAP,
+        logger=logger,
     )
 else:
     raise ValueError(f"Unsupported VECTOR_DB_TYPE: {VECTOR_DB_TYPE}")
