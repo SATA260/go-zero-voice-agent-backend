@@ -8,6 +8,12 @@ import (
 type Config struct {
 	zrpc.RpcServerConf
 
+	DB struct {
+		DataSource string
+	}
+
+	Cache cache.CacheConf
+
 	MinioConfig struct {
 		Endpoint  string
 		AccessKey string
@@ -15,9 +21,7 @@ type Config struct {
 		UseSSL    bool
 	}
 
-	DB struct {
-		DataSource string
+	FastaptRagConfig struct {
+		Endpoint string
 	}
-
-	Cache cache.CacheConf
 }
