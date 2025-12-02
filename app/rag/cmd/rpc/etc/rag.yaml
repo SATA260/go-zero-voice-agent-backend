@@ -1,0 +1,12 @@
+Name: rag.rpc
+ListenOn: 0.0.0.0:4084
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: rag.rpc
+
+MinioConfig:
+  EndPoint: localhost:9000
+  AccessKey: zhang
+  SecretKey: epoch2025zhang
+  UseSSL: false

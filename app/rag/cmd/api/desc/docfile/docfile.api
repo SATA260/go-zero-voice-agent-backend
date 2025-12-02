@@ -2,7 +2,8 @@ syntax = "v1"
 
 type (
 	UploadDocReq {
-		UserId int64 `header:"X-User-Id"`
+		UserId   int64  `header:"X-User-Id"`
+		FileName string `form:"filename"`
 	}
 	UploadDocResp {
 		Path string `json:"path"`

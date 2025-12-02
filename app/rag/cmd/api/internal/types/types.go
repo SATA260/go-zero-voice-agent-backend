@@ -4,7 +4,8 @@
 package types
 
 type UploadDocReq struct {
-	UserId int64 `header:"X-User-Id"`
+	UserId   int64  `header:"X-User-Id"`
+	FileName string `form:"filename"`
 }
 
 type UploadDocResp struct {
