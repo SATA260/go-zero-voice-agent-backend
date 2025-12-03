@@ -79,7 +79,7 @@ func (l *UploadAndEmbedLogic) UploadAndEmbed(req *types.UploadDocReq, file multi
 	}
 
 	firstChunk := &docservice.UploadFileReq{
-		UserId:      userIDStr,
+		UserId:      req.UserId,
 		FileName:    filename,
 		FilePath:    objectKey,
 		ContentType: contentType,

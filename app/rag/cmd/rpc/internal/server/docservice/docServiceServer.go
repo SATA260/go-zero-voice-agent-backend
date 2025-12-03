@@ -28,6 +28,11 @@ func (s *DocServiceServer) UploadFile(stream pb.DocService_UploadFileServer) err
 	return l.UploadFile(stream)
 }
 
+func (s *DocServiceServer) ListDocuments(ctx context.Context, in *pb.ListDocumentsReq) (*pb.ListDocumentsResp, error) {
+	l := docservicelogic.NewListDocumentsLogic(ctx, s.svcCtx)
+	return l.ListDocuments(in)
+}
+
 func (s *DocServiceServer) FetchDocuments(ctx context.Context, in *pb.FetchDocumentsReq) (*pb.FetchDocumentsResp, error) {
 	l := docservicelogic.NewFetchDocumentsLogic(ctx, s.svcCtx)
 	return l.FetchDocuments(in)
