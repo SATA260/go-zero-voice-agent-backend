@@ -5,6 +5,8 @@
 package server
 
 import (
+	"context"
+
 	"go-zero-voice-agent/app/rag/cmd/rpc/internal/logic/docservice"
 	"go-zero-voice-agent/app/rag/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/rag/cmd/rpc/pb"
@@ -24,4 +26,14 @@ func NewDocServiceServer(svcCtx *svc.ServiceContext) *DocServiceServer {
 func (s *DocServiceServer) UploadFile(stream pb.DocService_UploadFileServer) error {
 	l := docservicelogic.NewUploadFileLogic(stream.Context(), s.svcCtx)
 	return l.UploadFile(stream)
+}
+
+func (s *DocServiceServer) FetchDocuments(ctx context.Context, in *pb.FetchDocumentsReq) (*pb.FetchDocumentsResp, error) {
+	l := docservicelogic.NewFetchDocumentsLogic(ctx, s.svcCtx)
+	return l.FetchDocuments(in)
+}
+
+func (s *DocServiceServer) DeleteDocuments(ctx context.Context, in *pb.DeleteDocumentsReq) (*pb.DeleteDocumentsResp, error) {
+	l := docservicelogic.NewDeleteDocumentsLogic(ctx, s.svcCtx)
+	return l.DeleteDocuments(in)
 }

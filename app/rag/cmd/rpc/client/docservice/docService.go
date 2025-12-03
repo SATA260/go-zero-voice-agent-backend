@@ -14,15 +14,22 @@ import (
 )
 
 type (
-	QueryMultipleReq = pb.QueryMultipleReq
-	QueryReq         = pb.QueryReq
-	QueryResp        = pb.QueryResp
-	RetrievalResult  = pb.RetrievalResult
-	UploadFileReq    = pb.UploadFileReq
-	UploadFileResp   = pb.UploadFileResp
+	DeleteDocumentsReq  = pb.DeleteDocumentsReq
+	DeleteDocumentsResp = pb.DeleteDocumentsResp
+	DocumentRecord      = pb.DocumentRecord
+	FetchDocumentsReq   = pb.FetchDocumentsReq
+	FetchDocumentsResp  = pb.FetchDocumentsResp
+	QueryMultipleReq    = pb.QueryMultipleReq
+	QueryReq            = pb.QueryReq
+	QueryResp           = pb.QueryResp
+	RetrievalResult     = pb.RetrievalResult
+	UploadFileReq       = pb.UploadFileReq
+	UploadFileResp      = pb.UploadFileResp
 
 	DocService interface {
 		UploadFile(ctx context.Context, opts ...grpc.CallOption) (pb.DocService_UploadFileClient, error)
+		FetchDocuments(ctx context.Context, in *FetchDocumentsReq, opts ...grpc.CallOption) (*FetchDocumentsResp, error)
+		DeleteDocuments(ctx context.Context, in *DeleteDocumentsReq, opts ...grpc.CallOption) (*DeleteDocumentsResp, error)
 	}
 
 	defaultDocService struct {
@@ -39,4 +46,14 @@ func NewDocService(cli zrpc.Client) DocService {
 func (m *defaultDocService) UploadFile(ctx context.Context, opts ...grpc.CallOption) (pb.DocService_UploadFileClient, error) {
 	client := pb.NewDocServiceClient(m.cli.Conn())
 	return client.UploadFile(ctx, opts...)
+}
+
+func (m *defaultDocService) FetchDocuments(ctx context.Context, in *FetchDocumentsReq, opts ...grpc.CallOption) (*FetchDocumentsResp, error) {
+	client := pb.NewDocServiceClient(m.cli.Conn())
+	return client.FetchDocuments(ctx, in, opts...)
+}
+
+func (m *defaultDocService) DeleteDocuments(ctx context.Context, in *DeleteDocumentsReq, opts ...grpc.CallOption) (*DeleteDocumentsResp, error) {
+	client := pb.NewDocServiceClient(m.cli.Conn())
+	return client.DeleteDocuments(ctx, in, opts...)
 }

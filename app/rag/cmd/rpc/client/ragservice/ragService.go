@@ -14,12 +14,17 @@ import (
 )
 
 type (
-	QueryMultipleReq = pb.QueryMultipleReq
-	QueryReq         = pb.QueryReq
-	QueryResp        = pb.QueryResp
-	RetrievalResult  = pb.RetrievalResult
-	UploadFileReq    = pb.UploadFileReq
-	UploadFileResp   = pb.UploadFileResp
+	DeleteDocumentsReq  = pb.DeleteDocumentsReq
+	DeleteDocumentsResp = pb.DeleteDocumentsResp
+	DocumentRecord      = pb.DocumentRecord
+	FetchDocumentsReq   = pb.FetchDocumentsReq
+	FetchDocumentsResp  = pb.FetchDocumentsResp
+	QueryMultipleReq    = pb.QueryMultipleReq
+	QueryReq            = pb.QueryReq
+	QueryResp           = pb.QueryResp
+	RetrievalResult     = pb.RetrievalResult
+	UploadFileReq       = pb.UploadFileReq
+	UploadFileResp      = pb.UploadFileResp
 
 	RagService interface {
 		Query(ctx context.Context, in *QueryReq, opts ...grpc.CallOption) (*QueryResp, error)

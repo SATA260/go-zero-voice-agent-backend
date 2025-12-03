@@ -41,8 +41,33 @@ message QueryResp {
     repeated RetrievalResult results = 1;
 }
 
+message FetchDocumentsReq {
+    string userId = 1;
+    repeated string ids = 2;
+}
+
+message DocumentRecord {
+    string pageContent = 1;
+    map<string, string> metadata = 2;
+}
+
+message FetchDocumentsResp {
+    repeated DocumentRecord documents = 1;
+}
+
+message DeleteDocumentsReq {
+    string userId = 1;
+    repeated string ids = 2;
+}
+
+message DeleteDocumentsResp {
+    int32 deletedCount = 1;
+}
+
 service DocService {
     rpc UploadFile(stream UploadFileReq) returns (UploadFileResp);
+    rpc FetchDocuments(FetchDocumentsReq) returns (FetchDocumentsResp);
+    rpc DeleteDocuments(DeleteDocumentsReq) returns (DeleteDocumentsResp);
 }
 
 service RagService {
