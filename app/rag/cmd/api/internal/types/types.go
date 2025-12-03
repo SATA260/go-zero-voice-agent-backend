@@ -3,6 +3,44 @@
 
 package types
 
+type DeleteDocReq struct {
+	UserId int64 `header:"X-User-Id"`
+	Id     int64 `path:"id"`
+}
+
+type DeleteDocResp struct {
+	DeletedCount int32 `json:"deletedCount"`
+}
+
+type DocumentItem struct {
+	Id         int64  `json:"id"`
+	FileName   string `json:"fileName"`
+	FileFormat string `json:"fileFormat"`
+	Status     int64  `json:"status"`
+}
+
+type ListDocFilter struct {
+	FileName   string `json:"fileName,optional"`
+	FileFormat string `json:"fileFormat,optional"`
+}
+
+type ListDocReq struct {
+	UserId    int64         `header:"X-User-Id"`
+	PageQuery PageQuery     `json:"pageQuery"`
+	Filter    ListDocFilter `json:"filter,optional"`
+}
+
+type ListDocResp struct {
+	Total        int64          `json:"total"`
+	DocumentList []DocumentItem `json:"documentList"`
+}
+
+type PageQuery struct {
+	Page     int64  `json:"page"`
+	PageSize int64  `json:"pageSize"`
+	OrderBy  string `json:"orderBy,optional"`
+}
+
 type UploadDocReq struct {
 	UserId   int64  `header:"X-User-Id"`
 	FileName string `form:"filename"`

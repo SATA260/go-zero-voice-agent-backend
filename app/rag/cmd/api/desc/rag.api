@@ -20,5 +20,13 @@ service rag {
 	@doc "上传文件并向量化"
 	@handler UploadAndEmbed
 	post /upload (UploadDocReq) returns (UploadDocResp)
+
+	@doc "分页查询上传文件"
+	@handler ListDoc
+	post /list (ListDocReq) returns (ListDocResp)
+
+	@doc "删除上传文件"
+	@handler DeleteDoc
+	delete /:id (DeleteDocReq) returns (DeleteDocResp)
 }
 
