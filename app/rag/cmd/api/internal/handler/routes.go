@@ -16,6 +16,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				// 删除上传文件
+				Method:  http.MethodDelete,
+				Path:    "/:id",
+				Handler: doc.DeleteDocHandler(serverCtx),
+			},
+			{
+				// 分页查询上传文件
+				Method:  http.MethodPost,
+				Path:    "/list",
+				Handler: doc.ListDocHandler(serverCtx),
+			},
+			{
 				// 上传文件并向量化
 				Method:  http.MethodPost,
 				Path:    "/upload",
