@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"go-zero-voice-agent/app/rag/cmd/rpc/internal/consts"
+	"go-zero-voice-agent/app/rag/cmd/rpc/internal/ragclient"
 	"go-zero-voice-agent/app/rag/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/rag/cmd/rpc/pb"
 	"go-zero-voice-agent/app/rag/model"
@@ -167,7 +168,8 @@ func (l *UploadFileLogic) UploadFile(stream pb.DocService_UploadFileServer) erro
 		Status:     0,
 	}
 
-	if _, err := l.svcCtx.FileUploadModel.Insert(l.ctx, nil, record); err != nil {
+	insertResult, err := l.svcCtx.FileUploadModel.Insert(l.ctx, nil, record)
+	if err != nil {
 		l.Logger.Errorf("insert file upload record failed: %v", err)
 		if rmErr := l.svcCtx.MinioClient.Remove(l.ctx, consts.MINIO_BUCKETNAME_RAG_DOCUMENT, objectKey); rmErr != nil {
 			l.Logger.Errorf("rollback minio object failed: %v", rmErr)
@@ -175,5 +177,88 @@ func (l *UploadFileLogic) UploadFile(stream pb.DocService_UploadFileServer) erro
 		return err
 	}
 
-	return stream.SendAndClose(&pb.UploadFileResp{FilePath: objectKey})
+	insertID, err := insertResult.LastInsertId()
+	if err != nil {
+		l.Logger.Errorf("fetch last insert id failed: %v", err)
+	} else if insertID > 0 {
+		record.Id = insertID
+	}
+
+	if err := stream.SendAndClose(&pb.UploadFileResp{FilePath: objectKey}); err != nil {
+		return err
+	}
+
+	trimmedUserID := strings.TrimSpace(userID)
+	if trimmedUserID == "" {
+		l.Logger.Infof("skip embed: empty user id for file %s", objectKey)
+		return nil
+	}
+
+	recordCopy := *record
+	fileID := objectKey
+	if recordCopy.Id > 0 {
+		fileID = strconv.FormatInt(recordCopy.Id, 10)
+	}
+
+	embedReq := &ragclient.EmbedRequest{
+		FileID:      fileID,
+		BucketName:  consts.MINIO_BUCKETNAME_RAG_DOCUMENT,
+		ObjectPath:  objectKey,
+		Filename:    recordCopy.FileName,
+		ContentType: contentType,
+	}
+
+	go func(rec model.FileUpload, req *ragclient.EmbedRequest) {
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+		defer cancel()
+		if err := l.embedWithRetry(ctx, trimmedUserID, &rec, req); err != nil {
+			l.Logger.Errorf("async embed failed for file %s: %v", req.ObjectPath, err)
+		}
+	}(recordCopy, embedReq)
+
+	return nil
+}
+
+func (l *UploadFileLogic) embedWithRetry(ctx context.Context, userID string, record *model.FileUpload, embedReq *ragclient.EmbedRequest) error {
+	const (
+		maxAttempts       = 3
+		initialBackoff    = 500 * time.Millisecond
+		backoffMultiplier = 2
+	)
+
+	var lastErr error
+	backoff := initialBackoff
+
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		if _, err := l.svcCtx.RagClient.Embed(ctx, userID, embedReq); err != nil {
+			lastErr = err
+			l.Logger.Errorf("embed attempt %d failed: %v", attempt, err)
+			if attempt == maxAttempts {
+				break
+			}
+
+			timer := time.NewTimer(backoff)
+			select {
+			case <-timer.C:
+				backoff *= backoffMultiplier
+			case <-ctx.Done():
+				timer.Stop()
+				return ctx.Err()
+			}
+			continue
+		}
+
+		lastErr = nil
+
+		if record.Id > 0 {
+			record.Status = 1
+			if _, err := l.svcCtx.FileUploadModel.Update(ctx, nil, record); err != nil {
+				l.Logger.Errorf("update file status failed: %v", err)
+			}
+		}
+
+		return nil
+	}
+
+	return fmt.Errorf("embed failed after retries: %w", lastErr)
 }
