@@ -16,6 +16,36 @@ message UploadFileResp {
     string file_path = 1;
 }
 
+message QueryReq {
+    string userId = 1;
+    string query = 2;
+    string fileId = 3;
+    int32 topK = 4;
+    string entityId = 5;
+}
+
+message QueryMultipleReq {
+    string userId = 1;
+    string query = 2;
+    repeated string fileIds = 3;
+    int32 topK = 4;
+}
+
+message RetrievalResult {
+    string pageContent = 1;
+    map<string, string> metadata = 2;
+    double score = 3;
+}
+
+message QueryResp {
+    repeated RetrievalResult results = 1;
+}
+
 service DocService {
     rpc UploadFile(stream UploadFileReq) returns (UploadFileResp);
+}
+
+service RagService {
+    rpc Query(QueryReq) returns (QueryResp);
+    rpc QueryMultiple(QueryMultipleReq) returns (QueryResp);
 }

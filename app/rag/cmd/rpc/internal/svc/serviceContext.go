@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"go-zero-voice-agent/app/rag/cmd/rpc/internal/config"
+	"go-zero-voice-agent/app/rag/cmd/rpc/internal/ragclient"
 	"go-zero-voice-agent/app/rag/model"
 	"go-zero-voice-agent/pkg/minioutil"
 
@@ -14,6 +15,7 @@ type ServiceContext struct {
 	Config          config.Config
 	MinioClient     *minioutil.MinioClient
 	FileUploadModel model.FileUploadModel
+	RagClient       *ragclient.Client
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -29,9 +31,15 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	sqlConn := sqlx.NewMysql(c.DB.DataSource)
 
+	ragClient, err := ragclient.NewClient(c.FastaptRagConfig.Endpoint)
+	if err != nil {
+		panic(fmt.Sprintf("init rag client failed: %v", err))
+	}
+
 	return &ServiceContext{
 		Config:          c,
 		MinioClient:     minioClient,
 		FileUploadModel: model.NewFileUploadModel(sqlConn, c.Cache),
+		RagClient:       ragClient,
 	}
 }
