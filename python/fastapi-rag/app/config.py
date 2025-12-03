@@ -8,9 +8,9 @@ import os
 from urllib.parse import quote_plus
 from dotenv import load_dotenv, find_dotenv
 from starlette.middleware.base import BaseHTTPMiddleware
-from langchain_openai import OpenAIEmbeddings
 from minio import Minio
 
+from app.embeddings import DashScopeEmbeddings
 from app.db.vector_store.factor import get_vector_store
 from app.services.document_service import configure_document_service
 
@@ -167,19 +167,36 @@ class LogMiddleware(BaseHTTPMiddleware):
 
 logging.getLogger("uvicorn.access").disabled = True
 
-# Credentials and API Keys
-RAG_OPENAI_API_KEY = get_env_variable("RAG_OPENAI_API_KEY", None)
-RAG_OPENAI_BASEURL = get_env_variable("RAG_OPENAI_BASEURL", None)
-RAG_OPENAI_MODEL = get_env_variable("RAG_OPENAI_MODEL", None)
+# DashScope embedding configuration
+DASHSCOPE_API_KEY = get_env_variable("DASHSCOPE_API_KEY")
+if DASHSCOPE_API_KEY is None:
+    DASHSCOPE_API_KEY = get_env_variable("RAG_OPENAI_API_KEY", required=True)
+
+DASHSCOPE_BASE_URL = get_env_variable("DASHSCOPE_BASE_URL")
+if DASHSCOPE_BASE_URL is None:
+    DASHSCOPE_BASE_URL = get_env_variable(
+        "RAG_OPENAI_BASEURL",
+        "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    )
+
+DASHSCOPE_MODEL = get_env_variable("DASHSCOPE_MODEL")
+if DASHSCOPE_MODEL is None:
+    DASHSCOPE_MODEL = get_env_variable("RAG_OPENAI_MODEL", required=True)
+
 EMBEDDING_CHUNK_SIZE = int(get_env_variable("EMBEDDING_CHUNK_SIZE", "200"))
-RAG_CHECK_EMBEDDING_CTX_LENGTH = True if get_env_variable("RAG_CHECK_EMBEDDING_CTX_LENGTH", "true").lower() == "true" else False
-# Embedding Configuration
-embeddings = OpenAIEmbeddings(
-    model = RAG_OPENAI_MODEL,
-    api_key = RAG_OPENAI_API_KEY,
-    openai_api_base = RAG_OPENAI_BASEURL,
-    chunk_size= EMBEDDING_CHUNK_SIZE,
-    check_embedding_ctx_length=RAG_CHECK_EMBEDDING_CTX_LENGTH
+embedding_dimensions_raw = get_env_variable("EMBEDDING_DIMENSIONS")
+EMBEDDING_DIMENSIONS = (
+    int(embedding_dimensions_raw) if embedding_dimensions_raw is not None else None
+)
+EMBEDDING_ENCODING_FORMAT = get_env_variable("EMBEDDING_ENCODING_FORMAT", "float")
+
+embeddings = DashScopeEmbeddings(
+    api_key=DASHSCOPE_API_KEY,
+    base_url=DASHSCOPE_BASE_URL,
+    model=DASHSCOPE_MODEL,
+    chunk_size=EMBEDDING_CHUNK_SIZE,
+    dimensions=EMBEDDING_DIMENSIONS,
+    encoding_format=EMBEDDING_ENCODING_FORMAT,
 )
 logger.info(f"Initialized embeddings of type: {type(embeddings)}")
 
