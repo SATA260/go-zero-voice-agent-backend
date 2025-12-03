@@ -21,9 +21,70 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// 分页查询
+type PageQuery struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Page          int64                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int64                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	OrderBy       string                 `protobuf:"bytes,3,opt,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PageQuery) Reset() {
+	*x = PageQuery{}
+	mi := &file_rag_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PageQuery) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PageQuery) ProtoMessage() {}
+
+func (x *PageQuery) ProtoReflect() protoreflect.Message {
+	mi := &file_rag_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PageQuery.ProtoReflect.Descriptor instead.
+func (*PageQuery) Descriptor() ([]byte, []int) {
+	return file_rag_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *PageQuery) GetPage() int64 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *PageQuery) GetPageSize() int64 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *PageQuery) GetOrderBy() string {
+	if x != nil {
+		return x.OrderBy
+	}
+	return ""
+}
+
 type UploadFileReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
 	FileName      string                 `protobuf:"bytes,2,opt,name=fileName,proto3" json:"fileName,omitempty"`
 	FilePath      string                 `protobuf:"bytes,3,opt,name=filePath,proto3" json:"filePath,omitempty"`
 	ContentType   string                 `protobuf:"bytes,4,opt,name=content_type,json=contentType,proto3" json:"content_type,omitempty"`
@@ -35,7 +96,7 @@ type UploadFileReq struct {
 
 func (x *UploadFileReq) Reset() {
 	*x = UploadFileReq{}
-	mi := &file_rag_proto_msgTypes[0]
+	mi := &file_rag_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -47,7 +108,7 @@ func (x *UploadFileReq) String() string {
 func (*UploadFileReq) ProtoMessage() {}
 
 func (x *UploadFileReq) ProtoReflect() protoreflect.Message {
-	mi := &file_rag_proto_msgTypes[0]
+	mi := &file_rag_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -60,14 +121,14 @@ func (x *UploadFileReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UploadFileReq.ProtoReflect.Descriptor instead.
 func (*UploadFileReq) Descriptor() ([]byte, []int) {
-	return file_rag_proto_rawDescGZIP(), []int{0}
+	return file_rag_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *UploadFileReq) GetUserId() string {
+func (x *UploadFileReq) GetUserId() int64 {
 	if x != nil {
 		return x.UserId
 	}
-	return ""
+	return 0
 }
 
 func (x *UploadFileReq) GetFileName() string {
@@ -114,7 +175,7 @@ type UploadFileResp struct {
 
 func (x *UploadFileResp) Reset() {
 	*x = UploadFileResp{}
-	mi := &file_rag_proto_msgTypes[1]
+	mi := &file_rag_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -126,7 +187,7 @@ func (x *UploadFileResp) String() string {
 func (*UploadFileResp) ProtoMessage() {}
 
 func (x *UploadFileResp) ProtoReflect() protoreflect.Message {
-	mi := &file_rag_proto_msgTypes[1]
+	mi := &file_rag_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -139,7 +200,7 @@ func (x *UploadFileResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UploadFileResp.ProtoReflect.Descriptor instead.
 func (*UploadFileResp) Descriptor() ([]byte, []int) {
-	return file_rag_proto_rawDescGZIP(), []int{1}
+	return file_rag_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *UploadFileResp) GetFilePath() string {
@@ -151,7 +212,7 @@ func (x *UploadFileResp) GetFilePath() string {
 
 type QueryReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
 	Query         string                 `protobuf:"bytes,2,opt,name=query,proto3" json:"query,omitempty"`
 	FileId        string                 `protobuf:"bytes,3,opt,name=fileId,proto3" json:"fileId,omitempty"`
 	TopK          int32                  `protobuf:"varint,4,opt,name=topK,proto3" json:"topK,omitempty"`
@@ -162,7 +223,7 @@ type QueryReq struct {
 
 func (x *QueryReq) Reset() {
 	*x = QueryReq{}
-	mi := &file_rag_proto_msgTypes[2]
+	mi := &file_rag_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -174,7 +235,7 @@ func (x *QueryReq) String() string {
 func (*QueryReq) ProtoMessage() {}
 
 func (x *QueryReq) ProtoReflect() protoreflect.Message {
-	mi := &file_rag_proto_msgTypes[2]
+	mi := &file_rag_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -187,14 +248,14 @@ func (x *QueryReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryReq.ProtoReflect.Descriptor instead.
 func (*QueryReq) Descriptor() ([]byte, []int) {
-	return file_rag_proto_rawDescGZIP(), []int{2}
+	return file_rag_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *QueryReq) GetUserId() string {
+func (x *QueryReq) GetUserId() int64 {
 	if x != nil {
 		return x.UserId
 	}
-	return ""
+	return 0
 }
 
 func (x *QueryReq) GetQuery() string {
@@ -227,7 +288,7 @@ func (x *QueryReq) GetEntityId() string {
 
 type QueryMultipleReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
 	Query         string                 `protobuf:"bytes,2,opt,name=query,proto3" json:"query,omitempty"`
 	FileIds       []string               `protobuf:"bytes,3,rep,name=fileIds,proto3" json:"fileIds,omitempty"`
 	TopK          int32                  `protobuf:"varint,4,opt,name=topK,proto3" json:"topK,omitempty"`
@@ -237,7 +298,7 @@ type QueryMultipleReq struct {
 
 func (x *QueryMultipleReq) Reset() {
 	*x = QueryMultipleReq{}
-	mi := &file_rag_proto_msgTypes[3]
+	mi := &file_rag_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -249,7 +310,7 @@ func (x *QueryMultipleReq) String() string {
 func (*QueryMultipleReq) ProtoMessage() {}
 
 func (x *QueryMultipleReq) ProtoReflect() protoreflect.Message {
-	mi := &file_rag_proto_msgTypes[3]
+	mi := &file_rag_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -262,14 +323,14 @@ func (x *QueryMultipleReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryMultipleReq.ProtoReflect.Descriptor instead.
 func (*QueryMultipleReq) Descriptor() ([]byte, []int) {
-	return file_rag_proto_rawDescGZIP(), []int{3}
+	return file_rag_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *QueryMultipleReq) GetUserId() string {
+func (x *QueryMultipleReq) GetUserId() int64 {
 	if x != nil {
 		return x.UserId
 	}
-	return ""
+	return 0
 }
 
 func (x *QueryMultipleReq) GetQuery() string {
@@ -304,7 +365,7 @@ type RetrievalResult struct {
 
 func (x *RetrievalResult) Reset() {
 	*x = RetrievalResult{}
-	mi := &file_rag_proto_msgTypes[4]
+	mi := &file_rag_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -316,7 +377,7 @@ func (x *RetrievalResult) String() string {
 func (*RetrievalResult) ProtoMessage() {}
 
 func (x *RetrievalResult) ProtoReflect() protoreflect.Message {
-	mi := &file_rag_proto_msgTypes[4]
+	mi := &file_rag_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -329,7 +390,7 @@ func (x *RetrievalResult) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RetrievalResult.ProtoReflect.Descriptor instead.
 func (*RetrievalResult) Descriptor() ([]byte, []int) {
-	return file_rag_proto_rawDescGZIP(), []int{4}
+	return file_rag_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *RetrievalResult) GetPageContent() string {
@@ -362,7 +423,7 @@ type QueryResp struct {
 
 func (x *QueryResp) Reset() {
 	*x = QueryResp{}
-	mi := &file_rag_proto_msgTypes[5]
+	mi := &file_rag_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -374,7 +435,7 @@ func (x *QueryResp) String() string {
 func (*QueryResp) ProtoMessage() {}
 
 func (x *QueryResp) ProtoReflect() protoreflect.Message {
-	mi := &file_rag_proto_msgTypes[5]
+	mi := &file_rag_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -387,7 +448,7 @@ func (x *QueryResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryResp.ProtoReflect.Descriptor instead.
 func (*QueryResp) Descriptor() ([]byte, []int) {
-	return file_rag_proto_rawDescGZIP(), []int{5}
+	return file_rag_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *QueryResp) GetResults() []*RetrievalResult {
@@ -397,9 +458,233 @@ func (x *QueryResp) GetResults() []*RetrievalResult {
 	return nil
 }
 
+type ListDocumentsFilter struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	FileName      string                 `protobuf:"bytes,1,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
+	FileFormat    string                 `protobuf:"bytes,2,opt,name=file_format,json=fileFormat,proto3" json:"file_format,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListDocumentsFilter) Reset() {
+	*x = ListDocumentsFilter{}
+	mi := &file_rag_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListDocumentsFilter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListDocumentsFilter) ProtoMessage() {}
+
+func (x *ListDocumentsFilter) ProtoReflect() protoreflect.Message {
+	mi := &file_rag_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListDocumentsFilter.ProtoReflect.Descriptor instead.
+func (*ListDocumentsFilter) Descriptor() ([]byte, []int) {
+	return file_rag_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ListDocumentsFilter) GetFileName() string {
+	if x != nil {
+		return x.FileName
+	}
+	return ""
+}
+
+func (x *ListDocumentsFilter) GetFileFormat() string {
+	if x != nil {
+		return x.FileFormat
+	}
+	return ""
+}
+
+type ListDocumentsReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	PageQuery     *PageQuery             `protobuf:"bytes,2,opt,name=pageQuery,proto3" json:"pageQuery,omitempty"`
+	Filter        *ListDocumentsFilter   `protobuf:"bytes,3,opt,name=filter,proto3" json:"filter,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListDocumentsReq) Reset() {
+	*x = ListDocumentsReq{}
+	mi := &file_rag_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListDocumentsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListDocumentsReq) ProtoMessage() {}
+
+func (x *ListDocumentsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_rag_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListDocumentsReq.ProtoReflect.Descriptor instead.
+func (*ListDocumentsReq) Descriptor() ([]byte, []int) {
+	return file_rag_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ListDocumentsReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *ListDocumentsReq) GetPageQuery() *PageQuery {
+	if x != nil {
+		return x.PageQuery
+	}
+	return nil
+}
+
+func (x *ListDocumentsReq) GetFilter() *ListDocumentsFilter {
+	if x != nil {
+		return x.Filter
+	}
+	return nil
+}
+
+type ListDocumentsItem struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	FileName      string                 `protobuf:"bytes,2,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
+	FileFormat    string                 `protobuf:"bytes,3,opt,name=file_format,json=fileFormat,proto3" json:"file_format,omitempty"`
+	Status        int64                  `protobuf:"varint,4,opt,name=status,proto3" json:"status,omitempty"` //未向量化:0  向量化:1
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListDocumentsItem) Reset() {
+	*x = ListDocumentsItem{}
+	mi := &file_rag_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListDocumentsItem) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListDocumentsItem) ProtoMessage() {}
+
+func (x *ListDocumentsItem) ProtoReflect() protoreflect.Message {
+	mi := &file_rag_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListDocumentsItem.ProtoReflect.Descriptor instead.
+func (*ListDocumentsItem) Descriptor() ([]byte, []int) {
+	return file_rag_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ListDocumentsItem) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *ListDocumentsItem) GetFileName() string {
+	if x != nil {
+		return x.FileName
+	}
+	return ""
+}
+
+func (x *ListDocumentsItem) GetFileFormat() string {
+	if x != nil {
+		return x.FileFormat
+	}
+	return ""
+}
+
+func (x *ListDocumentsItem) GetStatus() int64 {
+	if x != nil {
+		return x.Status
+	}
+	return 0
+}
+
+type ListDocumentsResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Results       []*ListDocumentsItem   `protobuf:"bytes,1,rep,name=results,proto3" json:"results,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListDocumentsResp) Reset() {
+	*x = ListDocumentsResp{}
+	mi := &file_rag_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListDocumentsResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListDocumentsResp) ProtoMessage() {}
+
+func (x *ListDocumentsResp) ProtoReflect() protoreflect.Message {
+	mi := &file_rag_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListDocumentsResp.ProtoReflect.Descriptor instead.
+func (*ListDocumentsResp) Descriptor() ([]byte, []int) {
+	return file_rag_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ListDocumentsResp) GetResults() []*ListDocumentsItem {
+	if x != nil {
+		return x.Results
+	}
+	return nil
+}
+
 type FetchDocumentsReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
 	Ids           []string               `protobuf:"bytes,2,rep,name=ids,proto3" json:"ids,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -407,7 +692,7 @@ type FetchDocumentsReq struct {
 
 func (x *FetchDocumentsReq) Reset() {
 	*x = FetchDocumentsReq{}
-	mi := &file_rag_proto_msgTypes[6]
+	mi := &file_rag_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -419,7 +704,7 @@ func (x *FetchDocumentsReq) String() string {
 func (*FetchDocumentsReq) ProtoMessage() {}
 
 func (x *FetchDocumentsReq) ProtoReflect() protoreflect.Message {
-	mi := &file_rag_proto_msgTypes[6]
+	mi := &file_rag_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -432,14 +717,14 @@ func (x *FetchDocumentsReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FetchDocumentsReq.ProtoReflect.Descriptor instead.
 func (*FetchDocumentsReq) Descriptor() ([]byte, []int) {
-	return file_rag_proto_rawDescGZIP(), []int{6}
+	return file_rag_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *FetchDocumentsReq) GetUserId() string {
+func (x *FetchDocumentsReq) GetUserId() int64 {
 	if x != nil {
 		return x.UserId
 	}
-	return ""
+	return 0
 }
 
 func (x *FetchDocumentsReq) GetIds() []string {
@@ -459,7 +744,7 @@ type DocumentRecord struct {
 
 func (x *DocumentRecord) Reset() {
 	*x = DocumentRecord{}
-	mi := &file_rag_proto_msgTypes[7]
+	mi := &file_rag_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -471,7 +756,7 @@ func (x *DocumentRecord) String() string {
 func (*DocumentRecord) ProtoMessage() {}
 
 func (x *DocumentRecord) ProtoReflect() protoreflect.Message {
-	mi := &file_rag_proto_msgTypes[7]
+	mi := &file_rag_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -484,7 +769,7 @@ func (x *DocumentRecord) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DocumentRecord.ProtoReflect.Descriptor instead.
 func (*DocumentRecord) Descriptor() ([]byte, []int) {
-	return file_rag_proto_rawDescGZIP(), []int{7}
+	return file_rag_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *DocumentRecord) GetPageContent() string {
@@ -510,7 +795,7 @@ type FetchDocumentsResp struct {
 
 func (x *FetchDocumentsResp) Reset() {
 	*x = FetchDocumentsResp{}
-	mi := &file_rag_proto_msgTypes[8]
+	mi := &file_rag_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -522,7 +807,7 @@ func (x *FetchDocumentsResp) String() string {
 func (*FetchDocumentsResp) ProtoMessage() {}
 
 func (x *FetchDocumentsResp) ProtoReflect() protoreflect.Message {
-	mi := &file_rag_proto_msgTypes[8]
+	mi := &file_rag_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -535,7 +820,7 @@ func (x *FetchDocumentsResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FetchDocumentsResp.ProtoReflect.Descriptor instead.
 func (*FetchDocumentsResp) Descriptor() ([]byte, []int) {
-	return file_rag_proto_rawDescGZIP(), []int{8}
+	return file_rag_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *FetchDocumentsResp) GetDocuments() []*DocumentRecord {
@@ -555,7 +840,7 @@ type DeleteDocumentsReq struct {
 
 func (x *DeleteDocumentsReq) Reset() {
 	*x = DeleteDocumentsReq{}
-	mi := &file_rag_proto_msgTypes[9]
+	mi := &file_rag_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -567,7 +852,7 @@ func (x *DeleteDocumentsReq) String() string {
 func (*DeleteDocumentsReq) ProtoMessage() {}
 
 func (x *DeleteDocumentsReq) ProtoReflect() protoreflect.Message {
-	mi := &file_rag_proto_msgTypes[9]
+	mi := &file_rag_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -580,7 +865,7 @@ func (x *DeleteDocumentsReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteDocumentsReq.ProtoReflect.Descriptor instead.
 func (*DeleteDocumentsReq) Descriptor() ([]byte, []int) {
-	return file_rag_proto_rawDescGZIP(), []int{9}
+	return file_rag_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *DeleteDocumentsReq) GetUserId() string {
@@ -606,7 +891,7 @@ type DeleteDocumentsResp struct {
 
 func (x *DeleteDocumentsResp) Reset() {
 	*x = DeleteDocumentsResp{}
-	mi := &file_rag_proto_msgTypes[10]
+	mi := &file_rag_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -618,7 +903,7 @@ func (x *DeleteDocumentsResp) String() string {
 func (*DeleteDocumentsResp) ProtoMessage() {}
 
 func (x *DeleteDocumentsResp) ProtoReflect() protoreflect.Message {
-	mi := &file_rag_proto_msgTypes[10]
+	mi := &file_rag_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -631,7 +916,7 @@ func (x *DeleteDocumentsResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteDocumentsResp.ProtoReflect.Descriptor instead.
 func (*DeleteDocumentsResp) Descriptor() ([]byte, []int) {
-	return file_rag_proto_rawDescGZIP(), []int{10}
+	return file_rag_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *DeleteDocumentsResp) GetDeletedCount() int32 {
@@ -645,9 +930,13 @@ var File_rag_proto protoreflect.FileDescriptor
 
 const file_rag_proto_rawDesc = "" +
 	"\n" +
-	"\trag.proto\x12\x02pb\"\xb4\x01\n" +
+	"\trag.proto\x12\x02pb\"W\n" +
+	"\tPageQuery\x12\x12\n" +
+	"\x04page\x18\x01 \x01(\x03R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\x03R\bpageSize\x12\x19\n" +
+	"\border_by\x18\x03 \x01(\tR\aorderBy\"\xb4\x01\n" +
 	"\rUploadFileReq\x12\x16\n" +
-	"\x06userId\x18\x01 \x01(\tR\x06userId\x12\x1a\n" +
+	"\x06userId\x18\x01 \x01(\x03R\x06userId\x12\x1a\n" +
 	"\bfileName\x18\x02 \x01(\tR\bfileName\x12\x1a\n" +
 	"\bfilePath\x18\x03 \x01(\tR\bfilePath\x12!\n" +
 	"\fcontent_type\x18\x04 \x01(\tR\vcontentType\x12\x1a\n" +
@@ -656,13 +945,13 @@ const file_rag_proto_rawDesc = "" +
 	"\x0eUploadFileResp\x12\x1b\n" +
 	"\tfile_path\x18\x01 \x01(\tR\bfilePath\"\x80\x01\n" +
 	"\bQueryReq\x12\x16\n" +
-	"\x06userId\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
+	"\x06userId\x18\x01 \x01(\x03R\x06userId\x12\x14\n" +
 	"\x05query\x18\x02 \x01(\tR\x05query\x12\x16\n" +
 	"\x06fileId\x18\x03 \x01(\tR\x06fileId\x12\x12\n" +
 	"\x04topK\x18\x04 \x01(\x05R\x04topK\x12\x1a\n" +
 	"\bentityId\x18\x05 \x01(\tR\bentityId\"n\n" +
 	"\x10QueryMultipleReq\x12\x16\n" +
-	"\x06userId\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
+	"\x06userId\x18\x01 \x01(\x03R\x06userId\x12\x14\n" +
 	"\x05query\x18\x02 \x01(\tR\x05query\x12\x18\n" +
 	"\afileIds\x18\x03 \x03(\tR\afileIds\x12\x12\n" +
 	"\x04topK\x18\x04 \x01(\x05R\x04topK\"\xc5\x01\n" +
@@ -674,9 +963,25 @@ const file_rag_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\":\n" +
 	"\tQueryResp\x12-\n" +
-	"\aresults\x18\x01 \x03(\v2\x13.pb.RetrievalResultR\aresults\"=\n" +
+	"\aresults\x18\x01 \x03(\v2\x13.pb.RetrievalResultR\aresults\"S\n" +
+	"\x13ListDocumentsFilter\x12\x1b\n" +
+	"\tfile_name\x18\x01 \x01(\tR\bfileName\x12\x1f\n" +
+	"\vfile_format\x18\x02 \x01(\tR\n" +
+	"fileFormat\"\x88\x01\n" +
+	"\x10ListDocumentsReq\x12\x16\n" +
+	"\x06userId\x18\x01 \x01(\x03R\x06userId\x12+\n" +
+	"\tpageQuery\x18\x02 \x01(\v2\r.pb.PageQueryR\tpageQuery\x12/\n" +
+	"\x06filter\x18\x03 \x01(\v2\x17.pb.ListDocumentsFilterR\x06filter\"y\n" +
+	"\x11ListDocumentsItem\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1b\n" +
+	"\tfile_name\x18\x02 \x01(\tR\bfileName\x12\x1f\n" +
+	"\vfile_format\x18\x03 \x01(\tR\n" +
+	"fileFormat\x12\x16\n" +
+	"\x06status\x18\x04 \x01(\x03R\x06status\"D\n" +
+	"\x11ListDocumentsResp\x12/\n" +
+	"\aresults\x18\x01 \x03(\v2\x15.pb.ListDocumentsItemR\aresults\"=\n" +
 	"\x11FetchDocumentsReq\x12\x16\n" +
-	"\x06userId\x18\x01 \x01(\tR\x06userId\x12\x10\n" +
+	"\x06userId\x18\x01 \x01(\x03R\x06userId\x12\x10\n" +
 	"\x03ids\x18\x02 \x03(\tR\x03ids\"\xad\x01\n" +
 	"\x0eDocumentRecord\x12 \n" +
 	"\vpageContent\x18\x01 \x01(\tR\vpageContent\x12<\n" +
@@ -690,11 +995,12 @@ const file_rag_proto_rawDesc = "" +
 	"\x06userId\x18\x01 \x01(\tR\x06userId\x12\x10\n" +
 	"\x03ids\x18\x02 \x03(\tR\x03ids\"9\n" +
 	"\x13DeleteDocumentsResp\x12\"\n" +
-	"\fdeletedCount\x18\x01 \x01(\x05R\fdeletedCount2\xc8\x01\n" +
+	"\fdeletedCount\x18\x01 \x01(\x05R\fdeletedCount2\x86\x02\n" +
 	"\n" +
 	"DocService\x125\n" +
 	"\n" +
-	"UploadFile\x12\x11.pb.UploadFileReq\x1a\x12.pb.UploadFileResp(\x01\x12?\n" +
+	"UploadFile\x12\x11.pb.UploadFileReq\x1a\x12.pb.UploadFileResp(\x01\x12<\n" +
+	"\rListDocuments\x12\x14.pb.ListDocumentsReq\x1a\x15.pb.ListDocumentsResp\x12?\n" +
 	"\x0eFetchDocuments\x12\x15.pb.FetchDocumentsReq\x1a\x16.pb.FetchDocumentsResp\x12B\n" +
 	"\x0fDeleteDocuments\x12\x16.pb.DeleteDocumentsReq\x1a\x17.pb.DeleteDocumentsResp2h\n" +
 	"\n" +
@@ -714,42 +1020,52 @@ func file_rag_proto_rawDescGZIP() []byte {
 	return file_rag_proto_rawDescData
 }
 
-var file_rag_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_rag_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_rag_proto_goTypes = []any{
-	(*UploadFileReq)(nil),       // 0: pb.UploadFileReq
-	(*UploadFileResp)(nil),      // 1: pb.UploadFileResp
-	(*QueryReq)(nil),            // 2: pb.QueryReq
-	(*QueryMultipleReq)(nil),    // 3: pb.QueryMultipleReq
-	(*RetrievalResult)(nil),     // 4: pb.RetrievalResult
-	(*QueryResp)(nil),           // 5: pb.QueryResp
-	(*FetchDocumentsReq)(nil),   // 6: pb.FetchDocumentsReq
-	(*DocumentRecord)(nil),      // 7: pb.DocumentRecord
-	(*FetchDocumentsResp)(nil),  // 8: pb.FetchDocumentsResp
-	(*DeleteDocumentsReq)(nil),  // 9: pb.DeleteDocumentsReq
-	(*DeleteDocumentsResp)(nil), // 10: pb.DeleteDocumentsResp
-	nil,                         // 11: pb.RetrievalResult.MetadataEntry
-	nil,                         // 12: pb.DocumentRecord.MetadataEntry
+	(*PageQuery)(nil),           // 0: pb.PageQuery
+	(*UploadFileReq)(nil),       // 1: pb.UploadFileReq
+	(*UploadFileResp)(nil),      // 2: pb.UploadFileResp
+	(*QueryReq)(nil),            // 3: pb.QueryReq
+	(*QueryMultipleReq)(nil),    // 4: pb.QueryMultipleReq
+	(*RetrievalResult)(nil),     // 5: pb.RetrievalResult
+	(*QueryResp)(nil),           // 6: pb.QueryResp
+	(*ListDocumentsFilter)(nil), // 7: pb.ListDocumentsFilter
+	(*ListDocumentsReq)(nil),    // 8: pb.ListDocumentsReq
+	(*ListDocumentsItem)(nil),   // 9: pb.ListDocumentsItem
+	(*ListDocumentsResp)(nil),   // 10: pb.ListDocumentsResp
+	(*FetchDocumentsReq)(nil),   // 11: pb.FetchDocumentsReq
+	(*DocumentRecord)(nil),      // 12: pb.DocumentRecord
+	(*FetchDocumentsResp)(nil),  // 13: pb.FetchDocumentsResp
+	(*DeleteDocumentsReq)(nil),  // 14: pb.DeleteDocumentsReq
+	(*DeleteDocumentsResp)(nil), // 15: pb.DeleteDocumentsResp
+	nil,                         // 16: pb.RetrievalResult.MetadataEntry
+	nil,                         // 17: pb.DocumentRecord.MetadataEntry
 }
 var file_rag_proto_depIdxs = []int32{
-	11, // 0: pb.RetrievalResult.metadata:type_name -> pb.RetrievalResult.MetadataEntry
-	4,  // 1: pb.QueryResp.results:type_name -> pb.RetrievalResult
-	12, // 2: pb.DocumentRecord.metadata:type_name -> pb.DocumentRecord.MetadataEntry
-	7,  // 3: pb.FetchDocumentsResp.documents:type_name -> pb.DocumentRecord
-	0,  // 4: pb.DocService.UploadFile:input_type -> pb.UploadFileReq
-	6,  // 5: pb.DocService.FetchDocuments:input_type -> pb.FetchDocumentsReq
-	9,  // 6: pb.DocService.DeleteDocuments:input_type -> pb.DeleteDocumentsReq
-	2,  // 7: pb.RagService.Query:input_type -> pb.QueryReq
-	3,  // 8: pb.RagService.QueryMultiple:input_type -> pb.QueryMultipleReq
-	1,  // 9: pb.DocService.UploadFile:output_type -> pb.UploadFileResp
-	8,  // 10: pb.DocService.FetchDocuments:output_type -> pb.FetchDocumentsResp
-	10, // 11: pb.DocService.DeleteDocuments:output_type -> pb.DeleteDocumentsResp
-	5,  // 12: pb.RagService.Query:output_type -> pb.QueryResp
-	5,  // 13: pb.RagService.QueryMultiple:output_type -> pb.QueryResp
-	9,  // [9:14] is the sub-list for method output_type
-	4,  // [4:9] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+	16, // 0: pb.RetrievalResult.metadata:type_name -> pb.RetrievalResult.MetadataEntry
+	5,  // 1: pb.QueryResp.results:type_name -> pb.RetrievalResult
+	0,  // 2: pb.ListDocumentsReq.pageQuery:type_name -> pb.PageQuery
+	7,  // 3: pb.ListDocumentsReq.filter:type_name -> pb.ListDocumentsFilter
+	9,  // 4: pb.ListDocumentsResp.results:type_name -> pb.ListDocumentsItem
+	17, // 5: pb.DocumentRecord.metadata:type_name -> pb.DocumentRecord.MetadataEntry
+	12, // 6: pb.FetchDocumentsResp.documents:type_name -> pb.DocumentRecord
+	1,  // 7: pb.DocService.UploadFile:input_type -> pb.UploadFileReq
+	8,  // 8: pb.DocService.ListDocuments:input_type -> pb.ListDocumentsReq
+	11, // 9: pb.DocService.FetchDocuments:input_type -> pb.FetchDocumentsReq
+	14, // 10: pb.DocService.DeleteDocuments:input_type -> pb.DeleteDocumentsReq
+	3,  // 11: pb.RagService.Query:input_type -> pb.QueryReq
+	4,  // 12: pb.RagService.QueryMultiple:input_type -> pb.QueryMultipleReq
+	2,  // 13: pb.DocService.UploadFile:output_type -> pb.UploadFileResp
+	10, // 14: pb.DocService.ListDocuments:output_type -> pb.ListDocumentsResp
+	13, // 15: pb.DocService.FetchDocuments:output_type -> pb.FetchDocumentsResp
+	15, // 16: pb.DocService.DeleteDocuments:output_type -> pb.DeleteDocumentsResp
+	6,  // 17: pb.RagService.Query:output_type -> pb.QueryResp
+	6,  // 18: pb.RagService.QueryMultiple:output_type -> pb.QueryResp
+	13, // [13:19] is the sub-list for method output_type
+	7,  // [7:13] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_rag_proto_init() }
@@ -763,7 +1079,7 @@ func file_rag_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_rag_proto_rawDesc), len(file_rag_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   2,
 		},

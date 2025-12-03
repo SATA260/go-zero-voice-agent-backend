@@ -3,6 +3,7 @@ package docservicelogic
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"io"
 	"path/filepath"
@@ -45,6 +46,10 @@ func (l *UploadFileLogic) UploadFile(stream pb.DocService_UploadFileServer) erro
 	contentType := firstChunk.GetContentType()
 	fileSize := firstChunk.GetFileSize()
 
+	if userID <= 0 {
+		return errors.New("user id is required")
+	}
+
 	if filePath == "" {
 		return fmt.Errorf("file path must not be empty")
 	}
@@ -57,7 +62,7 @@ func (l *UploadFileLogic) UploadFile(stream pb.DocService_UploadFileServer) erro
 	}
 
 	metadata := map[string]string{
-		"user_id":     userID,
+		"user_id":     strconv.FormatInt(userID, 10),
 		"file_name":   fileName,
 		"upload_time": time.Now().Format("2006-01-02 15:04:05"),
 	}
@@ -142,13 +147,7 @@ func (l *UploadFileLogic) UploadFile(stream pb.DocService_UploadFileServer) erro
 	}
 
 	var userIDValue sql.NullInt64
-	if userID != "" {
-		if parsed, parseErr := strconv.ParseInt(userID, 10, 64); parseErr == nil && parsed > 0 {
-			userIDValue = sql.NullInt64{Int64: parsed, Valid: true}
-		} else {
-			l.Logger.Infof("invalid user id, skip storing: %q, err: %v", userID, parseErr)
-		}
-	}
+	userIDValue = sql.NullInt64{Int64: userID, Valid: true}
 
 	var fileFormat sql.NullString
 	if ext := strings.TrimPrefix(strings.ToLower(filepath.Ext(fileName)), "."); ext != "" {
@@ -188,8 +187,7 @@ func (l *UploadFileLogic) UploadFile(stream pb.DocService_UploadFileServer) erro
 		return err
 	}
 
-	trimmedUserID := strings.TrimSpace(userID)
-	if trimmedUserID == "" {
+	if userID <= 0 {
 		l.Logger.Infof("skip embed: empty user id for file %s", objectKey)
 		return nil
 	}
@@ -211,7 +209,7 @@ func (l *UploadFileLogic) UploadFile(stream pb.DocService_UploadFileServer) erro
 	go func(rec model.FileUpload, req *ragclient.EmbedRequest) {
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 		defer cancel()
-		if err := l.embedWithRetry(ctx, trimmedUserID, &rec, req); err != nil {
+		if err := l.embedWithRetry(ctx, strconv.FormatInt(userID, 10), &rec, req); err != nil {
 			l.Logger.Errorf("async embed failed for file %s: %v", req.ObjectPath, err)
 		}
 	}(recordCopy, embedReq)

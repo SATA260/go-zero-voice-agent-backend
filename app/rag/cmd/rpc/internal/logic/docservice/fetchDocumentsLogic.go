@@ -3,6 +3,7 @@ package docservicelogic
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"go-zero-voice-agent/app/rag/cmd/rpc/internal/ragclient"
@@ -33,8 +34,8 @@ func (l *FetchDocumentsLogic) FetchDocuments(in *pb.FetchDocumentsReq) (*pb.Fetc
 		return nil, status.Error(codes.InvalidArgument, "request must not be nil")
 	}
 
-	userID := strings.TrimSpace(in.GetUserId())
-	if userID == "" {
+	userID := in.GetUserId()
+	if userID <= 0 {
 		return nil, status.Error(codes.InvalidArgument, "user_id is required")
 	}
 
@@ -49,7 +50,7 @@ func (l *FetchDocumentsLogic) FetchDocuments(in *pb.FetchDocumentsReq) (*pb.Fetc
 		return nil, status.Error(codes.InvalidArgument, "ids must not be empty")
 	}
 
-	resp, err := l.svcCtx.RagClient.FetchDocuments(l.ctx, userID, cleanedIDs)
+	resp, err := l.svcCtx.RagClient.FetchDocuments(l.ctx, strconv.FormatInt(userID, 10), cleanedIDs)
 	if err != nil {
 		l.Logger.Errorf("fetch rag documents failed: %v", err)
 		return nil, status.Error(codes.Internal, "rag service fetch documents failed")

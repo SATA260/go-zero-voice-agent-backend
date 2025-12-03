@@ -19,6 +19,11 @@ type (
 	DocumentRecord      = pb.DocumentRecord
 	FetchDocumentsReq   = pb.FetchDocumentsReq
 	FetchDocumentsResp  = pb.FetchDocumentsResp
+	ListDocumentsFilter = pb.ListDocumentsFilter
+	ListDocumentsItem   = pb.ListDocumentsItem
+	ListDocumentsReq    = pb.ListDocumentsReq
+	ListDocumentsResp   = pb.ListDocumentsResp
+	PageQuery           = pb.PageQuery
 	QueryMultipleReq    = pb.QueryMultipleReq
 	QueryReq            = pb.QueryReq
 	QueryResp           = pb.QueryResp
@@ -28,6 +33,7 @@ type (
 
 	DocService interface {
 		UploadFile(ctx context.Context, opts ...grpc.CallOption) (pb.DocService_UploadFileClient, error)
+		ListDocuments(ctx context.Context, in *ListDocumentsReq, opts ...grpc.CallOption) (*ListDocumentsResp, error)
 		FetchDocuments(ctx context.Context, in *FetchDocumentsReq, opts ...grpc.CallOption) (*FetchDocumentsResp, error)
 		DeleteDocuments(ctx context.Context, in *DeleteDocumentsReq, opts ...grpc.CallOption) (*DeleteDocumentsResp, error)
 	}
@@ -46,6 +52,11 @@ func NewDocService(cli zrpc.Client) DocService {
 func (m *defaultDocService) UploadFile(ctx context.Context, opts ...grpc.CallOption) (pb.DocService_UploadFileClient, error) {
 	client := pb.NewDocServiceClient(m.cli.Conn())
 	return client.UploadFile(ctx, opts...)
+}
+
+func (m *defaultDocService) ListDocuments(ctx context.Context, in *ListDocumentsReq, opts ...grpc.CallOption) (*ListDocumentsResp, error) {
+	client := pb.NewDocServiceClient(m.cli.Conn())
+	return client.ListDocuments(ctx, in, opts...)
 }
 
 func (m *defaultDocService) FetchDocuments(ctx context.Context, in *FetchDocumentsReq, opts ...grpc.CallOption) (*FetchDocumentsResp, error) {

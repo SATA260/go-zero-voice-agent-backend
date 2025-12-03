@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	DocService_UploadFile_FullMethodName      = "/pb.DocService/UploadFile"
+	DocService_ListDocuments_FullMethodName   = "/pb.DocService/ListDocuments"
 	DocService_FetchDocuments_FullMethodName  = "/pb.DocService/FetchDocuments"
 	DocService_DeleteDocuments_FullMethodName = "/pb.DocService/DeleteDocuments"
 )
@@ -29,6 +30,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DocServiceClient interface {
 	UploadFile(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[UploadFileReq, UploadFileResp], error)
+	ListDocuments(ctx context.Context, in *ListDocumentsReq, opts ...grpc.CallOption) (*ListDocumentsResp, error)
 	FetchDocuments(ctx context.Context, in *FetchDocumentsReq, opts ...grpc.CallOption) (*FetchDocumentsResp, error)
 	DeleteDocuments(ctx context.Context, in *DeleteDocumentsReq, opts ...grpc.CallOption) (*DeleteDocumentsResp, error)
 }
@@ -53,6 +55,16 @@ func (c *docServiceClient) UploadFile(ctx context.Context, opts ...grpc.CallOpti
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type DocService_UploadFileClient = grpc.ClientStreamingClient[UploadFileReq, UploadFileResp]
+
+func (c *docServiceClient) ListDocuments(ctx context.Context, in *ListDocumentsReq, opts ...grpc.CallOption) (*ListDocumentsResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListDocumentsResp)
+	err := c.cc.Invoke(ctx, DocService_ListDocuments_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
 
 func (c *docServiceClient) FetchDocuments(ctx context.Context, in *FetchDocumentsReq, opts ...grpc.CallOption) (*FetchDocumentsResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
@@ -79,6 +91,7 @@ func (c *docServiceClient) DeleteDocuments(ctx context.Context, in *DeleteDocume
 // for forward compatibility.
 type DocServiceServer interface {
 	UploadFile(grpc.ClientStreamingServer[UploadFileReq, UploadFileResp]) error
+	ListDocuments(context.Context, *ListDocumentsReq) (*ListDocumentsResp, error)
 	FetchDocuments(context.Context, *FetchDocumentsReq) (*FetchDocumentsResp, error)
 	DeleteDocuments(context.Context, *DeleteDocumentsReq) (*DeleteDocumentsResp, error)
 	mustEmbedUnimplementedDocServiceServer()
@@ -93,6 +106,9 @@ type UnimplementedDocServiceServer struct{}
 
 func (UnimplementedDocServiceServer) UploadFile(grpc.ClientStreamingServer[UploadFileReq, UploadFileResp]) error {
 	return status.Errorf(codes.Unimplemented, "method UploadFile not implemented")
+}
+func (UnimplementedDocServiceServer) ListDocuments(context.Context, *ListDocumentsReq) (*ListDocumentsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListDocuments not implemented")
 }
 func (UnimplementedDocServiceServer) FetchDocuments(context.Context, *FetchDocumentsReq) (*FetchDocumentsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchDocuments not implemented")
@@ -127,6 +143,24 @@ func _DocService_UploadFile_Handler(srv interface{}, stream grpc.ServerStream) e
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type DocService_UploadFileServer = grpc.ClientStreamingServer[UploadFileReq, UploadFileResp]
+
+func _DocService_ListDocuments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListDocumentsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DocServiceServer).ListDocuments(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DocService_ListDocuments_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DocServiceServer).ListDocuments(ctx, req.(*ListDocumentsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
 
 func _DocService_FetchDocuments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FetchDocumentsReq)
@@ -171,6 +205,10 @@ var DocService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "pb.DocService",
 	HandlerType: (*DocServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ListDocuments",
+			Handler:    _DocService_ListDocuments_Handler,
+		},
 		{
 			MethodName: "FetchDocuments",
 			Handler:    _DocService_FetchDocuments_Handler,

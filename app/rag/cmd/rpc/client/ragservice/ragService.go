@@ -19,6 +19,11 @@ type (
 	DocumentRecord      = pb.DocumentRecord
 	FetchDocumentsReq   = pb.FetchDocumentsReq
 	FetchDocumentsResp  = pb.FetchDocumentsResp
+	ListDocumentsFilter = pb.ListDocumentsFilter
+	ListDocumentsItem   = pb.ListDocumentsItem
+	ListDocumentsReq    = pb.ListDocumentsReq
+	ListDocumentsResp   = pb.ListDocumentsResp
+	PageQuery           = pb.PageQuery
 	QueryMultipleReq    = pb.QueryMultipleReq
 	QueryReq            = pb.QueryReq
 	QueryResp           = pb.QueryResp

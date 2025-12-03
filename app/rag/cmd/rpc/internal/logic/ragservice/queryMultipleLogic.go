@@ -2,6 +2,7 @@ package ragservicelogic
 
 import (
 	"context"
+	"strconv"
 	"strings"
 
 	"go-zero-voice-agent/app/rag/cmd/rpc/internal/ragclient"
@@ -32,8 +33,8 @@ func (l *QueryMultipleLogic) QueryMultiple(in *pb.QueryMultipleReq) (*pb.QueryRe
 		return nil, status.Error(codes.InvalidArgument, "request must not be nil")
 	}
 
-	userID := strings.TrimSpace(in.GetUserId())
-	if userID == "" {
+	userID := in.GetUserId()
+	if userID <= 0 {
 		return nil, status.Error(codes.InvalidArgument, "user_id is required")
 	}
 
@@ -63,7 +64,7 @@ func (l *QueryMultipleLogic) QueryMultiple(in *pb.QueryMultipleReq) (*pb.QueryRe
 		req.TopK = 0
 	}
 
-	resp, err := l.svcCtx.RagClient.QueryMultiple(l.ctx, userID, req)
+	resp, err := l.svcCtx.RagClient.QueryMultiple(l.ctx, strconv.FormatInt(userID, 10), req)
 	if err != nil {
 		l.Logger.Errorf("query-multiple rag service failed: %v", err)
 		return nil, status.Error(codes.Internal, "rag service query-multiple failed")

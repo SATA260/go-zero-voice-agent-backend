@@ -3,6 +3,7 @@ package ragservicelogic
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"go-zero-voice-agent/app/rag/cmd/rpc/internal/ragclient"
@@ -33,8 +34,8 @@ func (l *QueryLogic) Query(in *pb.QueryReq) (*pb.QueryResp, error) {
 		return nil, status.Error(codes.InvalidArgument, "request must not be nil")
 	}
 
-	userID := strings.TrimSpace(in.GetUserId())
-	if userID == "" {
+	userID := in.GetUserId()
+	if userID <= 0 {
 		return nil, status.Error(codes.InvalidArgument, "user_id is required")
 	}
 
@@ -57,7 +58,7 @@ func (l *QueryLogic) Query(in *pb.QueryReq) (*pb.QueryResp, error) {
 		req.EntityID = &entityID
 	}
 
-	resp, err := l.svcCtx.RagClient.Query(l.ctx, userID, req)
+	resp, err := l.svcCtx.RagClient.Query(l.ctx, strconv.FormatInt(userID, 10), req)
 	if err != nil {
 		l.Logger.Errorf("query rag service failed: %v", err)
 		return nil, status.Error(codes.Internal, "rag service query failed")
