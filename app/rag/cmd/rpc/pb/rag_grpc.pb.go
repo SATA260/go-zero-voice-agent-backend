@@ -112,3 +112,143 @@ var DocService_ServiceDesc = grpc.ServiceDesc{
 	},
 	Metadata: "rag.proto",
 }
+
+const (
+	RagService_Query_FullMethodName         = "/pb.RagService/Query"
+	RagService_QueryMultiple_FullMethodName = "/pb.RagService/QueryMultiple"
+)
+
+// RagServiceClient is the client API for RagService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type RagServiceClient interface {
+	Query(ctx context.Context, in *QueryReq, opts ...grpc.CallOption) (*QueryResp, error)
+	QueryMultiple(ctx context.Context, in *QueryMultipleReq, opts ...grpc.CallOption) (*QueryResp, error)
+}
+
+type ragServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewRagServiceClient(cc grpc.ClientConnInterface) RagServiceClient {
+	return &ragServiceClient{cc}
+}
+
+func (c *ragServiceClient) Query(ctx context.Context, in *QueryReq, opts ...grpc.CallOption) (*QueryResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryResp)
+	err := c.cc.Invoke(ctx, RagService_Query_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ragServiceClient) QueryMultiple(ctx context.Context, in *QueryMultipleReq, opts ...grpc.CallOption) (*QueryResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryResp)
+	err := c.cc.Invoke(ctx, RagService_QueryMultiple_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// RagServiceServer is the server API for RagService service.
+// All implementations must embed UnimplementedRagServiceServer
+// for forward compatibility.
+type RagServiceServer interface {
+	Query(context.Context, *QueryReq) (*QueryResp, error)
+	QueryMultiple(context.Context, *QueryMultipleReq) (*QueryResp, error)
+	mustEmbedUnimplementedRagServiceServer()
+}
+
+// UnimplementedRagServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedRagServiceServer struct{}
+
+func (UnimplementedRagServiceServer) Query(context.Context, *QueryReq) (*QueryResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
+}
+func (UnimplementedRagServiceServer) QueryMultiple(context.Context, *QueryMultipleReq) (*QueryResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryMultiple not implemented")
+}
+func (UnimplementedRagServiceServer) mustEmbedUnimplementedRagServiceServer() {}
+func (UnimplementedRagServiceServer) testEmbeddedByValue()                    {}
+
+// UnsafeRagServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to RagServiceServer will
+// result in compilation errors.
+type UnsafeRagServiceServer interface {
+	mustEmbedUnimplementedRagServiceServer()
+}
+
+func RegisterRagServiceServer(s grpc.ServiceRegistrar, srv RagServiceServer) {
+	// If the following call pancis, it indicates UnimplementedRagServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&RagService_ServiceDesc, srv)
+}
+
+func _RagService_Query_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RagServiceServer).Query(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RagService_Query_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RagServiceServer).Query(ctx, req.(*QueryReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RagService_QueryMultiple_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryMultipleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RagServiceServer).QueryMultiple(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RagService_QueryMultiple_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RagServiceServer).QueryMultiple(ctx, req.(*QueryMultipleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// RagService_ServiceDesc is the grpc.ServiceDesc for RagService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var RagService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.RagService",
+	HandlerType: (*RagServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Query",
+			Handler:    _RagService_Query_Handler,
+		},
+		{
+			MethodName: "QueryMultiple",
+			Handler:    _RagService_QueryMultiple_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "rag.proto",
+}

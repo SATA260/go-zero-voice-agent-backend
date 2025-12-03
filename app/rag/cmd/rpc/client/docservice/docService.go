@@ -14,8 +14,12 @@ import (
 )
 
 type (
-	UploadFileReq  = pb.UploadFileReq
-	UploadFileResp = pb.UploadFileResp
+	QueryMultipleReq = pb.QueryMultipleReq
+	QueryReq         = pb.QueryReq
+	QueryResp        = pb.QueryResp
+	RetrievalResult  = pb.RetrievalResult
+	UploadFileReq    = pb.UploadFileReq
+	UploadFileResp   = pb.UploadFileResp
 
 	DocService interface {
 		UploadFile(ctx context.Context, opts ...grpc.CallOption) (pb.DocService_UploadFileClient, error)
