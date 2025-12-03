@@ -15,6 +15,109 @@
   },
   "basePath": "/",
   "paths": {
+    "/rag/v1/doc/list": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "分页查询上传文件",
+        "operationId": "docListDoc",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "X-User-Id",
+            "in": "header"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "pageQuery"
+              ],
+              "properties": {
+                "filter": {
+                  "type": "object",
+                  "properties": {
+                    "fileFormat": {
+                      "type": "string"
+                    },
+                    "fileName": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "pageQuery": {
+                  "type": "object",
+                  "required": [
+                    "page",
+                    "pageSize"
+                  ],
+                  "properties": {
+                    "orderBy": {
+                      "type": "string"
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "documentList": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "fileName",
+                      "fileFormat",
+                      "status"
+                    ],
+                    "properties": {
+                      "fileFormat": {
+                        "type": "string"
+                      },
+                      "fileName": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/rag/v1/doc/upload": {
       "post": {
         "consumes": [
@@ -55,9 +158,50 @@
           }
         }
       }
+    },
+    "/rag/v1/doc/{id}": {
+      "delete": {
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "删除上传文件",
+        "operationId": "docDeleteDoc",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "X-User-Id",
+            "in": "header"
+          },
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "deletedCount": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
-  "x-date": "2025-12-02 20:34:45",
+  "x-date": "2025-12-03 12:52:35",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",
