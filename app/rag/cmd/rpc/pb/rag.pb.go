@@ -397,6 +397,250 @@ func (x *QueryResp) GetResults() []*RetrievalResult {
 	return nil
 }
 
+type FetchDocumentsReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	Ids           []string               `protobuf:"bytes,2,rep,name=ids,proto3" json:"ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FetchDocumentsReq) Reset() {
+	*x = FetchDocumentsReq{}
+	mi := &file_rag_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FetchDocumentsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FetchDocumentsReq) ProtoMessage() {}
+
+func (x *FetchDocumentsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_rag_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FetchDocumentsReq.ProtoReflect.Descriptor instead.
+func (*FetchDocumentsReq) Descriptor() ([]byte, []int) {
+	return file_rag_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *FetchDocumentsReq) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *FetchDocumentsReq) GetIds() []string {
+	if x != nil {
+		return x.Ids
+	}
+	return nil
+}
+
+type DocumentRecord struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PageContent   string                 `protobuf:"bytes,1,opt,name=pageContent,proto3" json:"pageContent,omitempty"`
+	Metadata      map[string]string      `protobuf:"bytes,2,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DocumentRecord) Reset() {
+	*x = DocumentRecord{}
+	mi := &file_rag_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DocumentRecord) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DocumentRecord) ProtoMessage() {}
+
+func (x *DocumentRecord) ProtoReflect() protoreflect.Message {
+	mi := &file_rag_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DocumentRecord.ProtoReflect.Descriptor instead.
+func (*DocumentRecord) Descriptor() ([]byte, []int) {
+	return file_rag_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *DocumentRecord) GetPageContent() string {
+	if x != nil {
+		return x.PageContent
+	}
+	return ""
+}
+
+func (x *DocumentRecord) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
+type FetchDocumentsResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Documents     []*DocumentRecord      `protobuf:"bytes,1,rep,name=documents,proto3" json:"documents,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FetchDocumentsResp) Reset() {
+	*x = FetchDocumentsResp{}
+	mi := &file_rag_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FetchDocumentsResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FetchDocumentsResp) ProtoMessage() {}
+
+func (x *FetchDocumentsResp) ProtoReflect() protoreflect.Message {
+	mi := &file_rag_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FetchDocumentsResp.ProtoReflect.Descriptor instead.
+func (*FetchDocumentsResp) Descriptor() ([]byte, []int) {
+	return file_rag_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *FetchDocumentsResp) GetDocuments() []*DocumentRecord {
+	if x != nil {
+		return x.Documents
+	}
+	return nil
+}
+
+type DeleteDocumentsReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	Ids           []string               `protobuf:"bytes,2,rep,name=ids,proto3" json:"ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteDocumentsReq) Reset() {
+	*x = DeleteDocumentsReq{}
+	mi := &file_rag_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteDocumentsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteDocumentsReq) ProtoMessage() {}
+
+func (x *DeleteDocumentsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_rag_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteDocumentsReq.ProtoReflect.Descriptor instead.
+func (*DeleteDocumentsReq) Descriptor() ([]byte, []int) {
+	return file_rag_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *DeleteDocumentsReq) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *DeleteDocumentsReq) GetIds() []string {
+	if x != nil {
+		return x.Ids
+	}
+	return nil
+}
+
+type DeleteDocumentsResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	DeletedCount  int32                  `protobuf:"varint,1,opt,name=deletedCount,proto3" json:"deletedCount,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteDocumentsResp) Reset() {
+	*x = DeleteDocumentsResp{}
+	mi := &file_rag_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteDocumentsResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteDocumentsResp) ProtoMessage() {}
+
+func (x *DeleteDocumentsResp) ProtoReflect() protoreflect.Message {
+	mi := &file_rag_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteDocumentsResp.ProtoReflect.Descriptor instead.
+func (*DeleteDocumentsResp) Descriptor() ([]byte, []int) {
+	return file_rag_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *DeleteDocumentsResp) GetDeletedCount() int32 {
+	if x != nil {
+		return x.DeletedCount
+	}
+	return 0
+}
+
 var File_rag_proto protoreflect.FileDescriptor
 
 const file_rag_proto_rawDesc = "" +
@@ -430,11 +674,29 @@ const file_rag_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\":\n" +
 	"\tQueryResp\x12-\n" +
-	"\aresults\x18\x01 \x03(\v2\x13.pb.RetrievalResultR\aresults2C\n" +
+	"\aresults\x18\x01 \x03(\v2\x13.pb.RetrievalResultR\aresults\"=\n" +
+	"\x11FetchDocumentsReq\x12\x16\n" +
+	"\x06userId\x18\x01 \x01(\tR\x06userId\x12\x10\n" +
+	"\x03ids\x18\x02 \x03(\tR\x03ids\"\xad\x01\n" +
+	"\x0eDocumentRecord\x12 \n" +
+	"\vpageContent\x18\x01 \x01(\tR\vpageContent\x12<\n" +
+	"\bmetadata\x18\x02 \x03(\v2 .pb.DocumentRecord.MetadataEntryR\bmetadata\x1a;\n" +
+	"\rMetadataEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"F\n" +
+	"\x12FetchDocumentsResp\x120\n" +
+	"\tdocuments\x18\x01 \x03(\v2\x12.pb.DocumentRecordR\tdocuments\">\n" +
+	"\x12DeleteDocumentsReq\x12\x16\n" +
+	"\x06userId\x18\x01 \x01(\tR\x06userId\x12\x10\n" +
+	"\x03ids\x18\x02 \x03(\tR\x03ids\"9\n" +
+	"\x13DeleteDocumentsResp\x12\"\n" +
+	"\fdeletedCount\x18\x01 \x01(\x05R\fdeletedCount2\xc8\x01\n" +
 	"\n" +
 	"DocService\x125\n" +
 	"\n" +
-	"UploadFile\x12\x11.pb.UploadFileReq\x1a\x12.pb.UploadFileResp(\x012h\n" +
+	"UploadFile\x12\x11.pb.UploadFileReq\x1a\x12.pb.UploadFileResp(\x01\x12?\n" +
+	"\x0eFetchDocuments\x12\x15.pb.FetchDocumentsReq\x1a\x16.pb.FetchDocumentsResp\x12B\n" +
+	"\x0fDeleteDocuments\x12\x16.pb.DeleteDocumentsReq\x1a\x17.pb.DeleteDocumentsResp2h\n" +
 	"\n" +
 	"RagService\x12$\n" +
 	"\x05Query\x12\f.pb.QueryReq\x1a\r.pb.QueryResp\x124\n" +
@@ -452,30 +714,42 @@ func file_rag_proto_rawDescGZIP() []byte {
 	return file_rag_proto_rawDescData
 }
 
-var file_rag_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_rag_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_rag_proto_goTypes = []any{
-	(*UploadFileReq)(nil),    // 0: pb.UploadFileReq
-	(*UploadFileResp)(nil),   // 1: pb.UploadFileResp
-	(*QueryReq)(nil),         // 2: pb.QueryReq
-	(*QueryMultipleReq)(nil), // 3: pb.QueryMultipleReq
-	(*RetrievalResult)(nil),  // 4: pb.RetrievalResult
-	(*QueryResp)(nil),        // 5: pb.QueryResp
-	nil,                      // 6: pb.RetrievalResult.MetadataEntry
+	(*UploadFileReq)(nil),       // 0: pb.UploadFileReq
+	(*UploadFileResp)(nil),      // 1: pb.UploadFileResp
+	(*QueryReq)(nil),            // 2: pb.QueryReq
+	(*QueryMultipleReq)(nil),    // 3: pb.QueryMultipleReq
+	(*RetrievalResult)(nil),     // 4: pb.RetrievalResult
+	(*QueryResp)(nil),           // 5: pb.QueryResp
+	(*FetchDocumentsReq)(nil),   // 6: pb.FetchDocumentsReq
+	(*DocumentRecord)(nil),      // 7: pb.DocumentRecord
+	(*FetchDocumentsResp)(nil),  // 8: pb.FetchDocumentsResp
+	(*DeleteDocumentsReq)(nil),  // 9: pb.DeleteDocumentsReq
+	(*DeleteDocumentsResp)(nil), // 10: pb.DeleteDocumentsResp
+	nil,                         // 11: pb.RetrievalResult.MetadataEntry
+	nil,                         // 12: pb.DocumentRecord.MetadataEntry
 }
 var file_rag_proto_depIdxs = []int32{
-	6, // 0: pb.RetrievalResult.metadata:type_name -> pb.RetrievalResult.MetadataEntry
-	4, // 1: pb.QueryResp.results:type_name -> pb.RetrievalResult
-	0, // 2: pb.DocService.UploadFile:input_type -> pb.UploadFileReq
-	2, // 3: pb.RagService.Query:input_type -> pb.QueryReq
-	3, // 4: pb.RagService.QueryMultiple:input_type -> pb.QueryMultipleReq
-	1, // 5: pb.DocService.UploadFile:output_type -> pb.UploadFileResp
-	5, // 6: pb.RagService.Query:output_type -> pb.QueryResp
-	5, // 7: pb.RagService.QueryMultiple:output_type -> pb.QueryResp
-	5, // [5:8] is the sub-list for method output_type
-	2, // [2:5] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	11, // 0: pb.RetrievalResult.metadata:type_name -> pb.RetrievalResult.MetadataEntry
+	4,  // 1: pb.QueryResp.results:type_name -> pb.RetrievalResult
+	12, // 2: pb.DocumentRecord.metadata:type_name -> pb.DocumentRecord.MetadataEntry
+	7,  // 3: pb.FetchDocumentsResp.documents:type_name -> pb.DocumentRecord
+	0,  // 4: pb.DocService.UploadFile:input_type -> pb.UploadFileReq
+	6,  // 5: pb.DocService.FetchDocuments:input_type -> pb.FetchDocumentsReq
+	9,  // 6: pb.DocService.DeleteDocuments:input_type -> pb.DeleteDocumentsReq
+	2,  // 7: pb.RagService.Query:input_type -> pb.QueryReq
+	3,  // 8: pb.RagService.QueryMultiple:input_type -> pb.QueryMultipleReq
+	1,  // 9: pb.DocService.UploadFile:output_type -> pb.UploadFileResp
+	8,  // 10: pb.DocService.FetchDocuments:output_type -> pb.FetchDocumentsResp
+	10, // 11: pb.DocService.DeleteDocuments:output_type -> pb.DeleteDocumentsResp
+	5,  // 12: pb.RagService.Query:output_type -> pb.QueryResp
+	5,  // 13: pb.RagService.QueryMultiple:output_type -> pb.QueryResp
+	9,  // [9:14] is the sub-list for method output_type
+	4,  // [4:9] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_rag_proto_init() }
@@ -489,7 +763,7 @@ func file_rag_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_rag_proto_rawDesc), len(file_rag_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   2,
 		},
