@@ -38,9 +38,34 @@ type DocumentRecord struct {
 	Metadata    map[string]any `json:"metadata"`
 }
 
+// ChunkRecord represents an item returned by /chunks pagination API.
+type ChunkRecord struct {
+	CustomID    string         `json:"custom_id"`
+	PageContent string         `json:"page_content"`
+	Metadata    map[string]any `json:"metadata"`
+}
+
 // DocumentsResponse is the payload returned by GET /documents.
 type DocumentsResponse struct {
 	Documents []DocumentRecord `json:"documents"`
+}
+
+// ListChunksResponse captures paginated chunk results.
+type ListChunksResponse struct {
+	Items    []ChunkRecord `json:"items"`
+	Total    int           `json:"total"`
+	Page     int           `json:"page"`
+	PageSize int           `json:"page_size"`
+}
+
+// ListChunksParams specifies filters for the chunk pagination API.
+type ListChunksParams struct {
+	Page     int
+	PageSize int
+	FileID   string
+	EntityID string
+	OrderBy  string
+	Sort     string
 }
 
 // DeleteDocumentsResponse contains the outcome of deleting stored chunks.

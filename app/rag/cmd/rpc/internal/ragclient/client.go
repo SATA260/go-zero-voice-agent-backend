@@ -10,6 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -137,6 +138,61 @@ func (c *Client) DeleteDocuments(ctx context.Context, userID string, ids []strin
 	headers := map[string]string{userIDHeader: userID, "Content-Type": "application/json"}
 	var resp DeleteDocumentsResponse
 	if err := c.invoke(ctx, http.MethodDelete, "/documents", headers, payload, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// ListChunks 分页查询已写入向量库的文本切片。
+func (c *Client) ListChunks(ctx context.Context, userID string, params *ListChunksParams) (*ListChunksResponse, error) {
+	if userID == "" {
+		return nil, ErrMissingUserID
+	}
+
+	cfg := ListChunksParams{}
+	if params != nil {
+		cfg = *params
+	}
+
+	page := cfg.Page
+	if page <= 0 {
+		page = 1
+	}
+
+	pageSize := cfg.PageSize
+	if pageSize <= 0 {
+		pageSize = 20
+	}
+	if pageSize > 200 {
+		pageSize = 200
+	}
+
+	orderBy := strings.TrimSpace(cfg.OrderBy)
+	if orderBy == "" {
+		orderBy = "chunk_index"
+	}
+
+	sort := strings.ToLower(strings.TrimSpace(cfg.Sort))
+	if sort != "desc" {
+		sort = "asc"
+	}
+
+	query := url.Values{}
+	query.Set("page", strconv.Itoa(page))
+	query.Set("page_size", strconv.Itoa(pageSize))
+	query.Set("order_by", orderBy)
+	query.Set("sort", sort)
+
+	if fileID := strings.TrimSpace(cfg.FileID); fileID != "" {
+		query.Set("file_id", fileID)
+	}
+	if entityID := strings.TrimSpace(cfg.EntityID); entityID != "" {
+		query.Set("entity_id", entityID)
+	}
+
+	headers := map[string]string{userIDHeader: userID}
+	var resp ListChunksResponse
+	if err := c.invoke(ctx, http.MethodGet, "/chunks?"+query.Encode(), headers, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
