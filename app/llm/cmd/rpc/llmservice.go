@@ -5,14 +5,16 @@ import (
 	"fmt"
 
 	"go-zero-voice-agent/app/llm/cmd/rpc/internal/config"
+	chatmessageserviceServer "go-zero-voice-agent/app/llm/cmd/rpc/internal/server/chatmessageservice"
+	chatsessionserviceServer "go-zero-voice-agent/app/llm/cmd/rpc/internal/server/chatsessionservice"
 	llmchatserviceServer "go-zero-voice-agent/app/llm/cmd/rpc/internal/server/llmchatservice"
 	llmconfigserviceServer "go-zero-voice-agent/app/llm/cmd/rpc/internal/server/llmconfigservice"
-	chatsessionserviceServer "go-zero-voice-agent/app/llm/cmd/rpc/internal/server/chatsessionservice"
-	chatmessageserviceServer "go-zero-voice-agent/app/llm/cmd/rpc/internal/server/chatmessageservice"
 	"go-zero-voice-agent/app/llm/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
 
+	"github.com/joho/godotenv"
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -24,8 +26,12 @@ var configFile = flag.String("f", "etc/llmservice.yaml", "the config file")
 func main() {
 	flag.Parse()
 
+	if err := godotenv.Load(); err != nil {
+        logx.Errorf("Error loading .env file, please check if it exists: %v", err)
+    }
+
 	var c config.Config
-	conf.MustLoad(*configFile, &c)
+	conf.MustLoad(*configFile, &c, conf.UseEnv())
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {

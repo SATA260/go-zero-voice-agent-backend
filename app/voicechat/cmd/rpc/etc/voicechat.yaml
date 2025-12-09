@@ -1,13 +1,13 @@
 Name: voicechat.rpc
-ListenOn: 0.0.0.0:4083
+ListenOn: ${VOICECHAT_RPC_LISTEN}
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+  - ${ETCD_HOST}
   Key: voicechat.rpc
 DB:
-  DataSource: root:f4FMhWc6FdzuBCHf@tcp(localhost:3306)/gzva_voicechat?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: ${VOICECHAT_DB_DSN}
 
 Cache:
-  - Host: localhost:36379
+  - Host: ${REDIS_HOST}
     Type: node
-    Pass: GwAGt4UmTwcMhjun 
+    Pass: ${REDIS_PASS}

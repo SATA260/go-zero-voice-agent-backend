@@ -1,19 +1,19 @@
 Name: voiceChat
-Host: 0.0.0.0
-Port: 3083
+Host: ${VOICECHAT_API_HOST}
+Port: ${VOICECHAT_API_PORT}
 
 LlmRpcConf:
   Etcd:
     Hosts:
-    - localhost:2379
+    - ${ETCD_HOST}
     Key: llmservice.rpc
 
 VoiceChatRpcConf:
   Etcd:
     Hosts:
-    - localhost:2379
+    - ${ETCD_HOST}
     Key: voicechat.rpc
 
 RustPBXConfig:
   Url: ${RUST_PBX_URL}
-  WebSocketUrl: ws://localhost:8080/call/webrtc
+  WebSocketUrl: ${RUST_PBX_WEBSOCKET_CALL_URL}

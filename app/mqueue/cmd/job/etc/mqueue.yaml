@@ -1,22 +1,22 @@
 Name: mqueue.job
-Mode: dev
+Mode: ${MQUEUE_MODE}
 Log:
   ServiceName: mqueue.job
-  Mode: console
-  Encoding: plain
+  Mode: ${MQUEUE_LOG_MODE}
+  Encoding: ${MQUEUE_LOG_ENCODING}
 Redis:
-  Host: localhost:36379
+  Host: ${REDIS_HOST}
   Type: node
-  Pass: GwAGt4UmTwcMhjun
+  Pass: ${REDIS_PASS}
 
 Asynq:
-  Host: localhost:36379
-  Pass: GwAGt4UmTwcMhjun
+  Host: ${REDIS_HOST}
+  Pass: ${REDIS_PASS}
   DB: 1
 
 DB:
-  DataSource: root:f4FMhWc6FdzuBCHf@tcp(localhost:3306)/gzva_llmservice?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: ${LLM_DB_DSN}
 Cache:
-  - Host: localhost:36379
+  - Host: ${REDIS_HOST}
     Type: node
-    Pass: GwAGt4UmTwcMhjun
+    Pass: ${REDIS_PASS}

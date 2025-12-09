@@ -1,9 +1,9 @@
 Name: rag
-Host: 0.0.0.0
-Port: 3084
+Host: ${RAG_API_HOST}
+Port: ${RAG_API_PORT}
 
 RagRpcConf:
   Etcd:
     Hosts:
-    - localhost:2379
+    - ${ETCD_HOST}
     Key: rag.rpc

@@ -1,9 +1,9 @@
 Name: usercenter
-Host: 0.0.0.0
-Port: 3081
+Host: ${USERCENTER_API_HOST}
+Port: ${USERCENTER_API_PORT}
 
 UsercenterRpcConf:
   Etcd:
     Hosts:
-    - localhost:2379
+    - ${ETCD_HOST}
     Key: usercenter.rpc

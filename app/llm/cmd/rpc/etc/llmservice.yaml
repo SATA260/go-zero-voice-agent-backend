@@ -1,26 +1,26 @@
 Name: llmservice.rpc
-ListenOn: 0.0.0.0:4082
+ListenOn: ${LLM_RPC_LISTEN}
 Etcd:
   Hosts:
-  - localhost:2379
+  - ${ETCD_HOST}
   Key: llmservice.rpc
 DB:
-  DataSource: root:f4FMhWc6FdzuBCHf@tcp(localhost:3306)/gzva_llmservice?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: ${LLM_DB_DSN}
 
 Cache:
-  - Host: localhost:36379
+  - Host: ${REDIS_HOST}
     Type: node
-    Pass: GwAGt4UmTwcMhjun
+    Pass: ${REDIS_PASS}
 
 Redis:
-  Host: localhost:36379
+  Host: ${REDIS_HOST}
   Type: node
-  Pass: GwAGt4UmTwcMhjun
+  Pass: ${REDIS_PASS}
   Key:  
 
 Asynq:
-  Host: localhost:36379
-  Pass: GwAGt4UmTwcMhjun
+  Host: ${REDIS_HOST}
+  Pass: ${REDIS_PASS}
   DB: 1
 
-Timeout: 30000
+Timeout: ${LLM_RPC_TIMEOUT}
