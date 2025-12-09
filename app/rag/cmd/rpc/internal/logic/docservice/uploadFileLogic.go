@@ -192,17 +192,16 @@ func (l *UploadFileLogic) UploadFile(stream pb.DocService_UploadFileServer) erro
 		return nil
 	}
 
-	recordCopy := *record
 	fileID := objectKey
-	if recordCopy.Id > 0 {
-		fileID = strconv.FormatInt(recordCopy.Id, 10)
+	if record.Id > 0 {
+		fileID = strconv.FormatInt(record.Id, 10)
 	}
 
 	embedReq := &ragclient.EmbedRequest{
 		FileID:      fileID,
 		BucketName:  consts.MINIO_BUCKETNAME_RAG_DOCUMENT,
 		ObjectPath:  objectKey,
-		Filename:    recordCopy.FileName,
+		Filename:    record.FileName,
 		ContentType: contentType,
 	}
 
@@ -211,8 +210,12 @@ func (l *UploadFileLogic) UploadFile(stream pb.DocService_UploadFileServer) erro
 		defer cancel()
 		if err := l.embedWithRetry(ctx, strconv.FormatInt(userID, 10), &rec, req); err != nil {
 			l.Logger.Errorf("async embed failed for file %s: %v", req.ObjectPath, err)
+		} else {
+			l.Logger.Infof("async embed succeeded for file %s", req.ObjectPath)
+			record.Status = 1
+			l.svcCtx.FileUploadModel.Update(l.ctx, nil, record)
 		}
-	}(recordCopy, embedReq)
+	}(*record, embedReq)
 
 	return nil
 }
