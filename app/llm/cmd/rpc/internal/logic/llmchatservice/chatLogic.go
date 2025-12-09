@@ -21,12 +21,14 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// ChatLogic 处理聊天请求的逻辑结构体
 type ChatLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
+// NewChatLogic 创建一个新的 ChatLogic 实例
 func NewChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatLogic {
 	return &ChatLogic{
 		ctx:    ctx,
@@ -35,9 +37,11 @@ func NewChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatLogic {
 	}
 }
 
+// Chat 处理聊天请求，与 LLM 进行交互
 func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 	l.Logger.Infof("Chat request: %+v", in)
 
+	// 1. 校验请求参数
 	if in == nil || in.LlmConfig == nil {
 		return nil, status.Error(codes.InvalidArgument, "missing llm config")
 	}
@@ -51,7 +55,9 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 
 	var chatSession model.ChatSession
 
+	// 2. 获取或创建会话
 	if in.ConversationId != "" {
+		// 如果提供了会话 ID，则查找现有会话
 		session, err := l.svcCtx.ChatSessionModel.FindOneByConvId(l.ctx, in.ConversationId)
 		if err != nil {
 			if errors.Is(err, model.ErrNotFound) {
@@ -60,16 +66,29 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 			return nil, status.Errorf(codes.Internal, "failed to fetch conversation ID %s: %v", in.ConversationId, err)
 		}
 
+		// 验证会话归属
 		if session.UserId.Int64 != in.UserId {
 			return nil, status.Errorf(codes.PermissionDenied, "conversation ID %s does not belong to user %d", in.ConversationId, in.UserId)
 		}
 
 		chatSession = *session
 	} else {
+		// 如果未提供会话 ID，则创建新会话
+		// 截取输入消息的前 10 字符作为标题
+		title := ""
+		if len(in.Messages) > 0 {
+			content := in.Messages[0].GetContent()
+			if len(content) > 10 {
+				title = content[:10]
+			} else {
+				title = content
+			}
+		}
+
 		newSession := &model.ChatSession{
 			ConvId: generateConversationID(),
 			UserId: sql.NullInt64{Int64: in.UserId, Valid: true},
-			Title:  "New Conversation",
+			Title:  title,
 		}
 		_, err := l.svcCtx.ChatSessionModel.Insert(l.ctx, nil, newSession)
 		if err != nil {
@@ -79,6 +98,7 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 		chatSession = *newSession
 	}
 
+	// 3. 收集历史消息
 	historyMsgs, err := l.collectHistory(in, &chatSession)
 	if err != nil {
 		l.Logger.Errorf("collectHistory error: %v", err)
@@ -87,18 +107,22 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 	l.Logger.Infof("Collected %d history messages for conversation %s", len(historyMsgs), chatSession.ConvId)
 	l.Logger.Debugf("History messages: %+v", historyMsgs)
 
+	// 将当前请求的消息追加到历史消息中
 	if len(in.Messages) > 0 {
 		historyMsgs = append(historyMsgs, in.Messages...)
 	}
 
+	// 构建 OpenAI 格式的消息列表
 	openaiMsgs := buildSyncMessages(historyMsgs)
 
+	// 4. 创建 OpenAI 客户端
 	client, err := l.newSyncOpenAIClient(in.LlmConfig)
 	if err != nil {
 		l.Logger.Errorf("newSyncOpenAIClient error: %v", err)
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
+	// 5. 构建并发送聊天完成请求
 	req := buildSyncChatCompletionRequest(in, openaiMsgs)
 	l.Logger.Infof("OpenAI request: %+v", req)
 
@@ -116,13 +140,14 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 		return nil, status.Error(codes.Unimplemented, "tool calls are not supported in sync chat mode")
 	}
 
+	// 6. 处理响应
 	assistantMsg := &pb.ChatMsg{
 		Role:    chatconsts.ChatMessageRoleAssistant,
 		Content: choice.Message.Content,
 	}
 	l.Logger.Infof("LLM response content: %s", choice.Message.Content)
 
-	// Only cache new messages (user input + assistant response) to avoid duplication
+	// 异步缓存新消息（用户输入 + 助手响应）以避免重复
 	go l.svcCtx.CacheConversation(chatSession.ConvId, in.Messages, assistantMsg)
 
 	respMsgs := make([]*pb.ChatMsg, 0)
@@ -134,6 +159,7 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 	}, nil
 }
 
+// collectHistory 收集聊天历史记录，优先从 Redis 缓存获取，如果缓存未命中则从数据库获取
 func (l *ChatLogic) collectHistory(in *pb.ChatReq, session *model.ChatSession) ([]*pb.ChatMsg, error) {
 	if in.ConversationId == "" {
 		return []*pb.ChatMsg{}, nil
@@ -221,6 +247,7 @@ func (l *ChatLogic) collectHistory(in *pb.ChatReq, session *model.ChatSession) (
 	return messages, nil
 }
 
+// newSyncOpenAIClient 创建一个新的同步 OpenAI 客户端
 func (l *ChatLogic) newSyncOpenAIClient(cfg *pb.LlmConfig) (*openai.Client, error) {
 	if cfg.GetApiKey() == "" {
 		return nil, errors.New("api key is required")
@@ -233,6 +260,7 @@ func (l *ChatLogic) newSyncOpenAIClient(cfg *pb.LlmConfig) (*openai.Client, erro
 	return openai.NewClientWithConfig(clientCfg), nil
 }
 
+// buildSyncMessages 将 pb.ChatMsg 转换为 openai.ChatCompletionMessage
 func buildSyncMessages(msgs []*pb.ChatMsg) []openai.ChatCompletionMessage {
 	result := make([]openai.ChatCompletionMessage, 0, len(msgs))
 	for _, msg := range msgs {
@@ -247,6 +275,7 @@ func buildSyncMessages(msgs []*pb.ChatMsg) []openai.ChatCompletionMessage {
 	return result
 }
 
+// buildSyncChatCompletionRequest 构建 OpenAI 聊天完成请求
 func buildSyncChatCompletionRequest(in *pb.ChatReq, messages []openai.ChatCompletionMessage) openai.ChatCompletionRequest {
 	cfg := in.GetLlmConfig()
 	req := openai.ChatCompletionRequest{
@@ -281,6 +310,7 @@ func buildSyncChatCompletionRequest(in *pb.ChatReq, messages []openai.ChatComple
 	return req
 }
 
+// cloneSyncMessages 克隆消息列表
 func cloneSyncMessages(msgs []*pb.ChatMsg) []*pb.ChatMsg {
 	clones := make([]*pb.ChatMsg, 0, len(msgs))
 	for _, msg := range msgs {
@@ -292,6 +322,7 @@ func cloneSyncMessages(msgs []*pb.ChatMsg) []*pb.ChatMsg {
 	return clones
 }
 
+// mapSyncRole 将内部角色映射到 OpenAI 角色
 func mapSyncRole(role string) string {
 	switch role {
 	case chatconsts.ChatMessageRoleAssistant:
