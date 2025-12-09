@@ -283,14 +283,16 @@ async def delete_documents(
     ids: List[str],
     executor=None,
 ) -> Dict[str, Any]:
-    """按自定义 ID 删除 pgvector 中的文档记录。"""
+    """按 file_id 删除 pgvector 中的文档记录。"""
     store = _require_vector_store()
     if not ids:
         raise HTTPException(status_code=400, detail="ids list cannot be empty")
 
-    existing = await store.get_filtered_ids(ids, executor=executor)
-    await store.delete(ids=existing, executor=executor)
-    return {"deleted_count": len(existing)}
+    # 修改：直接根据 file_id 删除，而不是根据 vector_id 删除
+    # 假设 store 实现了 adelete_by_file_ids 方法（在 embed_file 中有用到）
+    deleted_count = await store.adelete_by_file_ids(ids, executor=executor)
+    
+    return {"deleted_count": deleted_count}
 
 
 async def list_chunks(
