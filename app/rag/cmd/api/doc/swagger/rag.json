@@ -159,6 +159,103 @@
         }
       }
     },
+    "/rag/v1/doc/{fileId}/chunks": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "分页查询文件切片",
+        "operationId": "docListDocChunks",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "X-User-Id",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "name": "fileId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "pageQuery"
+              ],
+              "properties": {
+                "pageQuery": {
+                  "type": "object",
+                  "required": [
+                    "page",
+                    "pageSize"
+                  ],
+                  "properties": {
+                    "orderBy": {
+                      "type": "string"
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "chunkList": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "customId",
+                      "pageContent",
+                      "metadata"
+                    ],
+                    "properties": {
+                      "customId": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      },
+                      "pageContent": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/rag/v1/doc/{id}": {
       "delete": {
         "consumes": [
@@ -201,7 +298,7 @@
       }
     }
   },
-  "x-date": "2025-12-03 12:52:35",
+  "x-date": "2025-12-09 16:57:46",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

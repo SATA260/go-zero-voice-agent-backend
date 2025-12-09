@@ -16,6 +16,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				// 分页查询文件切片
+				Method:  http.MethodPost,
+				Path:    "/:fileId/chunks",
+				Handler: doc.ListDocChunksHandler(serverCtx),
+			},
+			{
 				// 删除上传文件
 				Method:  http.MethodDelete,
 				Path:    "/:id",

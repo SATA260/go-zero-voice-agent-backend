@@ -16,25 +16,21 @@ type (
 		PageSize int64  `json:"pageSize"`
 		OrderBy  string `json:"orderBy,optional"`
 	}
-
 	ListDocFilter {
 		FileName   string `json:"fileName,optional"`
 		FileFormat string `json:"fileFormat,optional"`
 	}
-
 	ListDocReq {
 		UserId    int64         `header:"X-User-Id"`
 		PageQuery PageQuery     `json:"pageQuery"`
 		Filter    ListDocFilter `json:"filter,optional"`
 	}
-
 	DocumentItem {
 		Id         int64  `json:"id"`
 		FileName   string `json:"fileName"`
 		FileFormat string `json:"fileFormat"`
 		Status     int64  `json:"status"`
 	}
-
 	ListDocResp {
 		Total        int64          `json:"total"`
 		DocumentList []DocumentItem `json:"documentList"`
@@ -50,3 +46,21 @@ type (
 		DeletedCount int32 `json:"deletedCount"`
 	}
 )
+
+type (
+	DocChunkItem {
+		CustomId    string            `json:"customId"`
+		PageContent string            `json:"pageContent"`
+		Metadata    map[string]string `json:"metadata"`
+	}
+	ListDocChunksReq {
+		UserId    int64     `header:"X-User-Id"`
+		FileId    string    `path:"fileId"`
+		PageQuery PageQuery `json:"pageQuery"`
+	}
+	ListDocChunksResp {
+		Total     int64          `json:"total"`
+		ChunkList []DocChunkItem `json:"chunkList"`
+	}
+)
+
