@@ -20,9 +20,9 @@ router = APIRouter()
 
 def _require_user_id(request: Request) -> str:
     """校验请求头中是否包含用户标识。"""
-    user_id = request.headers.get("X-User-ID")
+    user_id = request.headers.get("X-User-Id")
     if not user_id:
-        raise HTTPException(status_code=401, detail="X-User-ID header missing")
+        raise HTTPException(status_code=401, detail="X-User-Id header missing")
     return user_id
 
 
