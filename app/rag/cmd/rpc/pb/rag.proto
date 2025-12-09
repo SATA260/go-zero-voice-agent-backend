@@ -68,6 +68,7 @@ message ListDocumentsItem {
 
 message ListDocumentsResp {
     repeated ListDocumentsItem results = 1;
+    int64 total = 2;
 }
 
 message FetchDocumentsReq {
@@ -76,8 +77,9 @@ message FetchDocumentsReq {
 }
 
 message DocumentRecord {
-    string pageContent = 1;
-    map<string, string> metadata = 2;
+    string customId = 1;
+    string pageContent = 2;
+    map<string, string> metadata = 3;
 }
 
 message FetchDocumentsResp {
@@ -93,11 +95,22 @@ message DeleteDocumentsResp {
     int32 deletedCount = 1;
 }
 
+message ListChunksReq {
+    int64 userId = 1;
+    string fileId = 2;
+    PageQuery pageQuery = 3;
+}
+message ListChunksResp {
+    repeated DocumentRecord chunks = 1;
+    int64 total = 2;
+}
+
 service DocService {
     rpc UploadFile(stream UploadFileReq) returns (UploadFileResp);
     rpc ListDocuments(ListDocumentsReq) returns (ListDocumentsResp);
     rpc FetchDocuments(FetchDocumentsReq) returns (FetchDocumentsResp);
     rpc DeleteDocuments(DeleteDocumentsReq) returns (DeleteDocumentsResp);
+    rpc ListChunks(ListChunksReq) returns (ListChunksResp);
 }
 
 service RagService {
