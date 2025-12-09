@@ -73,7 +73,7 @@ func (l *ListDocumentsLogic) ListDocuments(in *pb.ListDocumentsReq) (*pb.ListDoc
 		pageSize = 200
 	}
 
-	records, err := l.svcCtx.FileUploadModel.FindPageListByPage(l.ctx, builder, page, pageSize, orderBy)
+	records, total, err := l.svcCtx.FileUploadModel.FindPageListByPageWithTotal(l.ctx, builder, page, pageSize, orderBy)
 	if err != nil {
 		l.Logger.Errorf("list documents failed: %v", err)
 		return nil, status.Error(codes.Internal, "query documents failed")
@@ -101,6 +101,7 @@ func (l *ListDocumentsLogic) ListDocuments(in *pb.ListDocumentsReq) (*pb.ListDoc
 
 	return &pb.ListDocumentsResp{
 		Results: results,
+		Total:   int64(total),
 	}, nil
 }
 

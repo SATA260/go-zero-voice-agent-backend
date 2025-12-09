@@ -23,6 +23,7 @@ const (
 	DocService_ListDocuments_FullMethodName   = "/pb.DocService/ListDocuments"
 	DocService_FetchDocuments_FullMethodName  = "/pb.DocService/FetchDocuments"
 	DocService_DeleteDocuments_FullMethodName = "/pb.DocService/DeleteDocuments"
+	DocService_ListChunks_FullMethodName      = "/pb.DocService/ListChunks"
 )
 
 // DocServiceClient is the client API for DocService service.
@@ -33,6 +34,7 @@ type DocServiceClient interface {
 	ListDocuments(ctx context.Context, in *ListDocumentsReq, opts ...grpc.CallOption) (*ListDocumentsResp, error)
 	FetchDocuments(ctx context.Context, in *FetchDocumentsReq, opts ...grpc.CallOption) (*FetchDocumentsResp, error)
 	DeleteDocuments(ctx context.Context, in *DeleteDocumentsReq, opts ...grpc.CallOption) (*DeleteDocumentsResp, error)
+	ListChunks(ctx context.Context, in *ListChunksReq, opts ...grpc.CallOption) (*ListChunksResp, error)
 }
 
 type docServiceClient struct {
@@ -86,6 +88,16 @@ func (c *docServiceClient) DeleteDocuments(ctx context.Context, in *DeleteDocume
 	return out, nil
 }
 
+func (c *docServiceClient) ListChunks(ctx context.Context, in *ListChunksReq, opts ...grpc.CallOption) (*ListChunksResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListChunksResp)
+	err := c.cc.Invoke(ctx, DocService_ListChunks_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DocServiceServer is the server API for DocService service.
 // All implementations must embed UnimplementedDocServiceServer
 // for forward compatibility.
@@ -94,6 +106,7 @@ type DocServiceServer interface {
 	ListDocuments(context.Context, *ListDocumentsReq) (*ListDocumentsResp, error)
 	FetchDocuments(context.Context, *FetchDocumentsReq) (*FetchDocumentsResp, error)
 	DeleteDocuments(context.Context, *DeleteDocumentsReq) (*DeleteDocumentsResp, error)
+	ListChunks(context.Context, *ListChunksReq) (*ListChunksResp, error)
 	mustEmbedUnimplementedDocServiceServer()
 }
 
@@ -115,6 +128,9 @@ func (UnimplementedDocServiceServer) FetchDocuments(context.Context, *FetchDocum
 }
 func (UnimplementedDocServiceServer) DeleteDocuments(context.Context, *DeleteDocumentsReq) (*DeleteDocumentsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteDocuments not implemented")
+}
+func (UnimplementedDocServiceServer) ListChunks(context.Context, *ListChunksReq) (*ListChunksResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListChunks not implemented")
 }
 func (UnimplementedDocServiceServer) mustEmbedUnimplementedDocServiceServer() {}
 func (UnimplementedDocServiceServer) testEmbeddedByValue()                    {}
@@ -198,6 +214,24 @@ func _DocService_DeleteDocuments_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DocService_ListChunks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListChunksReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DocServiceServer).ListChunks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DocService_ListChunks_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DocServiceServer).ListChunks(ctx, req.(*ListChunksReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DocService_ServiceDesc is the grpc.ServiceDesc for DocService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -216,6 +250,10 @@ var DocService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteDocuments",
 			Handler:    _DocService_DeleteDocuments_Handler,
+		},
+		{
+			MethodName: "ListChunks",
+			Handler:    _DocService_ListChunks_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

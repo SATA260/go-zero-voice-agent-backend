@@ -19,6 +19,8 @@ type (
 	DocumentRecord      = pb.DocumentRecord
 	FetchDocumentsReq   = pb.FetchDocumentsReq
 	FetchDocumentsResp  = pb.FetchDocumentsResp
+	ListChunksReq       = pb.ListChunksReq
+	ListChunksResp      = pb.ListChunksResp
 	ListDocumentsFilter = pb.ListDocumentsFilter
 	ListDocumentsItem   = pb.ListDocumentsItem
 	ListDocumentsReq    = pb.ListDocumentsReq

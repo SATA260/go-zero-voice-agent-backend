@@ -42,3 +42,8 @@ func (s *DocServiceServer) DeleteDocuments(ctx context.Context, in *pb.DeleteDoc
 	l := docservicelogic.NewDeleteDocumentsLogic(ctx, s.svcCtx)
 	return l.DeleteDocuments(in)
 }
+
+func (s *DocServiceServer) ListChunks(ctx context.Context, in *pb.ListChunksReq) (*pb.ListChunksResp, error) {
+	l := docservicelogic.NewListChunksLogic(ctx, s.svcCtx)
+	return l.ListChunks(in)
+}

@@ -19,6 +19,8 @@ type (
 	DocumentRecord      = pb.DocumentRecord
 	FetchDocumentsReq   = pb.FetchDocumentsReq
 	FetchDocumentsResp  = pb.FetchDocumentsResp
+	ListChunksReq       = pb.ListChunksReq
+	ListChunksResp      = pb.ListChunksResp
 	ListDocumentsFilter = pb.ListDocumentsFilter
 	ListDocumentsItem   = pb.ListDocumentsItem
 	ListDocumentsReq    = pb.ListDocumentsReq
@@ -36,6 +38,7 @@ type (
 		ListDocuments(ctx context.Context, in *ListDocumentsReq, opts ...grpc.CallOption) (*ListDocumentsResp, error)
 		FetchDocuments(ctx context.Context, in *FetchDocumentsReq, opts ...grpc.CallOption) (*FetchDocumentsResp, error)
 		DeleteDocuments(ctx context.Context, in *DeleteDocumentsReq, opts ...grpc.CallOption) (*DeleteDocumentsResp, error)
+		ListChunks(ctx context.Context, in *ListChunksReq, opts ...grpc.CallOption) (*ListChunksResp, error)
 	}
 
 	defaultDocService struct {
@@ -67,4 +70,9 @@ func (m *defaultDocService) FetchDocuments(ctx context.Context, in *FetchDocumen
 func (m *defaultDocService) DeleteDocuments(ctx context.Context, in *DeleteDocumentsReq, opts ...grpc.CallOption) (*DeleteDocumentsResp, error) {
 	client := pb.NewDocServiceClient(m.cli.Conn())
 	return client.DeleteDocuments(ctx, in, opts...)
+}
+
+func (m *defaultDocService) ListChunks(ctx context.Context, in *ListChunksReq, opts ...grpc.CallOption) (*ListChunksResp, error) {
+	client := pb.NewDocServiceClient(m.cli.Conn())
+	return client.ListChunks(ctx, in, opts...)
 }

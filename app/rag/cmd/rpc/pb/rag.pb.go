@@ -641,6 +641,7 @@ func (x *ListDocumentsItem) GetStatus() int64 {
 type ListDocumentsResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Results       []*ListDocumentsItem   `protobuf:"bytes,1,rep,name=results,proto3" json:"results,omitempty"`
+	Total         int64                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -680,6 +681,13 @@ func (x *ListDocumentsResp) GetResults() []*ListDocumentsItem {
 		return x.Results
 	}
 	return nil
+}
+
+func (x *ListDocumentsResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
 }
 
 type FetchDocumentsReq struct {
@@ -736,8 +744,9 @@ func (x *FetchDocumentsReq) GetIds() []string {
 
 type DocumentRecord struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	PageContent   string                 `protobuf:"bytes,1,opt,name=pageContent,proto3" json:"pageContent,omitempty"`
-	Metadata      map[string]string      `protobuf:"bytes,2,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	CustomId      string                 `protobuf:"bytes,1,opt,name=customId,proto3" json:"customId,omitempty"`
+	PageContent   string                 `protobuf:"bytes,2,opt,name=pageContent,proto3" json:"pageContent,omitempty"`
+	Metadata      map[string]string      `protobuf:"bytes,3,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -770,6 +779,13 @@ func (x *DocumentRecord) ProtoReflect() protoreflect.Message {
 // Deprecated: Use DocumentRecord.ProtoReflect.Descriptor instead.
 func (*DocumentRecord) Descriptor() ([]byte, []int) {
 	return file_rag_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *DocumentRecord) GetCustomId() string {
+	if x != nil {
+		return x.CustomId
+	}
+	return ""
 }
 
 func (x *DocumentRecord) GetPageContent() string {
@@ -926,6 +942,118 @@ func (x *DeleteDocumentsResp) GetDeletedCount() int32 {
 	return 0
 }
 
+type ListChunksReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	FileId        string                 `protobuf:"bytes,2,opt,name=fileId,proto3" json:"fileId,omitempty"`
+	PageQuery     *PageQuery             `protobuf:"bytes,3,opt,name=pageQuery,proto3" json:"pageQuery,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListChunksReq) Reset() {
+	*x = ListChunksReq{}
+	mi := &file_rag_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListChunksReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListChunksReq) ProtoMessage() {}
+
+func (x *ListChunksReq) ProtoReflect() protoreflect.Message {
+	mi := &file_rag_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListChunksReq.ProtoReflect.Descriptor instead.
+func (*ListChunksReq) Descriptor() ([]byte, []int) {
+	return file_rag_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *ListChunksReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *ListChunksReq) GetFileId() string {
+	if x != nil {
+		return x.FileId
+	}
+	return ""
+}
+
+func (x *ListChunksReq) GetPageQuery() *PageQuery {
+	if x != nil {
+		return x.PageQuery
+	}
+	return nil
+}
+
+type ListChunksResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Chunks        []*DocumentRecord      `protobuf:"bytes,1,rep,name=chunks,proto3" json:"chunks,omitempty"`
+	Total         int64                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListChunksResp) Reset() {
+	*x = ListChunksResp{}
+	mi := &file_rag_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListChunksResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListChunksResp) ProtoMessage() {}
+
+func (x *ListChunksResp) ProtoReflect() protoreflect.Message {
+	mi := &file_rag_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListChunksResp.ProtoReflect.Descriptor instead.
+func (*ListChunksResp) Descriptor() ([]byte, []int) {
+	return file_rag_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *ListChunksResp) GetChunks() []*DocumentRecord {
+	if x != nil {
+		return x.Chunks
+	}
+	return nil
+}
+
+func (x *ListChunksResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
 var File_rag_proto protoreflect.FileDescriptor
 
 const file_rag_proto_rawDesc = "" +
@@ -977,15 +1105,17 @@ const file_rag_proto_rawDesc = "" +
 	"\tfile_name\x18\x02 \x01(\tR\bfileName\x12\x1f\n" +
 	"\vfile_format\x18\x03 \x01(\tR\n" +
 	"fileFormat\x12\x16\n" +
-	"\x06status\x18\x04 \x01(\x03R\x06status\"D\n" +
+	"\x06status\x18\x04 \x01(\x03R\x06status\"Z\n" +
 	"\x11ListDocumentsResp\x12/\n" +
-	"\aresults\x18\x01 \x03(\v2\x15.pb.ListDocumentsItemR\aresults\"=\n" +
+	"\aresults\x18\x01 \x03(\v2\x15.pb.ListDocumentsItemR\aresults\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x03R\x05total\"=\n" +
 	"\x11FetchDocumentsReq\x12\x16\n" +
 	"\x06userId\x18\x01 \x01(\x03R\x06userId\x12\x10\n" +
-	"\x03ids\x18\x02 \x03(\tR\x03ids\"\xad\x01\n" +
-	"\x0eDocumentRecord\x12 \n" +
-	"\vpageContent\x18\x01 \x01(\tR\vpageContent\x12<\n" +
-	"\bmetadata\x18\x02 \x03(\v2 .pb.DocumentRecord.MetadataEntryR\bmetadata\x1a;\n" +
+	"\x03ids\x18\x02 \x03(\tR\x03ids\"\xc9\x01\n" +
+	"\x0eDocumentRecord\x12\x1a\n" +
+	"\bcustomId\x18\x01 \x01(\tR\bcustomId\x12 \n" +
+	"\vpageContent\x18\x02 \x01(\tR\vpageContent\x12<\n" +
+	"\bmetadata\x18\x03 \x03(\v2 .pb.DocumentRecord.MetadataEntryR\bmetadata\x1a;\n" +
 	"\rMetadataEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"F\n" +
@@ -995,14 +1125,23 @@ const file_rag_proto_rawDesc = "" +
 	"\x06userId\x18\x01 \x01(\tR\x06userId\x12\x10\n" +
 	"\x03ids\x18\x02 \x03(\tR\x03ids\"9\n" +
 	"\x13DeleteDocumentsResp\x12\"\n" +
-	"\fdeletedCount\x18\x01 \x01(\x05R\fdeletedCount2\x86\x02\n" +
+	"\fdeletedCount\x18\x01 \x01(\x05R\fdeletedCount\"l\n" +
+	"\rListChunksReq\x12\x16\n" +
+	"\x06userId\x18\x01 \x01(\x03R\x06userId\x12\x16\n" +
+	"\x06fileId\x18\x02 \x01(\tR\x06fileId\x12+\n" +
+	"\tpageQuery\x18\x03 \x01(\v2\r.pb.PageQueryR\tpageQuery\"R\n" +
+	"\x0eListChunksResp\x12*\n" +
+	"\x06chunks\x18\x01 \x03(\v2\x12.pb.DocumentRecordR\x06chunks\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x03R\x05total2\xbb\x02\n" +
 	"\n" +
 	"DocService\x125\n" +
 	"\n" +
 	"UploadFile\x12\x11.pb.UploadFileReq\x1a\x12.pb.UploadFileResp(\x01\x12<\n" +
 	"\rListDocuments\x12\x14.pb.ListDocumentsReq\x1a\x15.pb.ListDocumentsResp\x12?\n" +
 	"\x0eFetchDocuments\x12\x15.pb.FetchDocumentsReq\x1a\x16.pb.FetchDocumentsResp\x12B\n" +
-	"\x0fDeleteDocuments\x12\x16.pb.DeleteDocumentsReq\x1a\x17.pb.DeleteDocumentsResp2h\n" +
+	"\x0fDeleteDocuments\x12\x16.pb.DeleteDocumentsReq\x1a\x17.pb.DeleteDocumentsResp\x123\n" +
+	"\n" +
+	"ListChunks\x12\x11.pb.ListChunksReq\x1a\x12.pb.ListChunksResp2h\n" +
 	"\n" +
 	"RagService\x12$\n" +
 	"\x05Query\x12\f.pb.QueryReq\x1a\r.pb.QueryResp\x124\n" +
@@ -1020,7 +1159,7 @@ func file_rag_proto_rawDescGZIP() []byte {
 	return file_rag_proto_rawDescData
 }
 
-var file_rag_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_rag_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_rag_proto_goTypes = []any{
 	(*PageQuery)(nil),           // 0: pb.PageQuery
 	(*UploadFileReq)(nil),       // 1: pb.UploadFileReq
@@ -1038,34 +1177,40 @@ var file_rag_proto_goTypes = []any{
 	(*FetchDocumentsResp)(nil),  // 13: pb.FetchDocumentsResp
 	(*DeleteDocumentsReq)(nil),  // 14: pb.DeleteDocumentsReq
 	(*DeleteDocumentsResp)(nil), // 15: pb.DeleteDocumentsResp
-	nil,                         // 16: pb.RetrievalResult.MetadataEntry
-	nil,                         // 17: pb.DocumentRecord.MetadataEntry
+	(*ListChunksReq)(nil),       // 16: pb.ListChunksReq
+	(*ListChunksResp)(nil),      // 17: pb.ListChunksResp
+	nil,                         // 18: pb.RetrievalResult.MetadataEntry
+	nil,                         // 19: pb.DocumentRecord.MetadataEntry
 }
 var file_rag_proto_depIdxs = []int32{
-	16, // 0: pb.RetrievalResult.metadata:type_name -> pb.RetrievalResult.MetadataEntry
+	18, // 0: pb.RetrievalResult.metadata:type_name -> pb.RetrievalResult.MetadataEntry
 	5,  // 1: pb.QueryResp.results:type_name -> pb.RetrievalResult
 	0,  // 2: pb.ListDocumentsReq.pageQuery:type_name -> pb.PageQuery
 	7,  // 3: pb.ListDocumentsReq.filter:type_name -> pb.ListDocumentsFilter
 	9,  // 4: pb.ListDocumentsResp.results:type_name -> pb.ListDocumentsItem
-	17, // 5: pb.DocumentRecord.metadata:type_name -> pb.DocumentRecord.MetadataEntry
+	19, // 5: pb.DocumentRecord.metadata:type_name -> pb.DocumentRecord.MetadataEntry
 	12, // 6: pb.FetchDocumentsResp.documents:type_name -> pb.DocumentRecord
-	1,  // 7: pb.DocService.UploadFile:input_type -> pb.UploadFileReq
-	8,  // 8: pb.DocService.ListDocuments:input_type -> pb.ListDocumentsReq
-	11, // 9: pb.DocService.FetchDocuments:input_type -> pb.FetchDocumentsReq
-	14, // 10: pb.DocService.DeleteDocuments:input_type -> pb.DeleteDocumentsReq
-	3,  // 11: pb.RagService.Query:input_type -> pb.QueryReq
-	4,  // 12: pb.RagService.QueryMultiple:input_type -> pb.QueryMultipleReq
-	2,  // 13: pb.DocService.UploadFile:output_type -> pb.UploadFileResp
-	10, // 14: pb.DocService.ListDocuments:output_type -> pb.ListDocumentsResp
-	13, // 15: pb.DocService.FetchDocuments:output_type -> pb.FetchDocumentsResp
-	15, // 16: pb.DocService.DeleteDocuments:output_type -> pb.DeleteDocumentsResp
-	6,  // 17: pb.RagService.Query:output_type -> pb.QueryResp
-	6,  // 18: pb.RagService.QueryMultiple:output_type -> pb.QueryResp
-	13, // [13:19] is the sub-list for method output_type
-	7,  // [7:13] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	0,  // 7: pb.ListChunksReq.pageQuery:type_name -> pb.PageQuery
+	12, // 8: pb.ListChunksResp.chunks:type_name -> pb.DocumentRecord
+	1,  // 9: pb.DocService.UploadFile:input_type -> pb.UploadFileReq
+	8,  // 10: pb.DocService.ListDocuments:input_type -> pb.ListDocumentsReq
+	11, // 11: pb.DocService.FetchDocuments:input_type -> pb.FetchDocumentsReq
+	14, // 12: pb.DocService.DeleteDocuments:input_type -> pb.DeleteDocumentsReq
+	16, // 13: pb.DocService.ListChunks:input_type -> pb.ListChunksReq
+	3,  // 14: pb.RagService.Query:input_type -> pb.QueryReq
+	4,  // 15: pb.RagService.QueryMultiple:input_type -> pb.QueryMultipleReq
+	2,  // 16: pb.DocService.UploadFile:output_type -> pb.UploadFileResp
+	10, // 17: pb.DocService.ListDocuments:output_type -> pb.ListDocumentsResp
+	13, // 18: pb.DocService.FetchDocuments:output_type -> pb.FetchDocumentsResp
+	15, // 19: pb.DocService.DeleteDocuments:output_type -> pb.DeleteDocumentsResp
+	17, // 20: pb.DocService.ListChunks:output_type -> pb.ListChunksResp
+	6,  // 21: pb.RagService.Query:output_type -> pb.QueryResp
+	6,  // 22: pb.RagService.QueryMultiple:output_type -> pb.QueryResp
+	16, // [16:23] is the sub-list for method output_type
+	9,  // [9:16] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_rag_proto_init() }
@@ -1079,7 +1224,7 @@ func file_rag_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_rag_proto_rawDesc), len(file_rag_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   18,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   2,
 		},
