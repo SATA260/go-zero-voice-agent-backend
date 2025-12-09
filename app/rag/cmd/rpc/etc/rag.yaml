@@ -1,23 +1,23 @@
 Name: rag.rpc
-ListenOn: 0.0.0.0:4084
+ListenOn: ${RAG_RPC_LISTEN}
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+  - ${ETCD_HOST}
   Key: rag.rpc
 
 DB:
-  DataSource: root:f4FMhWc6FdzuBCHf@tcp(localhost:3306)/gzva_rag?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: ${RAG_DB_DSN}
 
 Cache:
-  - Host: localhost:36379
+  - Host: ${REDIS_HOST}
     Type: node
-    Pass: GwAGt4UmTwcMhjun
+    Pass: ${REDIS_PASS}
 
 MinioConfig:
-  EndPoint: localhost:9000
-  AccessKey: zhang
-  SecretKey: epoch2025zhang
-  UseSSL: false
+  EndPoint: ${MINIO_ENDPOINT}
+  AccessKey: ${MINIO_ACCESS_KEY}
+  SecretKey: ${MINIO_SECRET_KEY}
+  UseSSL: ${MINIO_USE_SSL}
 
 FastaptRagConfig:
-  EndPoint: http://localhost:8000
+  EndPoint: ${FASTAPI_RAG_ENDPOINT}

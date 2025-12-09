@@ -1,23 +1,23 @@
 Name: usercenter.rpc
-ListenOn: 0.0.0.0:4081
+ListenOn: ${USERCENTER_RPC_LISTEN}
 Etcd:
   Hosts:
-  - localhost:2379
+  - ${ETCD_HOST}
   Key: usercenter.rpc
 DB:
-  DataSource: root:f4FMhWc6FdzuBCHf@tcp(localhost:3306)/gzva_usercenter?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: ${USERCENTER_DB_DSN}
 
 Cache:
-  - Host: localhost:36379
+  - Host: ${REDIS_HOST}
     Type: node
-    Pass: GwAGt4UmTwcMhjun 
+    Pass: ${REDIS_PASS}
 
 JwtAuth:
   AccessSecret: ${JWT_ACCESS_SECRET}
-  AccessExpire: 604800 # seconds
+  AccessExpire: ${JWT_ACCESS_EXPIRE} # seconds
 
 Email:
-  Host: smtp.163.com
-  Port: 587
+  Host: ${EMAIL_HOST}
+  Port: ${EMAIL_PORT}
   Username: ${EMAIL_USERNAME}
   Password: ${EMAIL_PASSWORD}

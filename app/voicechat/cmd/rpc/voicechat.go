@@ -10,7 +10,9 @@ import (
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/voicechat/cmd/rpc/voicechatpb"
 
+	"github.com/joho/godotenv"
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -22,8 +24,12 @@ var configFile = flag.String("f", "etc/voicechat.yaml", "the config file")
 func main() {
 	flag.Parse()
 
+	if err := godotenv.Load(); err != nil {
+        logx.Errorf("Error loading .env file, please check if it exists: %v", err)
+    }
+
 	var c config.Config
-	conf.MustLoad(*configFile, &c)
+	conf.MustLoad(*configFile, &c, conf.UseEnv())
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {

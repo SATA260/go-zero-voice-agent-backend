@@ -1,32 +1,32 @@
 Name: chatroom
-Host: 0.0.0.0
-Port: 3083
+Host: ${CHATROOM_API_HOST}
+Port: ${CHATROOM_API_PORT}
 
 ChatroomRpcConf:
   Etcd:
     Hosts:
-    - localhost:2379
+    - ${ETCD_HOST}
     Key: chatroom.rpc
 
 
 Websocket:
-  MaxConnections: 100
-  HeartbeatInterval: 30s
-  ConnectionTimeout: 60s
-  MessageBufferSize: 256
-  ReadBufferSize: 1024
-  WriteBufferSize: 1024
-  MaxMessageSize: 512
-  EnableCompression: true
-  EnableMessageQueue: true
-  MessageQueueSize: 1000
-  EnableCluster: false
-  ClusterNodeID: ""
-  ShardCount: 16
-  BroadcastWorkerCount: 32
-  DropOnFull: true
-  CompressionLevel: -2
-  CloseOnBackpressure: false
-  SendTimeout: 50s
-  EnableGlobalPing: false
-  PingWorkerCount: 8
+  MaxConnections: ${WS_MAX_CONNECTIONS}
+  HeartbeatInterval: ${WS_HEARTBEAT_INTERVAL}
+  ConnectionTimeout: ${WS_CONNECTION_TIMEOUT}
+  MessageBufferSize: ${WS_MESSAGE_BUFFER_SIZE}
+  ReadBufferSize: ${WS_READ_BUFFER_SIZE}
+  WriteBufferSize: ${WS_WRITE_BUFFER_SIZE}
+  MaxMessageSize: ${WS_MAX_MESSAGE_SIZE}
+  EnableCompression: ${WS_ENABLE_COMPRESSION}
+  EnableMessageQueue: ${WS_ENABLE_MESSAGE_QUEUE}
+  MessageQueueSize: ${WS_MESSAGE_QUEUE_SIZE}
+  EnableCluster: ${WS_ENABLE_CLUSTER}
+  ClusterNodeID: ${WS_CLUSTER_NODE_ID}
+  ShardCount: ${WS_SHARD_COUNT}
+  BroadcastWorkerCount: ${WS_BROADCAST_WORKER_COUNT}
+  DropOnFull: ${WS_DROP_ON_FULL}
+  CompressionLevel: ${WS_COMPRESSION_LEVEL}
+  CloseOnBackpressure: ${WS_CLOSE_ON_BACKPRESSURE}
+  SendTimeout: ${WS_SEND_TIMEOUT}
+  EnableGlobalPing: ${WS_ENABLE_GLOBAL_PING}
+  PingWorkerCount: ${WS_PING_WORKER_COUNT}

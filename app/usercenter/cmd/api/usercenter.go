@@ -11,7 +11,9 @@ import (
 	"go-zero-voice-agent/app/usercenter/cmd/api/internal/handler"
 	"go-zero-voice-agent/app/usercenter/cmd/api/internal/svc"
 
+	"github.com/joho/godotenv"
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 )
 
@@ -20,8 +22,12 @@ var configFile = flag.String("f", "etc/usercenter.yaml", "the config file")
 func main() {
 	flag.Parse()
 
+	if err := godotenv.Load(); err != nil {
+        logx.Errorf("Error loading .env file, please check if it exists: %v", err)
+    }
+
 	var c config.Config
-	conf.MustLoad(*configFile, &c)
+	conf.MustLoad(*configFile, &c, conf.UseEnv())
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
