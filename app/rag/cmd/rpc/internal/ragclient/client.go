@@ -57,14 +57,13 @@ func NewClient(endpoint string, opts ...Option) (*Client, error) {
 	}
 
 	// 自动补全协议前缀，修复 "unsupported protocol scheme" 错误
-    if !strings.HasPrefix(trimmed, "http://") && !strings.HasPrefix(trimmed, "https://") {
-        trimmed = "http://" + trimmed
-    }
+	if !strings.HasPrefix(trimmed, "http://") && !strings.HasPrefix(trimmed, "https://") {
+		trimmed = "http://" + trimmed
+	}
 
 	if _, err := url.Parse(trimmed); err != nil {
 		return nil, fmt.Errorf("ragclient: invalid endpoint: %w", err)
 	}
-	
 
 	// 应用调用方传入的可选配置（复用 http.Client、覆盖超时等）。
 	options := options{}
@@ -140,7 +139,7 @@ func (c *Client) DeleteDocuments(ctx context.Context, userID string, ids []strin
 		return nil, ErrMissingUserID
 	}
 
-	payload := map[string]any{"ids": ids}
+	payload := ids
 	headers := map[string]string{userIDHeader: userID, "Content-Type": "application/json"}
 	var resp DeleteDocumentsResponse
 	if err := c.invoke(ctx, http.MethodDelete, "/documents", headers, payload, &resp); err != nil {
