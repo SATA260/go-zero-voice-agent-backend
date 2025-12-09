@@ -12,11 +12,28 @@ type DeleteDocResp struct {
 	DeletedCount int32 `json:"deletedCount"`
 }
 
+type DocChunkItem struct {
+	CustomId    string            `json:"customId"`
+	PageContent string            `json:"pageContent"`
+	Metadata    map[string]string `json:"metadata"`
+}
+
 type DocumentItem struct {
 	Id         int64  `json:"id"`
 	FileName   string `json:"fileName"`
 	FileFormat string `json:"fileFormat"`
 	Status     int64  `json:"status"`
+}
+
+type ListDocChunksReq struct {
+	UserId    int64     `header:"X-User-Id"`
+	FileId    string    `path:"fileId"`
+	PageQuery PageQuery `json:"pageQuery"`
+}
+
+type ListDocChunksResp struct {
+	Total     int64          `json:"total"`
+	ChunkList []DocChunkItem `json:"chunkList"`
 }
 
 type ListDocFilter struct {

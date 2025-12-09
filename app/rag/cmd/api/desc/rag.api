@@ -28,5 +28,9 @@ service rag {
 	@doc "删除上传文件"
 	@handler DeleteDoc
 	delete /:id (DeleteDocReq) returns (DeleteDocResp)
+
+	@doc "分页查询文件切片"
+	@handler ListDocChunks
+	post /:fileId/chunks (ListDocChunksReq) returns (ListDocChunksResp)
 }
 
