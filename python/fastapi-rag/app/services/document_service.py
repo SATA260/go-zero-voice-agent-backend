@@ -293,6 +293,31 @@ async def delete_documents(
     return {"deleted_count": len(existing)}
 
 
+async def list_chunks(
+    *,
+    page: int,
+    page_size: int,
+    file_id: Optional[str] = None,
+    entity_id: Optional[str] = None,
+    user_id: Optional[str] = None,
+    order_by: str = "chunk_index",
+    sort: str = "asc",
+    executor=None,
+) -> Dict[str, Any]:
+    """分页查询 pgvector 中的文本切片记录。"""
+    store = _require_vector_store()
+    return await store.aget_chunks_paginated(
+        page=page,
+        page_size=page_size,
+        file_id=file_id,
+        entity_id=entity_id,
+        user_id=user_id,
+        order_by=order_by,
+        sort=sort,
+        executor=executor,
+    )
+
+
 def _build_filter(file_id: Optional[str], entity_id: Optional[str]) -> Optional[Dict[str, Any]]:
     """构建 pgvector 相似度检索可识别的过滤条件。"""
     payload: Dict[str, Any] = {}

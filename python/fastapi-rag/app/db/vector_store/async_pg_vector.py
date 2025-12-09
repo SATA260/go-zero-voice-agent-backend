@@ -109,3 +109,30 @@ class AsyncPgVector(ExtendedPgVector):
             super().get_chunk_digests_by_file_id,
             file_id,
         )
+
+    async def aget_chunks_paginated(
+        self,
+        *,
+        page: int,
+        page_size: int,
+        file_id: Optional[str] = None,
+        entity_id: Optional[str] = None,
+        user_id: Optional[str] = None,
+        order_by: str = "chunk_index",
+        sort: str = "asc",
+        executor=None,
+    ) -> Dict[str, Any]:
+        """异步分页查询文本切片。"""
+        executor = executor or self._get_thread_pool()
+        return await run_in_executor(
+            executor,
+            lambda: super(AsyncPgVector, self).get_chunks_paginated(
+                page=page,
+                page_size=page_size,
+                file_id=file_id,
+                entity_id=entity_id,
+                user_id=user_id,
+                order_by=order_by,
+                sort=sort,
+            ),
+        )

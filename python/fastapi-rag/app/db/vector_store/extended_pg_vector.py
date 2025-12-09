@@ -4,11 +4,10 @@ import logging
 import os
 import time
 from typing import Optional, Any, Dict, List, Union
-from sqlalchemy import event
-from sqlalchemy import delete
-from sqlalchemy import select
+from sqlalchemy import event, delete, select, asc, desc, cast
 from sqlalchemy.orm import Session
 from sqlalchemy.engine import Engine
+from sqlalchemy.types import Integer
 from langchain_core.documents import Document
 from langchain_community.vectorstores.pgvector import PGVector
 
@@ -208,3 +207,84 @@ class ExtendedPgVector(PGVector):
                 if isinstance(digest, str) and digest:
                     digests[custom_id] = digest
             return digests
+
+    def get_chunks_paginated(
+        self,
+        *,
+        page: int,
+        page_size: int,
+        file_id: Optional[str] = None,
+        entity_id: Optional[str] = None,
+        user_id: Optional[str] = None,
+        order_by: str = "chunk_index",
+        sort: str = "asc",
+    ) -> Dict[str, Any]:
+        """分页查询存储的文本切片。
+
+        支持按 file_id / entity_id / user_id 过滤，默认按 chunk_index 升序。
+        返回 items 与 total，便于前端分页展示。
+        """
+
+        safe_page = max(page, 1)
+        safe_size = max(min(page_size, 200), 1)
+        offset = (safe_page - 1) * safe_size
+
+        order_key = (order_by or "chunk_index").lower()
+        sort_dir = desc if str(sort).lower() == "desc" else asc
+
+        with Session(self._bind) as session:
+            query = session.query(self.EmbeddingStore)
+
+            if file_id:
+                query = query.filter(
+                    self.EmbeddingStore.cmetadata["file_id"].astext == file_id
+                )
+            if entity_id:
+                query = query.filter(
+                    self.EmbeddingStore.cmetadata["entity_id"].astext == entity_id
+                )
+            if user_id:
+                query = query.filter(
+                    self.EmbeddingStore.cmetadata["user_id"].astext == user_id
+                )
+
+            total = query.count()
+
+            order_map = {
+                "id": self.EmbeddingStore.id
+                if hasattr(self.EmbeddingStore, "id")
+                else None,
+                "custom_id": self.EmbeddingStore.custom_id,
+                "chunk_index": cast(
+                    self.EmbeddingStore.cmetadata["chunk_index"].astext, Integer
+                ),
+                "created_at": getattr(self.EmbeddingStore, "created_at", None),
+            }
+
+            order_col = order_map.get(order_key)
+            if order_col is None:
+                order_col = self.EmbeddingStore.custom_id
+
+            rows = (
+                query.order_by(sort_dir(order_col))
+                .offset(offset)
+                .limit(safe_size)
+                .all()
+            )
+
+            items: List[Dict[str, Any]] = []
+            for row in rows:
+                items.append(
+                    {
+                        "custom_id": getattr(row, "custom_id", None),
+                        "page_content": getattr(row, "document", None),
+                        "metadata": getattr(row, "cmetadata", {}) or {},
+                    }
+                )
+
+            return {
+                "items": items,
+                "total": total,
+                "page": safe_page,
+                "page_size": safe_size,
+            }

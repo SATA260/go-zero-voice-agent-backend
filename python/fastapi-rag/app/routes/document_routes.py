@@ -10,6 +10,7 @@ from app.services import (
     delete_documents,
     embed_file,
     get_documents_by_ids,
+    list_chunks,
     query_documents,
     query_multiple_documents,
 )
@@ -50,6 +51,30 @@ async def remove_documents(request: Request, ids: List[str] = Body(...)):
     """批量删除指定自定义 ID 的文档。"""
     _require_user_id(request)
     return await delete_documents(ids=ids, executor=_get_executor(request))
+
+
+@router.get("/chunks")
+async def paginate_chunks(
+    request: Request,
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=200),
+    file_id: str | None = Query(None),
+    entity_id: str | None = Query(None),
+    order_by: str = Query("chunk_index"),
+    sort: str = Query("asc"),
+):
+    """分页查询 pgvector 中的文本切片。"""
+    user_id = _require_user_id(request)
+    return await list_chunks(
+        page=page,
+        page_size=page_size,
+        file_id=file_id,
+        entity_id=entity_id,
+        user_id=user_id,
+        order_by=order_by,
+        sort=sort,
+        executor=_get_executor(request),
+    )
 
 
 @router.post("/embed")
