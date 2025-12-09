@@ -20,4 +20,4 @@ MinioConfig:
   UseSSL: false
 
 FastaptRagConfig:
-  EndPoint: localhost:8000
+  EndPoint: http://localhost:8000
