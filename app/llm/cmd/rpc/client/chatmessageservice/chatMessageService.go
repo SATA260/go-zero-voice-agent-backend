@@ -61,7 +61,6 @@ type (
 	UpdateChatSessionResp     = pb.UpdateChatSessionResp
 	UpdateConfigReq           = pb.UpdateConfigReq
 	UpdateConfigResp          = pb.UpdateConfigResp
-	UsageData                 = pb.UsageData
 
 	ChatMessageService interface {
 		CreateChatMessage(ctx context.Context, in *CreateChatMessageReq, opts ...grpc.CallOption) (*CreateChatMessageResp, error)

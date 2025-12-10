@@ -61,7 +61,6 @@ type (
 	UpdateChatSessionResp     = pb.UpdateChatSessionResp
 	UpdateConfigReq           = pb.UpdateConfigReq
 	UpdateConfigResp          = pb.UpdateConfigResp
-	UsageData                 = pb.UsageData
 
 	LlmConfigService interface {
 		CreateConfig(ctx context.Context, in *CreateConfigReq, opts ...grpc.CallOption) (*CreateConfigResp, error)

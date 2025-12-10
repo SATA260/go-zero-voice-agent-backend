@@ -11,6 +11,7 @@ import (
 	"go-zero-voice-agent/app/llm/cmd/api/internal/types"
 	"go-zero-voice-agent/app/llm/cmd/rpc/client/llmchatservice"
 	"go-zero-voice-agent/app/llm/cmd/rpc/client/llmconfigservice"
+	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
 	chatconsts "go-zero-voice-agent/app/llm/pkg/consts"
 
 	"github.com/pkg/errors"
@@ -33,70 +34,33 @@ func NewTextChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *TextChat
 }
 
 func (l *TextChatLogic) TextChat(req *types.TextChatReq) (resp *types.TextChatResp, err error) {
-	if req == nil {
-		return nil, errors.New("invalid request")
+	if err := l.validReq(req); err != nil {
+		return nil, err
 	}
-
-	trimmedMsg := strings.TrimSpace(req.Message)
-	if trimmedMsg == "" {
-		return nil, errors.New("message cannot be empty")
-	}
-
-	if req.ConfigId <= 0 {
-		return nil, errors.New("configId must be greater than 0")
-	}
-
-	cfgResp, err := l.svcCtx.LlmConfigRpc.GetConfig(l.ctx, &llmconfigservice.GetConfigReq{Id: req.ConfigId})
+	
+	fetchLlmConfig, err := l.fetchAndValidLlmConfig(req.ConfigId, req.UserId)
 	if err != nil {
-		l.Logger.Errorf("LlmConfigRpc.GetConfig error, configId=%d, err=%v", req.ConfigId, err)
-		return nil, errors.Wrap(err, "failed to fetch config")
+		return nil, err
 	}
 
-	cfg := cfgResp.GetConfig()
-	if cfg == nil {
-		return nil, errors.New("config not found")
-	}
-
-	if cfg.UserId != req.UserId {
-		return nil, errors.New("not authorized to use this config")
-	}
-
-	llmCfg := buildChatLlmConfig(cfg)
-	if llmCfg == nil {
-		return nil, errors.New("invalid llm config")
-	}
-
-	if llmCfg.ApiKey == "" || llmCfg.Model == "" {
-		return nil, errors.New("llm config missing api key or model")
-	}
-
+	llmCfg := l.buildChatLlmConfig(fetchLlmConfig)
 	convID := strings.TrimSpace(req.ConversationId)
 	systemPrompt := strings.TrimSpace(req.SystemPrompt)
-
-	messages := make([]*llmchatservice.ChatMsg, 0, 2)
+	trimmedMsg := strings.TrimSpace(req.Message)
+	var messages []*llmchatservice.ChatMsg
 	if systemPrompt != "" && convID == "" {
-		messages = append(messages, &llmchatservice.ChatMsg{
-			Role:    chatconsts.ChatMessageRoleSystem,
-			Content: systemPrompt,
-		})
-	}
-	messages = append(messages, &llmchatservice.ChatMsg{
-		Role:    chatconsts.ChatMessageRoleUser,
-		Content: trimmedMsg,
-	})
-
-	autoFillHistory := req.AutoFillHistory
-	if convID != "" && !req.AutoFillHistory {
-		// default to true when continuing an existing conversation
-		autoFillHistory = true
+		messages = l.createChatMsgs(systemPrompt, trimmedMsg)
+	} else {
+		messages = l.createChatMsgs("", trimmedMsg)
 	}
 
+	// 发起对话请求
 	chatReq := &llmchatservice.ChatReq{
 		UserId:          req.UserId,
 		ConversationId:  convID,
 		LlmConfig:       llmCfg,
 		Messages:        messages,
-		AutoFillHistory: autoFillHistory,
+		AutoFillHistory: req.AutoFillHistory,
 	}
 
 	chatResp, err := l.svcCtx.LlmChatRpc.Chat(l.ctx, chatReq)
@@ -121,13 +85,95 @@ func (l *TextChatLogic) TextChat(req *types.TextChatReq) (resp *types.TextChatRe
 		})
 	}
 
+	// 直接使用http response返回响应消息
 	return &types.TextChatResp{
 		ConversationId: chatResp.GetId(),
 		Messages:       respMessages,
 	}, nil
 }
 
-func buildChatLlmConfig(cfg *llmconfigservice.ChatConfig) *llmchatservice.LlmConfig {
+func (l *TextChatLogic) TextChatStream(req *types.TextChatReq) (pb.LlmChatService_ChatStreamClient, error) {
+	if err := l.validReq(req); err != nil {
+		return nil, err
+	}
+
+	fetchLlmConfig, err := l.fetchAndValidLlmConfig(req.ConfigId, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	llmCfg := l.buildChatLlmConfig(fetchLlmConfig)
+	convID := strings.TrimSpace(req.ConversationId)
+	systemPrompt := strings.TrimSpace(req.SystemPrompt)
+	trimmedMsg := strings.TrimSpace(req.Message)
+	var messages []*llmchatservice.ChatMsg
+	if systemPrompt != "" && convID == "" {
+		messages = l.createChatMsgs(systemPrompt, trimmedMsg)
+	} else {
+		messages = l.createChatMsgs("", trimmedMsg)
+	}
+
+	// 发起流式对话请求，并返回流式响应客户端
+	chatStreamClient, err := l.svcCtx.LlmChatRpc.ChatStream(l.ctx, &llmchatservice.ChatStreamReq{
+		UserId:          req.UserId,
+		ConversationId:  convID,
+		LlmConfig:       llmCfg,
+		Messages:        messages,
+		AutoFillHistory: req.AutoFillHistory,
+	})
+	return chatStreamClient, err
+}
+
+// 校验请求参数
+func (l *TextChatLogic) validReq(req *types.TextChatReq) error {
+	if req == nil {
+		return errors.New("invalid request")
+	}
+
+	trimmedMsg := strings.TrimSpace(req.Message)
+	if trimmedMsg == "" {
+		return errors.New("message cannot be empty")
+	}
+
+	if req.ConfigId <= 0 {
+		return errors.New("configId must be greater than 0")
+	}
+	
+
+	return nil
+}
+
+// 获取并校验LLM配置
+func (l *TextChatLogic) fetchAndValidLlmConfig(configId, userId int64) (*llmconfigservice.ChatConfig, error) {
+	cfgResp, err := l.svcCtx.LlmConfigRpc.GetConfig(l.ctx, &llmconfigservice.GetConfigReq{Id: configId})
+	if err != nil {
+		l.Logger.Errorf("LlmConfigRpc.GetConfig error, configId=%d, err=%v", configId, err)
+		return nil, errors.Wrap(err, "failed to fetch config")
+	}
+
+	cfg := cfgResp.GetConfig()
+	if cfg == nil {
+		return nil, errors.New("config not found")
+	}
+
+	if cfg.UserId != userId {
+		return nil, errors.New("not authorized to use this config")
+	}
+
+	llmCfg := l.buildChatLlmConfig(cfg)
+	if llmCfg == nil {
+		return nil, errors.New("invalid llm config")
+	}
+
+	if llmCfg.ApiKey == "" || llmCfg.Model == "" {
+		return nil, errors.New("llm config missing api key or model")
+	}
+
+	return cfg, nil
+}
+
+// 构建LLM配置
+func (l *TextChatLogic) buildChatLlmConfig(cfg *llmconfigservice.ChatConfig) *llmchatservice.LlmConfig {
 	if cfg == nil {
 		return nil
 	}
@@ -147,4 +193,21 @@ func buildChatLlmConfig(cfg *llmconfigservice.ChatConfig) *llmchatservice.LlmCon
 		EnableSearch:      cfg.EnableSearch > 0,
 		ContentLength:     cfg.ContextLength,
 	}
+}
+
+// 创建聊天消息列表
+func (l *TextChatLogic) createChatMsgs(systemPrompt string, message string) []*llmchatservice.ChatMsg {
+	messages := make([]*llmchatservice.ChatMsg, 0, 2)
+	if strings.TrimSpace(systemPrompt) != "" {
+		messages = append(messages, &llmchatservice.ChatMsg{
+			Role:    chatconsts.ChatMessageRoleSystem,
+			Content: systemPrompt,
+		})
+	}
+	messages = append(messages, &llmchatservice.ChatMsg{
+		Role:    chatconsts.ChatMessageRoleUser,
+		Content: message,
+	})
+
+	return messages
 }
