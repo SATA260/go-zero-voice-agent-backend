@@ -163,12 +163,14 @@ type TextChatMessage struct {
 }
 
 type TextChatReq struct {
-	UserId          int64  `header:"X-User-Id"`
-	ConfigId        int64  `json:"configId"`
-	ConversationId  string `json:"conversationId,optional"`
-	Message         string `json:"message"`
-	SystemPrompt    string `json:"systemPrompt,optional"`
-	AutoFillHistory bool   `json:"autoFillHistory,optional"`
+	UserId          int64   `header:"X-User-Id"`
+	ConfigId        int64   `json:"configId"`
+	ConversationId  string  `json:"conversationId,optional"`
+	RagFileIds      []int64 `json:"ragFileIds,optional"`
+	Message         string  `json:"message"`
+	SystemPrompt    string  `json:"systemPrompt,optional"`
+	AutoFillHistory bool    `json:"autoFillHistory,optional"`
+	IsStream        bool    `json:"isStream,optional"`
 }
 
 type TextChatResp struct {

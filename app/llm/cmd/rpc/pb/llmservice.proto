@@ -97,19 +97,13 @@ message StreamDelta {
 
 // 工具调用增量信息（模板）
 message ToolCallDelta {
-    string id = 1;
-    string name = 2;
-    string arguments_json = 3;
-    bool completed = 4;
-    string response_json = 5;
-    string status = 6;
-}
-
-// token 消耗信息
-message UsageData {
-    int64 prompt_tokens = 1;
-    int64 completion_tokens = 2;
-    int64 total_tokens = 3;
+    string id = 1; //工具调用唯一标识
+    string name = 2; //工具名称
+    string arguments_json = 3; //工具调用参数，JSON格式
+    string result = 4; //工具调用结果
+    string error = 5; //工具调用错误信息
+    string scope = 6; //工具调用作用域 server/client
+    string status = 7; //工具调用状态 start/executing/finished
 }
 
 message ChatStreamResp {
@@ -117,8 +111,7 @@ message ChatStreamResp {
     oneof payload {
         StreamDelta delta = 2;
         ToolCallDelta tool_call = 3;
-        UsageData usage = 4;
-        string error = 5;
+        string error = 4;
     }
 }
 
