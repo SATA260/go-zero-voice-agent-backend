@@ -107,7 +107,7 @@ func (l *ChatStreamLogic) ChatStream(in *pb.ChatStreamReq, stream pb.LlmChatServ
 					// 注意：在流式响应中，ID 和 Name 通常只在第一个包中出现
 					// Arguments 会分散在后续的包中
 
-					status := consts.TOOL_CALLING_EXECUTING
+					var status string
 					if toolCall.ID != "" {
 						status = consts.TOOL_CALLING_START
 					}

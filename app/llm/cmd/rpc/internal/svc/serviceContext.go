@@ -6,12 +6,14 @@ import (
 	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
 	"go-zero-voice-agent/app/llm/model"
 	"go-zero-voice-agent/app/mqueue/cmd/job/jobtype"
+	"go-zero-voice-agent/app/rag/cmd/rpc/client/ragservice"
 	"time"
 
 	"github.com/hibiken/asynq"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"github.com/zeromicro/go-zero/zrpc"
 
 	chatconsts "go-zero-voice-agent/app/llm/pkg/consts"
 	publicconsts "go-zero-voice-agent/pkg/consts"
@@ -19,12 +21,15 @@ import (
 
 type ServiceContext struct {
 	Config           config.Config
+
+	RedisClient *redis.Redis
+	AsynqClient *asynq.Client
+
 	ChatConfigModel  model.ChatConfigModel
 	ChatSessionModel model.ChatSessionModel
 	ChatMessageModel model.ChatMessageModel
 
-	RedisClient *redis.Redis
-	AsynqClient *asynq.Client
+	RagRpc ragservice.RagService
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -39,6 +44,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DB:       c.Asynq.DB,
 	})
 
+	ragRpcClient := ragservice.NewRagService(zrpc.MustNewClient(c.RagRpcConf))
+
 	return &ServiceContext{
 		Config:           c,
 		RedisClient:      redisClient,
@@ -46,6 +53,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ChatConfigModel:  model.NewChatConfigModel(sqlConn, c.Cache),
 		ChatSessionModel: model.NewChatSessionModel(sqlConn, c.Cache),
 		ChatMessageModel: model.NewChatMessageModel(sqlConn, c.Cache),
+		RagRpc:           ragRpcClient,
 	}
 }
 

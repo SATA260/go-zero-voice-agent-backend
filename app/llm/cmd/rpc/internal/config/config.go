@@ -16,4 +16,6 @@ type Config struct {
 		Pass string
 		DB   int
 	}
+
+	RagRpcConf zrpc.RpcClientConf
 }

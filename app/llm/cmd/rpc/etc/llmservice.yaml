@@ -24,3 +24,9 @@ Asynq:
   DB: 1
 
 Timeout: ${LLM_RPC_TIMEOUT}
+
+RagRpcConf:
+  Etcd:
+    Hosts:
+    - ${ETCD_HOST}
+    Key: rag.rpc

@@ -5,6 +5,7 @@ import (
 
 	"go-zero-voice-agent/app/llm/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
+	"go-zero-voice-agent/app/llm/pkg/consts"
 	chatconsts "go-zero-voice-agent/app/llm/pkg/consts"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -87,9 +88,21 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 		return nil, status.Error(codes.Internal, "empty response from llm")
 	}
 
+	respMsgs := make([]*pb.ChatMsg, 0)
+
 	choice := completion.Choices[0]
 	if len(choice.Message.ToolCalls) > 0 {
-		return nil, status.Error(codes.Unimplemented, "tool calls are not supported in sync chat mode")
+		for _, toolCall := range choice.Message.ToolCalls {
+			respMsgs = append(respMsgs, &pb.ChatMsg{
+				Role: chatconsts.ChatMessageRoleTool,
+				ToolCalls: &pb.ToolCallDelta{
+					Id:             toolCall.ID,
+					Name:           toolCall.Function.Name,
+					ArgumentsJson:  toolCall.Function.Arguments,
+					Status:         consts.TOOL_CALLING_START,
+				},
+			})
+		}
 	}
 
 	// 6. 处理响应
@@ -102,11 +115,11 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 	// 异步缓存新消息（用户输入 + 助手响应）以避免重复
 	go l.svcCtx.CacheConversation(chatSession.ConvId, in.Messages, assistantMsg)
 
-	respMsgs := make([]*pb.ChatMsg, 0)
 	respMsgs = append(respMsgs, assistantMsg)
 
 	return &pb.ChatResp{
 		Id:      chatSession.ConvId,
 		RespMsg: respMsgs,
 	}, nil
+
 }
