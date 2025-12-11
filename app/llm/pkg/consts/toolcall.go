@@ -7,5 +7,5 @@ const (
 )
 
 const (
-	TOOL_CALLING_SELF_RAG = "tool_calling_self_rag"
+	TOOL_CALLING_SELF_RAG = "self_rag"
 )
