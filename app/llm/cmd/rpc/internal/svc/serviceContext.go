@@ -3,6 +3,7 @@ package svc
 import (
 	"encoding/json"
 	"go-zero-voice-agent/app/llm/cmd/rpc/internal/config"
+	"go-zero-voice-agent/app/llm/cmd/rpc/internal/toolcall"
 	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
 	"go-zero-voice-agent/app/llm/model"
 	"go-zero-voice-agent/app/mqueue/cmd/job/jobtype"
@@ -20,7 +21,7 @@ import (
 )
 
 type ServiceContext struct {
-	Config           config.Config
+	Config config.Config
 
 	RedisClient *redis.Redis
 	AsynqClient *asynq.Client
@@ -30,6 +31,8 @@ type ServiceContext struct {
 	ChatMessageModel model.ChatMessageModel
 
 	RagRpc ragservice.RagService
+
+	ToolRegistry map[string]toolcall.Tool
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -46,7 +49,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	ragRpcClient := ragservice.NewRagService(zrpc.MustNewClient(c.RagRpcConf))
 
-	return &ServiceContext{
+	svcCtx := &ServiceContext{
 		Config:           c,
 		RedisClient:      redisClient,
 		AsynqClient:      asynqClient,
@@ -55,6 +58,30 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ChatMessageModel: model.NewChatMessageModel(sqlConn, c.Cache),
 		RagRpc:           ragRpcClient,
 	}
+
+	svcCtx.ToolRegistry = newToolRegistry(svcCtx)
+
+	return svcCtx
+}
+
+func newToolRegistry(svcCtx *ServiceContext) map[string]toolcall.Tool {
+	registry := make(map[string]toolcall.Tool)
+
+	ragTool := toolcall.NewRagTool(svcCtx.RagRpc)
+	registry[ragTool.Name()] = ragTool
+
+	timeTool := toolcall.NewTimeTool()
+	registry[timeTool.Name()] = timeTool
+
+	emailCfg := svcCtx.Config.Toolcall.Email
+	if emailCfg.Host != "" && emailCfg.Port != "" && emailCfg.Username != "" && emailCfg.Password != "" {
+		emailTool := toolcall.NewEmailTool(emailCfg.Host, emailCfg.Port, emailCfg.Username, emailCfg.Password)
+		registry[emailTool.Name()] = emailTool
+	} else {
+		logx.Infof("email tool is not registered because SMTP config is incomplete")
+	}
+
+	return registry
 }
 
 // CacheConversation 缓存对话记录并异步同步到数据库

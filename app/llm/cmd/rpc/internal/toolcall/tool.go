@@ -4,10 +4,10 @@ import (
 	"context"
 )
 
-
 type Tool interface {
-    Name() string
-    Description() string
+	Name() string
+	Description() string
 	ArgumentsJson() string
-    Execute(ctx context.Context, argsJson string) (string, error)
+	Execute(ctx context.Context, argsJson string) (string, error)
+	RequiresConfirmation() bool
 }

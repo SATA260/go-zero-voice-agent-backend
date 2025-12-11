@@ -34,6 +34,8 @@ type (
 	DeleteChatSessionResp     = pb.DeleteChatSessionResp
 	DeleteConfigReq           = pb.DeleteConfigReq
 	DeleteConfigResp          = pb.DeleteConfigResp
+	ExecuteToolReq            = pb.ExecuteToolReq
+	ExecuteToolResp           = pb.ExecuteToolResp
 	GetChatMessageReq         = pb.GetChatMessageReq
 	GetChatMessageResp        = pb.GetChatMessageResp
 	GetChatSessionByConvIdReq = pb.GetChatSessionByConvIdReq
@@ -65,6 +67,7 @@ type (
 	LlmChatService interface {
 		Chat(ctx context.Context, in *ChatReq, opts ...grpc.CallOption) (*ChatResp, error)
 		ChatStream(ctx context.Context, in *ChatStreamReq, opts ...grpc.CallOption) (pb.LlmChatService_ChatStreamClient, error)
+		ExecuteTool(ctx context.Context, in *ExecuteToolReq, opts ...grpc.CallOption) (*ExecuteToolResp, error)
 	}
 
 	defaultLlmChatService struct {
@@ -86,4 +89,9 @@ func (m *defaultLlmChatService) Chat(ctx context.Context, in *ChatReq, opts ...g
 func (m *defaultLlmChatService) ChatStream(ctx context.Context, in *ChatStreamReq, opts ...grpc.CallOption) (pb.LlmChatService_ChatStreamClient, error) {
 	client := pb.NewLlmChatServiceClient(m.cli.Conn())
 	return client.ChatStream(ctx, in, opts...)
+}
+
+func (m *defaultLlmChatService) ExecuteTool(ctx context.Context, in *ExecuteToolReq, opts ...grpc.CallOption) (*ExecuteToolResp, error) {
+	client := pb.NewLlmChatServiceClient(m.cli.Conn())
+	return client.ExecuteTool(ctx, in, opts...)
 }

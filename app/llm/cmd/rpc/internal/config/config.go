@@ -17,5 +17,14 @@ type Config struct {
 		DB   int
 	}
 
+	Toolcall struct {
+		Email struct {
+			Host     string
+			Port     string
+			Username string
+			Password string
+		}
+	}
+
 	RagRpcConf zrpc.RpcClientConf
 }

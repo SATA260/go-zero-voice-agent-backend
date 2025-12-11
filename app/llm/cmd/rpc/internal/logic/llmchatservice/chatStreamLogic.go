@@ -107,19 +107,32 @@ func (l *ChatStreamLogic) ChatStream(in *pb.ChatStreamReq, stream pb.LlmChatServ
 					// 注意：在流式响应中，ID 和 Name 通常只在第一个包中出现
 					// Arguments 会分散在后续的包中
 
-					var status string
+					scope := consts.ToolCallScopeClient
+					requiresConfirmation := false
+					status := ""
+
+					if tool, ok := l.svcCtx.ToolRegistry[toolCall.Function.Name]; ok {
+						scope = consts.ToolCallScopeServer
+						requiresConfirmation = tool.RequiresConfirmation()
+					}
+
 					if toolCall.ID != "" {
 						status = consts.TOOL_CALLING_START
+						if requiresConfirmation {
+							status = consts.TOOL_CALLING_WAITING_CONFIRMATION
+						}
 					}
 
 					stream.Send(&pb.ChatStreamResp{
 						Id: chatSession.ConvId,
 						Payload: &pb.ChatStreamResp_ToolCall{
 							ToolCall: &pb.ToolCallDelta{
-								Id:            toolCall.ID,
-								Name:          toolCall.Function.Name,
-								ArgumentsJson: toolCall.Function.Arguments,
-								Status:        status,
+								Id:                   toolCall.ID,
+								Name:                 toolCall.Function.Name,
+								ArgumentsJson:        toolCall.Function.Arguments,
+								Status:               status,
+								Scope:                scope,
+								RequiresConfirmation: requiresConfirmation,
 							},
 						},
 					})

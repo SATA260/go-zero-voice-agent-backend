@@ -32,3 +32,8 @@ func (s *LlmChatServiceServer) ChatStream(in *pb.ChatStreamReq, stream pb.LlmCha
 	l := llmchatservicelogic.NewChatStreamLogic(stream.Context(), s.svcCtx)
 	return l.ChatStream(in, stream)
 }
+
+func (s *LlmChatServiceServer) ExecuteTool(ctx context.Context, in *pb.ExecuteToolReq) (*pb.ExecuteToolResp, error) {
+	l := llmchatservicelogic.NewExecuteToolLogic(ctx, s.svcCtx)
+	return l.ExecuteTool(in)
+}

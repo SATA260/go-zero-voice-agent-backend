@@ -2,18 +2,13 @@ package toolcall
 
 import (
 	"context"
-	"go-zero-voice-agent/app/llm/cmd/rpc/internal/svc"
 	"time"
 )
 
-type TimeTool struct {
-	svcCtx *svc.ServiceContext
-}
+type TimeTool struct{}
 
-func NewTimeTool(svcCtx *svc.ServiceContext) *TimeTool {
-	return &TimeTool{
-		svcCtx: svcCtx,
-	}
+func NewTimeTool() *TimeTool {
+	return &TimeTool{}
 }
 
 func (t *TimeTool) Name() string {
@@ -26,6 +21,10 @@ func (t *TimeTool) Description() string {
 
 func (t *TimeTool) ArgumentsJson() string {
 	return `{}`
+}
+
+func (t *TimeTool) RequiresConfirmation() bool {
+	return true
 }
 
 func (t *TimeTool) Execute(ctx context.Context, argsJson string) (string, error) {

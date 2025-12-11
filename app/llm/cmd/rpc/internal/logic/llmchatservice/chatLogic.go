@@ -93,13 +93,27 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 	choice := completion.Choices[0]
 	if len(choice.Message.ToolCalls) > 0 {
 		for _, toolCall := range choice.Message.ToolCalls {
+			status := consts.TOOL_CALLING_START
+			scope := consts.ToolCallScopeClient
+			requiresConfirmation := false
+
+			if tool, ok := l.svcCtx.ToolRegistry[toolCall.Function.Name]; ok {
+				scope = consts.ToolCallScopeServer
+				requiresConfirmation = tool.RequiresConfirmation()
+				if requiresConfirmation {
+					status = consts.TOOL_CALLING_WAITING_CONFIRMATION
+				}
+			}
+
 			respMsgs = append(respMsgs, &pb.ChatMsg{
 				Role: chatconsts.ChatMessageRoleTool,
 				ToolCalls: &pb.ToolCallDelta{
-					Id:             toolCall.ID,
-					Name:           toolCall.Function.Name,
-					ArgumentsJson:  toolCall.Function.Arguments,
-					Status:         consts.TOOL_CALLING_START,
+					Id:                   toolCall.ID,
+					Name:                 toolCall.Function.Name,
+					ArgumentsJson:        toolCall.Function.Arguments,
+					Status:               status,
+					Scope:                scope,
+					RequiresConfirmation: requiresConfirmation,
 				},
 			})
 		}

@@ -10,13 +10,7 @@ DB:
 Cache:
   - Host: ${REDIS_HOST}
     Type: node
-    Pass: ${REDIS_PASS}
-
-Redis:
-  Host: ${REDIS_HOST}
-  Type: node
-  Pass: ${REDIS_PASS}
-  Key:  
+    Pass: ${REDIS_PASS}  
 
 Asynq:
   Host: ${REDIS_HOST}
@@ -30,3 +24,10 @@ RagRpcConf:
     Hosts:
     - ${ETCD_HOST}
     Key: rag.rpc
+
+Toolcall:
+  Email:
+    Host: ${SMTP_HOST:}
+    Port: ${SMTP_PORT:}
+    Username: ${SMTP_USERNAME:}
+    Password: ${SMTP_PASSWORD:}
