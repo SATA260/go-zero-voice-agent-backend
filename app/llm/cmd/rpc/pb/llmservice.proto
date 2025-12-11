@@ -61,6 +61,7 @@ message ToolCallDelta {
     string error = 5; //工具调用错误信息
     string scope = 6; //工具调用作用域 server/client
     string status = 7; //工具调用状态 start/executing/finished
+    bool requires_confirmation = 8; //后端工具调用是否需要用户确认
 }
 
 message ChatMsg {
@@ -114,6 +115,21 @@ message ChatStreamResp {
         ToolCallDelta tool_call = 3;
         string error = 4;
     }
+}
+
+// 后端工具调用执行请求
+message ExecuteToolReq {
+    string id = 1; //工具调用唯一标识
+    string name = 2; //工具名称
+    string arguments_json = 3; //工具调用参数，JSON格式
+    int64 user_id = 4; //用户标识
+    string scope = 5; //调用作用域，后端调用固定为 server
+    bool approved = 6; //是否已在前端完成人工确认
+}
+
+// 后端工具调用执行响应
+message ExecuteToolResp {
+    ToolCallDelta tool_call = 1;
 }
 
 
@@ -371,6 +387,7 @@ message ListChatMessageResp {
 service LlmChatService {
     rpc Chat(ChatReq) returns (ChatResp);
     rpc ChatStream(ChatStreamReq) returns (stream ChatStreamResp);
+    rpc ExecuteTool(ExecuteToolReq) returns (ExecuteToolResp);
 }
 
 service LlmConfigService {

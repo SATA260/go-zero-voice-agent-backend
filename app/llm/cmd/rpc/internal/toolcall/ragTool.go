@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"go-zero-voice-agent/app/llm/cmd/rpc/internal/svc"
+	"go-zero-voice-agent/app/rag/cmd/rpc/client/ragservice"
 	"go-zero-voice-agent/app/rag/cmd/rpc/pb" // 引入 RAG 服务的 pb 包
 )
 
 type RagTool struct {
-	svcCtx *svc.ServiceContext
+	ragClient ragservice.RagService
 }
 
 type RagToolParams struct {
@@ -20,10 +20,8 @@ type RagToolParams struct {
 	TopK    int32    `json:"top_k"`
 }
 
-func NewRagTool(svcCtx *svc.ServiceContext) *RagTool {
-	return &RagTool{
-		svcCtx: svcCtx,
-	}
+func NewRagTool(ragClient ragservice.RagService) *RagTool {
+	return &RagTool{ragClient: ragClient}
 }
 
 func (t *RagTool) Name() string {
@@ -55,7 +53,7 @@ func (t *RagTool) Execute(ctx context.Context, argsJson string) (string, error) 
 	}
 
 	// 调用 RAG RPC 服务
-	resp, err := t.svcCtx.RagRpc.QueryMultiple(ctx, &pb.QueryMultipleReq{
+	resp, err := t.ragClient.QueryMultiple(ctx, &pb.QueryMultipleReq{
 		Query:   params.Query,
 		UserId:  params.UserId,
 		FileIds: params.FileIds,
@@ -76,4 +74,8 @@ func (t *RagTool) Execute(ctx context.Context, argsJson string) (string, error) 
 	}
 
 	return string(resultBytes), nil
+}
+
+func (t *RagTool) RequiresConfirmation() bool {
+	return false
 }

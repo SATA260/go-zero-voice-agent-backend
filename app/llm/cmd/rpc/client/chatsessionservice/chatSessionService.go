@@ -34,6 +34,8 @@ type (
 	DeleteChatSessionResp     = pb.DeleteChatSessionResp
 	DeleteConfigReq           = pb.DeleteConfigReq
 	DeleteConfigResp          = pb.DeleteConfigResp
+	ExecuteToolReq            = pb.ExecuteToolReq
+	ExecuteToolResp           = pb.ExecuteToolResp
 	GetChatMessageReq         = pb.GetChatMessageReq
 	GetChatMessageResp        = pb.GetChatMessageResp
 	GetChatSessionByConvIdReq = pb.GetChatSessionByConvIdReq

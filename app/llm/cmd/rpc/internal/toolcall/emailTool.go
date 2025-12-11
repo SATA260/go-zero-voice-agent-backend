@@ -80,3 +80,7 @@ func (t *emailTool) Execute(ctx context.Context, argsJson string) (string, error
 
 	return fmt.Sprintf("邮件已成功发送给 %v, 发送时间 %s", params.To, time.Now().Format("2006-01-02 15:04:05")), nil
 }
+
+func (t *emailTool) RequiresConfirmation() bool {
+	return true
+}
