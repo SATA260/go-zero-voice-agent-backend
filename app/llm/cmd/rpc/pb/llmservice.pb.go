@@ -3217,11 +3217,11 @@ var File_llmservice_proto protoreflect.FileDescriptor
 
 const file_llmservice_proto_rawDesc = "" +
 	"\n" +
-	"\x10llmservice.proto\x12\x02pb\"W\n" +
+	"\x10llmservice.proto\x12\x03llm\"W\n" +
 	"\tPageQuery\x12\x12\n" +
 	"\x04page\x18\x01 \x01(\x03R\x04page\x12\x1b\n" +
 	"\tpage_size\x18\x02 \x01(\x03R\bpageSize\x12\x19\n" +
-	"\border_by\x18\x03 \x01(\tR\aorderBy\"\x84\x04\n" +
+	"\border_by\x18\x03 \x01(\tR\aorderBy\"\x85\x04\n" +
 	"\tLlmConfig\x12\x18\n" +
 	"\abaseUrl\x18\x01 \x01(\tR\abaseUrl\x12\x16\n" +
 	"\x06apiKey\x18\x02 \x01(\tR\x06apiKey\x12\x14\n" +
@@ -3233,8 +3233,8 @@ const file_llmservice_proto_rawDesc = "" +
 	"\x12repetition_penalty\x18\b \x01(\x01R\x11repetitionPenalty\x12)\n" +
 	"\x10presence_penalty\x18\t \x01(\x01R\x0fpresencePenalty\x12'\n" +
 	"\x0fresponse_format\x18\n" +
-	" \x01(\tR\x0eresponseFormat\x128\n" +
-	"\x0estream_options\x18\v \x01(\v2\x11.pb.StreamOptionsR\rstreamOptions\x12\x1d\n" +
+	" \x01(\tR\x0eresponseFormat\x129\n" +
+	"\x0estream_options\x18\v \x01(\v2\x12.llm.StreamOptionsR\rstreamOptions\x12\x1d\n" +
 	"\n" +
 	"max_tokens\x18\f \x01(\x03R\tmaxTokens\x12\x12\n" +
 	"\x04seed\x18\r \x01(\x03R\x04seed\x12#\n" +
@@ -3249,34 +3249,34 @@ const file_llmservice_proto_rawDesc = "" +
 	"\x06result\x18\x04 \x01(\tR\x06result\x12\x14\n" +
 	"\x05error\x18\x05 \x01(\tR\x05error\x12\x14\n" +
 	"\x05scope\x18\x06 \x01(\tR\x05scope\x12\x16\n" +
-	"\x06status\x18\a \x01(\tR\x06status\"i\n" +
+	"\x06status\x18\a \x01(\tR\x06status\"j\n" +
 	"\aChatMsg\x12\x12\n" +
 	"\x04role\x18\x01 \x01(\tR\x04role\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\x120\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\x121\n" +
 	"\n" +
-	"tool_calls\x18\x03 \x01(\v2\x11.pb.ToolCallDeltaR\ttoolCalls\"\xcd\x01\n" +
+	"tool_calls\x18\x03 \x01(\v2\x12.llm.ToolCallDeltaR\ttoolCalls\"\xcf\x01\n" +
 	"\aChatReq\x12'\n" +
 	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12+\n" +
-	"\tllmConfig\x18\x03 \x01(\v2\r.pb.LlmConfigR\tllmConfig\x12'\n" +
-	"\bmessages\x18\x04 \x03(\v2\v.pb.ChatMsgR\bmessages\x12*\n" +
-	"\x11auto_fill_history\x18\x05 \x01(\bR\x0fautoFillHistory\"A\n" +
+	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12,\n" +
+	"\tllmConfig\x18\x03 \x01(\v2\x0e.llm.LlmConfigR\tllmConfig\x12(\n" +
+	"\bmessages\x18\x04 \x03(\v2\f.llm.ChatMsgR\bmessages\x12*\n" +
+	"\x11auto_fill_history\x18\x05 \x01(\bR\x0fautoFillHistory\"B\n" +
 	"\bChatResp\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
-	"\arespMsg\x18\x02 \x03(\v2\v.pb.ChatMsgR\arespMsg\"\xd3\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12&\n" +
+	"\arespMsg\x18\x02 \x03(\v2\f.llm.ChatMsgR\arespMsg\"\xd5\x01\n" +
 	"\rChatStreamReq\x12'\n" +
 	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12+\n" +
-	"\tllmConfig\x18\x03 \x01(\v2\r.pb.LlmConfigR\tllmConfig\x12'\n" +
-	"\bmessages\x18\x04 \x03(\v2\v.pb.ChatMsgR\bmessages\x12*\n" +
+	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12,\n" +
+	"\tllmConfig\x18\x03 \x01(\v2\x0e.llm.LlmConfigR\tllmConfig\x12(\n" +
+	"\bmessages\x18\x04 \x03(\v2\f.llm.ChatMsgR\bmessages\x12*\n" +
 	"\x11auto_fill_history\x18\x05 \x01(\bR\x0fautoFillHistory\"E\n" +
 	"\vStreamDelta\x12\x18\n" +
 	"\acontent\x18\x01 \x01(\tR\acontent\x12\x1c\n" +
-	"\tcompleted\x18\x02 \x01(\bR\tcompleted\"\x9e\x01\n" +
+	"\tcompleted\x18\x02 \x01(\bR\tcompleted\"\xa0\x01\n" +
 	"\x0eChatStreamResp\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12'\n" +
-	"\x05delta\x18\x02 \x01(\v2\x0f.pb.StreamDeltaH\x00R\x05delta\x120\n" +
-	"\ttool_call\x18\x03 \x01(\v2\x11.pb.ToolCallDeltaH\x00R\btoolCall\x12\x16\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12(\n" +
+	"\x05delta\x18\x02 \x01(\v2\x10.llm.StreamDeltaH\x00R\x05delta\x121\n" +
+	"\ttool_call\x18\x03 \x01(\v2\x12.llm.ToolCallDeltaH\x00R\btoolCall\x12\x16\n" +
 	"\x05error\x18\x04 \x01(\tH\x00R\x05errorB\t\n" +
 	"\apayload\"\x9b\x04\n" +
 	"\n" +
@@ -3349,20 +3349,20 @@ const file_llmservice_proto_rawDesc = "" +
 	"\x0econtext_length\x18\x12 \x01(\x03R\rcontextLength\"\x12\n" +
 	"\x10UpdateConfigResp\"\x1e\n" +
 	"\fGetConfigReq\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"7\n" +
-	"\rGetConfigResp\x12&\n" +
-	"\x06config\x18\x01 \x01(\v2\x0e.pb.ChatConfigR\x06config\"q\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"8\n" +
+	"\rGetConfigResp\x12'\n" +
+	"\x06config\x18\x01 \x01(\v2\x0f.llm.ChatConfigR\x06config\"q\n" +
 	"\x10ListConfigFilter\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12 \n" +
-	"\vdescription\x18\x04 \x01(\tR\vdescription\"j\n" +
-	"\rListConfigReq\x12+\n" +
-	"\tpageQuery\x18\x01 \x01(\v2\r.pb.PageQueryR\tpageQuery\x12,\n" +
-	"\x06filter\x18\x02 \x01(\v2\x14.pb.ListConfigFilterR\x06filter\"P\n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\"l\n" +
+	"\rListConfigReq\x12,\n" +
+	"\tpageQuery\x18\x01 \x01(\v2\x0e.llm.PageQueryR\tpageQuery\x12-\n" +
+	"\x06filter\x18\x02 \x01(\v2\x15.llm.ListConfigFilterR\x06filter\"Q\n" +
 	"\x0eListConfigResp\x12\x14\n" +
-	"\x05total\x18\x01 \x01(\x03R\x05total\x12(\n" +
-	"\aconfigs\x18\x02 \x03(\v2\x0e.pb.ChatConfigR\aconfigs\"\xff\x01\n" +
+	"\x05total\x18\x01 \x01(\x03R\x05total\x12)\n" +
+	"\aconfigs\x18\x02 \x03(\v2\x0f.llm.ChatConfigR\aconfigs\"\xff\x01\n" +
 	"\vChatSession\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x17\n" +
 	"\aconv_id\x18\x02 \x01(\tR\x06convId\x12\x17\n" +
@@ -3395,20 +3395,20 @@ const file_llmservice_proto_rawDesc = "" +
 	"\x11GetChatSessionReq\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"4\n" +
 	"\x19GetChatSessionByConvIdReq\x12\x17\n" +
-	"\aconv_id\x18\x01 \x01(\tR\x06convId\"?\n" +
-	"\x12GetChatSessionResp\x12)\n" +
-	"\asession\x18\x01 \x01(\v2\x0f.pb.ChatSessionR\asession\"o\n" +
+	"\aconv_id\x18\x01 \x01(\tR\x06convId\"@\n" +
+	"\x12GetChatSessionResp\x12*\n" +
+	"\asession\x18\x01 \x01(\v2\x10.llm.ChatSessionR\asession\"o\n" +
 	"\x15ListChatSessionFilter\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x17\n" +
 	"\aconv_id\x18\x02 \x01(\tR\x06convId\x12\x17\n" +
 	"\auser_id\x18\x03 \x01(\x03R\x06userId\x12\x14\n" +
-	"\x05title\x18\x04 \x01(\tR\x05title\"t\n" +
-	"\x12ListChatSessionReq\x12+\n" +
-	"\tpageQuery\x18\x01 \x01(\v2\r.pb.PageQueryR\tpageQuery\x121\n" +
-	"\x06filter\x18\x02 \x01(\v2\x19.pb.ListChatSessionFilterR\x06filter\"X\n" +
+	"\x05title\x18\x04 \x01(\tR\x05title\"v\n" +
+	"\x12ListChatSessionReq\x12,\n" +
+	"\tpageQuery\x18\x01 \x01(\v2\x0e.llm.PageQueryR\tpageQuery\x122\n" +
+	"\x06filter\x18\x02 \x01(\v2\x1a.llm.ListChatSessionFilterR\x06filter\"Y\n" +
 	"\x13ListChatSessionResp\x12\x14\n" +
-	"\x05total\x18\x01 \x01(\x03R\x05total\x12+\n" +
-	"\bsessions\x18\x02 \x03(\v2\x0f.pb.ChatSessionR\bsessions\"\xb7\x02\n" +
+	"\x05total\x18\x01 \x01(\x03R\x05total\x12,\n" +
+	"\bsessions\x18\x02 \x03(\v2\x10.llm.ChatSessionR\bsessions\"\xb7\x02\n" +
 	"\vChatMessage\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1d\n" +
 	"\n" +
@@ -3450,45 +3450,45 @@ const file_llmservice_proto_rawDesc = "" +
 	"\aversion\x18\a \x01(\x03R\aversion\"\x17\n" +
 	"\x15UpdateChatMessageResp\"#\n" +
 	"\x11GetChatMessageReq\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"?\n" +
-	"\x12GetChatMessageResp\x12)\n" +
-	"\amessage\x18\x01 \x01(\v2\x0f.pb.ChatMessageR\amessage\"w\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"@\n" +
+	"\x12GetChatMessageResp\x12*\n" +
+	"\amessage\x18\x01 \x01(\v2\x10.llm.ChatMessageR\amessage\"w\n" +
 	"\x15ListChatMessageFilter\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1d\n" +
 	"\n" +
 	"session_id\x18\x02 \x01(\x03R\tsessionId\x12\x1b\n" +
 	"\tconfig_id\x18\x03 \x01(\x03R\bconfigId\x12\x12\n" +
-	"\x04role\x18\x04 \x01(\tR\x04role\"t\n" +
-	"\x12ListChatMessageReq\x12+\n" +
-	"\tpageQuery\x18\x01 \x01(\v2\r.pb.PageQueryR\tpageQuery\x121\n" +
-	"\x06filter\x18\x02 \x01(\v2\x19.pb.ListChatMessageFilterR\x06filter\"X\n" +
+	"\x04role\x18\x04 \x01(\tR\x04role\"v\n" +
+	"\x12ListChatMessageReq\x12,\n" +
+	"\tpageQuery\x18\x01 \x01(\v2\x0e.llm.PageQueryR\tpageQuery\x122\n" +
+	"\x06filter\x18\x02 \x01(\v2\x1a.llm.ListChatMessageFilterR\x06filter\"Y\n" +
 	"\x13ListChatMessageResp\x12\x14\n" +
-	"\x05total\x18\x01 \x01(\x03R\x05total\x12+\n" +
-	"\bmessages\x18\x02 \x03(\v2\x0f.pb.ChatMessageR\bmessages2j\n" +
-	"\x0eLlmChatService\x12!\n" +
-	"\x04Chat\x12\v.pb.ChatReq\x1a\f.pb.ChatResp\x125\n" +
+	"\x05total\x18\x01 \x01(\x03R\x05total\x12,\n" +
+	"\bmessages\x18\x02 \x03(\v2\x10.llm.ChatMessageR\bmessages2n\n" +
+	"\x0eLlmChatService\x12#\n" +
+	"\x04Chat\x12\f.llm.ChatReq\x1a\r.llm.ChatResp\x127\n" +
 	"\n" +
-	"ChatStream\x12\x11.pb.ChatStreamReq\x1a\x12.pb.ChatStreamResp0\x012\xaa\x02\n" +
-	"\x10LlmConfigService\x129\n" +
-	"\fCreateConfig\x12\x13.pb.CreateConfigReq\x1a\x14.pb.CreateConfigResp\x129\n" +
-	"\fDeleteConfig\x12\x13.pb.DeleteConfigReq\x1a\x14.pb.DeleteConfigResp\x129\n" +
-	"\fUpdateConfig\x12\x13.pb.UpdateConfigReq\x1a\x14.pb.UpdateConfigResp\x120\n" +
-	"\tGetConfig\x12\x10.pb.GetConfigReq\x1a\x11.pb.GetConfigResp\x123\n" +
+	"ChatStream\x12\x12.llm.ChatStreamReq\x1a\x13.llm.ChatStreamResp0\x012\xb4\x02\n" +
+	"\x10LlmConfigService\x12;\n" +
+	"\fCreateConfig\x12\x14.llm.CreateConfigReq\x1a\x15.llm.CreateConfigResp\x12;\n" +
+	"\fDeleteConfig\x12\x14.llm.DeleteConfigReq\x1a\x15.llm.DeleteConfigResp\x12;\n" +
+	"\fUpdateConfig\x12\x14.llm.UpdateConfigReq\x1a\x15.llm.UpdateConfigResp\x122\n" +
+	"\tGetConfig\x12\x11.llm.GetConfigReq\x1a\x12.llm.GetConfigResp\x125\n" +
 	"\n" +
-	"ListConfig\x12\x11.pb.ListConfigReq\x1a\x12.pb.ListConfigResp2\xc8\x03\n" +
-	"\x12ChatSessionService\x12H\n" +
-	"\x11CreateChatSession\x12\x18.pb.CreateChatSessionReq\x1a\x19.pb.CreateChatSessionResp\x12H\n" +
-	"\x11DeleteChatSession\x12\x18.pb.DeleteChatSessionReq\x1a\x19.pb.DeleteChatSessionResp\x12H\n" +
-	"\x11UpdateChatSession\x12\x18.pb.UpdateChatSessionReq\x1a\x19.pb.UpdateChatSessionResp\x12?\n" +
-	"\x0eGetChatSession\x12\x15.pb.GetChatSessionReq\x1a\x16.pb.GetChatSessionResp\x12O\n" +
-	"\x16GetChatSessionByConvId\x12\x1d.pb.GetChatSessionByConvIdReq\x1a\x16.pb.GetChatSessionResp\x12B\n" +
-	"\x0fListChatSession\x12\x16.pb.ListChatSessionReq\x1a\x17.pb.ListChatSessionResp2\xf7\x02\n" +
-	"\x12ChatMessageService\x12H\n" +
-	"\x11CreateChatMessage\x12\x18.pb.CreateChatMessageReq\x1a\x19.pb.CreateChatMessageResp\x12H\n" +
-	"\x11DeleteChatMessage\x12\x18.pb.DeleteChatMessageReq\x1a\x19.pb.DeleteChatMessageResp\x12H\n" +
-	"\x11UpdateChatMessage\x12\x18.pb.UpdateChatMessageReq\x1a\x19.pb.UpdateChatMessageResp\x12?\n" +
-	"\x0eGetChatMessage\x12\x15.pb.GetChatMessageReq\x1a\x16.pb.GetChatMessageResp\x12B\n" +
-	"\x0fListChatMessage\x12\x16.pb.ListChatMessageReq\x1a\x17.pb.ListChatMessageRespB\x06Z\x04./pbb\x06proto3"
+	"ListConfig\x12\x12.llm.ListConfigReq\x1a\x13.llm.ListConfigResp2\xd4\x03\n" +
+	"\x12ChatSessionService\x12J\n" +
+	"\x11CreateChatSession\x12\x19.llm.CreateChatSessionReq\x1a\x1a.llm.CreateChatSessionResp\x12J\n" +
+	"\x11DeleteChatSession\x12\x19.llm.DeleteChatSessionReq\x1a\x1a.llm.DeleteChatSessionResp\x12J\n" +
+	"\x11UpdateChatSession\x12\x19.llm.UpdateChatSessionReq\x1a\x1a.llm.UpdateChatSessionResp\x12A\n" +
+	"\x0eGetChatSession\x12\x16.llm.GetChatSessionReq\x1a\x17.llm.GetChatSessionResp\x12Q\n" +
+	"\x16GetChatSessionByConvId\x12\x1e.llm.GetChatSessionByConvIdReq\x1a\x17.llm.GetChatSessionResp\x12D\n" +
+	"\x0fListChatSession\x12\x17.llm.ListChatSessionReq\x1a\x18.llm.ListChatSessionResp2\x81\x03\n" +
+	"\x12ChatMessageService\x12J\n" +
+	"\x11CreateChatMessage\x12\x19.llm.CreateChatMessageReq\x1a\x1a.llm.CreateChatMessageResp\x12J\n" +
+	"\x11DeleteChatMessage\x12\x19.llm.DeleteChatMessageReq\x1a\x1a.llm.DeleteChatMessageResp\x12J\n" +
+	"\x11UpdateChatMessage\x12\x19.llm.UpdateChatMessageReq\x1a\x1a.llm.UpdateChatMessageResp\x12A\n" +
+	"\x0eGetChatMessage\x12\x16.llm.GetChatMessageReq\x1a\x17.llm.GetChatMessageResp\x12D\n" +
+	"\x0fListChatMessage\x12\x17.llm.ListChatMessageReq\x1a\x18.llm.ListChatMessageRespB\x06Z\x04./pbb\x06proto3"
 
 var (
 	file_llmservice_proto_rawDescOnce sync.Once
@@ -3504,112 +3504,112 @@ func file_llmservice_proto_rawDescGZIP() []byte {
 
 var file_llmservice_proto_msgTypes = make([]protoimpl.MessageInfo, 47)
 var file_llmservice_proto_goTypes = []any{
-	(*PageQuery)(nil),                 // 0: pb.PageQuery
-	(*LlmConfig)(nil),                 // 1: pb.LlmConfig
-	(*StreamOptions)(nil),             // 2: pb.StreamOptions
-	(*ToolCallDelta)(nil),             // 3: pb.ToolCallDelta
-	(*ChatMsg)(nil),                   // 4: pb.ChatMsg
-	(*ChatReq)(nil),                   // 5: pb.ChatReq
-	(*ChatResp)(nil),                  // 6: pb.ChatResp
-	(*ChatStreamReq)(nil),             // 7: pb.ChatStreamReq
-	(*StreamDelta)(nil),               // 8: pb.StreamDelta
-	(*ChatStreamResp)(nil),            // 9: pb.ChatStreamResp
-	(*ChatConfig)(nil),                // 10: pb.ChatConfig
-	(*CreateConfigReq)(nil),           // 11: pb.CreateConfigReq
-	(*CreateConfigResp)(nil),          // 12: pb.CreateConfigResp
-	(*DeleteConfigReq)(nil),           // 13: pb.DeleteConfigReq
-	(*DeleteConfigResp)(nil),          // 14: pb.DeleteConfigResp
-	(*UpdateConfigReq)(nil),           // 15: pb.UpdateConfigReq
-	(*UpdateConfigResp)(nil),          // 16: pb.UpdateConfigResp
-	(*GetConfigReq)(nil),              // 17: pb.GetConfigReq
-	(*GetConfigResp)(nil),             // 18: pb.GetConfigResp
-	(*ListConfigFilter)(nil),          // 19: pb.ListConfigFilter
-	(*ListConfigReq)(nil),             // 20: pb.ListConfigReq
-	(*ListConfigResp)(nil),            // 21: pb.ListConfigResp
-	(*ChatSession)(nil),               // 22: pb.ChatSession
-	(*CreateChatSessionReq)(nil),      // 23: pb.CreateChatSessionReq
-	(*CreateChatSessionResp)(nil),     // 24: pb.CreateChatSessionResp
-	(*DeleteChatSessionReq)(nil),      // 25: pb.DeleteChatSessionReq
-	(*DeleteChatSessionResp)(nil),     // 26: pb.DeleteChatSessionResp
-	(*UpdateChatSessionReq)(nil),      // 27: pb.UpdateChatSessionReq
-	(*UpdateChatSessionResp)(nil),     // 28: pb.UpdateChatSessionResp
-	(*GetChatSessionReq)(nil),         // 29: pb.GetChatSessionReq
-	(*GetChatSessionByConvIdReq)(nil), // 30: pb.GetChatSessionByConvIdReq
-	(*GetChatSessionResp)(nil),        // 31: pb.GetChatSessionResp
-	(*ListChatSessionFilter)(nil),     // 32: pb.ListChatSessionFilter
-	(*ListChatSessionReq)(nil),        // 33: pb.ListChatSessionReq
-	(*ListChatSessionResp)(nil),       // 34: pb.ListChatSessionResp
-	(*ChatMessage)(nil),               // 35: pb.ChatMessage
-	(*CreateChatMessageReq)(nil),      // 36: pb.CreateChatMessageReq
-	(*CreateChatMessageResp)(nil),     // 37: pb.CreateChatMessageResp
-	(*DeleteChatMessageReq)(nil),      // 38: pb.DeleteChatMessageReq
-	(*DeleteChatMessageResp)(nil),     // 39: pb.DeleteChatMessageResp
-	(*UpdateChatMessageReq)(nil),      // 40: pb.UpdateChatMessageReq
-	(*UpdateChatMessageResp)(nil),     // 41: pb.UpdateChatMessageResp
-	(*GetChatMessageReq)(nil),         // 42: pb.GetChatMessageReq
-	(*GetChatMessageResp)(nil),        // 43: pb.GetChatMessageResp
-	(*ListChatMessageFilter)(nil),     // 44: pb.ListChatMessageFilter
-	(*ListChatMessageReq)(nil),        // 45: pb.ListChatMessageReq
-	(*ListChatMessageResp)(nil),       // 46: pb.ListChatMessageResp
+	(*PageQuery)(nil),                 // 0: llm.PageQuery
+	(*LlmConfig)(nil),                 // 1: llm.LlmConfig
+	(*StreamOptions)(nil),             // 2: llm.StreamOptions
+	(*ToolCallDelta)(nil),             // 3: llm.ToolCallDelta
+	(*ChatMsg)(nil),                   // 4: llm.ChatMsg
+	(*ChatReq)(nil),                   // 5: llm.ChatReq
+	(*ChatResp)(nil),                  // 6: llm.ChatResp
+	(*ChatStreamReq)(nil),             // 7: llm.ChatStreamReq
+	(*StreamDelta)(nil),               // 8: llm.StreamDelta
+	(*ChatStreamResp)(nil),            // 9: llm.ChatStreamResp
+	(*ChatConfig)(nil),                // 10: llm.ChatConfig
+	(*CreateConfigReq)(nil),           // 11: llm.CreateConfigReq
+	(*CreateConfigResp)(nil),          // 12: llm.CreateConfigResp
+	(*DeleteConfigReq)(nil),           // 13: llm.DeleteConfigReq
+	(*DeleteConfigResp)(nil),          // 14: llm.DeleteConfigResp
+	(*UpdateConfigReq)(nil),           // 15: llm.UpdateConfigReq
+	(*UpdateConfigResp)(nil),          // 16: llm.UpdateConfigResp
+	(*GetConfigReq)(nil),              // 17: llm.GetConfigReq
+	(*GetConfigResp)(nil),             // 18: llm.GetConfigResp
+	(*ListConfigFilter)(nil),          // 19: llm.ListConfigFilter
+	(*ListConfigReq)(nil),             // 20: llm.ListConfigReq
+	(*ListConfigResp)(nil),            // 21: llm.ListConfigResp
+	(*ChatSession)(nil),               // 22: llm.ChatSession
+	(*CreateChatSessionReq)(nil),      // 23: llm.CreateChatSessionReq
+	(*CreateChatSessionResp)(nil),     // 24: llm.CreateChatSessionResp
+	(*DeleteChatSessionReq)(nil),      // 25: llm.DeleteChatSessionReq
+	(*DeleteChatSessionResp)(nil),     // 26: llm.DeleteChatSessionResp
+	(*UpdateChatSessionReq)(nil),      // 27: llm.UpdateChatSessionReq
+	(*UpdateChatSessionResp)(nil),     // 28: llm.UpdateChatSessionResp
+	(*GetChatSessionReq)(nil),         // 29: llm.GetChatSessionReq
+	(*GetChatSessionByConvIdReq)(nil), // 30: llm.GetChatSessionByConvIdReq
+	(*GetChatSessionResp)(nil),        // 31: llm.GetChatSessionResp
+	(*ListChatSessionFilter)(nil),     // 32: llm.ListChatSessionFilter
+	(*ListChatSessionReq)(nil),        // 33: llm.ListChatSessionReq
+	(*ListChatSessionResp)(nil),       // 34: llm.ListChatSessionResp
+	(*ChatMessage)(nil),               // 35: llm.ChatMessage
+	(*CreateChatMessageReq)(nil),      // 36: llm.CreateChatMessageReq
+	(*CreateChatMessageResp)(nil),     // 37: llm.CreateChatMessageResp
+	(*DeleteChatMessageReq)(nil),      // 38: llm.DeleteChatMessageReq
+	(*DeleteChatMessageResp)(nil),     // 39: llm.DeleteChatMessageResp
+	(*UpdateChatMessageReq)(nil),      // 40: llm.UpdateChatMessageReq
+	(*UpdateChatMessageResp)(nil),     // 41: llm.UpdateChatMessageResp
+	(*GetChatMessageReq)(nil),         // 42: llm.GetChatMessageReq
+	(*GetChatMessageResp)(nil),        // 43: llm.GetChatMessageResp
+	(*ListChatMessageFilter)(nil),     // 44: llm.ListChatMessageFilter
+	(*ListChatMessageReq)(nil),        // 45: llm.ListChatMessageReq
+	(*ListChatMessageResp)(nil),       // 46: llm.ListChatMessageResp
 }
 var file_llmservice_proto_depIdxs = []int32{
-	2,  // 0: pb.LlmConfig.stream_options:type_name -> pb.StreamOptions
-	3,  // 1: pb.ChatMsg.tool_calls:type_name -> pb.ToolCallDelta
-	1,  // 2: pb.ChatReq.llmConfig:type_name -> pb.LlmConfig
-	4,  // 3: pb.ChatReq.messages:type_name -> pb.ChatMsg
-	4,  // 4: pb.ChatResp.respMsg:type_name -> pb.ChatMsg
-	1,  // 5: pb.ChatStreamReq.llmConfig:type_name -> pb.LlmConfig
-	4,  // 6: pb.ChatStreamReq.messages:type_name -> pb.ChatMsg
-	8,  // 7: pb.ChatStreamResp.delta:type_name -> pb.StreamDelta
-	3,  // 8: pb.ChatStreamResp.tool_call:type_name -> pb.ToolCallDelta
-	10, // 9: pb.GetConfigResp.config:type_name -> pb.ChatConfig
-	0,  // 10: pb.ListConfigReq.pageQuery:type_name -> pb.PageQuery
-	19, // 11: pb.ListConfigReq.filter:type_name -> pb.ListConfigFilter
-	10, // 12: pb.ListConfigResp.configs:type_name -> pb.ChatConfig
-	22, // 13: pb.GetChatSessionResp.session:type_name -> pb.ChatSession
-	0,  // 14: pb.ListChatSessionReq.pageQuery:type_name -> pb.PageQuery
-	32, // 15: pb.ListChatSessionReq.filter:type_name -> pb.ListChatSessionFilter
-	22, // 16: pb.ListChatSessionResp.sessions:type_name -> pb.ChatSession
-	35, // 17: pb.GetChatMessageResp.message:type_name -> pb.ChatMessage
-	0,  // 18: pb.ListChatMessageReq.pageQuery:type_name -> pb.PageQuery
-	44, // 19: pb.ListChatMessageReq.filter:type_name -> pb.ListChatMessageFilter
-	35, // 20: pb.ListChatMessageResp.messages:type_name -> pb.ChatMessage
-	5,  // 21: pb.LlmChatService.Chat:input_type -> pb.ChatReq
-	7,  // 22: pb.LlmChatService.ChatStream:input_type -> pb.ChatStreamReq
-	11, // 23: pb.LlmConfigService.CreateConfig:input_type -> pb.CreateConfigReq
-	13, // 24: pb.LlmConfigService.DeleteConfig:input_type -> pb.DeleteConfigReq
-	15, // 25: pb.LlmConfigService.UpdateConfig:input_type -> pb.UpdateConfigReq
-	17, // 26: pb.LlmConfigService.GetConfig:input_type -> pb.GetConfigReq
-	20, // 27: pb.LlmConfigService.ListConfig:input_type -> pb.ListConfigReq
-	23, // 28: pb.ChatSessionService.CreateChatSession:input_type -> pb.CreateChatSessionReq
-	25, // 29: pb.ChatSessionService.DeleteChatSession:input_type -> pb.DeleteChatSessionReq
-	27, // 30: pb.ChatSessionService.UpdateChatSession:input_type -> pb.UpdateChatSessionReq
-	29, // 31: pb.ChatSessionService.GetChatSession:input_type -> pb.GetChatSessionReq
-	30, // 32: pb.ChatSessionService.GetChatSessionByConvId:input_type -> pb.GetChatSessionByConvIdReq
-	33, // 33: pb.ChatSessionService.ListChatSession:input_type -> pb.ListChatSessionReq
-	36, // 34: pb.ChatMessageService.CreateChatMessage:input_type -> pb.CreateChatMessageReq
-	38, // 35: pb.ChatMessageService.DeleteChatMessage:input_type -> pb.DeleteChatMessageReq
-	40, // 36: pb.ChatMessageService.UpdateChatMessage:input_type -> pb.UpdateChatMessageReq
-	42, // 37: pb.ChatMessageService.GetChatMessage:input_type -> pb.GetChatMessageReq
-	45, // 38: pb.ChatMessageService.ListChatMessage:input_type -> pb.ListChatMessageReq
-	6,  // 39: pb.LlmChatService.Chat:output_type -> pb.ChatResp
-	9,  // 40: pb.LlmChatService.ChatStream:output_type -> pb.ChatStreamResp
-	12, // 41: pb.LlmConfigService.CreateConfig:output_type -> pb.CreateConfigResp
-	14, // 42: pb.LlmConfigService.DeleteConfig:output_type -> pb.DeleteConfigResp
-	16, // 43: pb.LlmConfigService.UpdateConfig:output_type -> pb.UpdateConfigResp
-	18, // 44: pb.LlmConfigService.GetConfig:output_type -> pb.GetConfigResp
-	21, // 45: pb.LlmConfigService.ListConfig:output_type -> pb.ListConfigResp
-	24, // 46: pb.ChatSessionService.CreateChatSession:output_type -> pb.CreateChatSessionResp
-	26, // 47: pb.ChatSessionService.DeleteChatSession:output_type -> pb.DeleteChatSessionResp
-	28, // 48: pb.ChatSessionService.UpdateChatSession:output_type -> pb.UpdateChatSessionResp
-	31, // 49: pb.ChatSessionService.GetChatSession:output_type -> pb.GetChatSessionResp
-	31, // 50: pb.ChatSessionService.GetChatSessionByConvId:output_type -> pb.GetChatSessionResp
-	34, // 51: pb.ChatSessionService.ListChatSession:output_type -> pb.ListChatSessionResp
-	37, // 52: pb.ChatMessageService.CreateChatMessage:output_type -> pb.CreateChatMessageResp
-	39, // 53: pb.ChatMessageService.DeleteChatMessage:output_type -> pb.DeleteChatMessageResp
-	41, // 54: pb.ChatMessageService.UpdateChatMessage:output_type -> pb.UpdateChatMessageResp
-	43, // 55: pb.ChatMessageService.GetChatMessage:output_type -> pb.GetChatMessageResp
-	46, // 56: pb.ChatMessageService.ListChatMessage:output_type -> pb.ListChatMessageResp
+	2,  // 0: llm.LlmConfig.stream_options:type_name -> llm.StreamOptions
+	3,  // 1: llm.ChatMsg.tool_calls:type_name -> llm.ToolCallDelta
+	1,  // 2: llm.ChatReq.llmConfig:type_name -> llm.LlmConfig
+	4,  // 3: llm.ChatReq.messages:type_name -> llm.ChatMsg
+	4,  // 4: llm.ChatResp.respMsg:type_name -> llm.ChatMsg
+	1,  // 5: llm.ChatStreamReq.llmConfig:type_name -> llm.LlmConfig
+	4,  // 6: llm.ChatStreamReq.messages:type_name -> llm.ChatMsg
+	8,  // 7: llm.ChatStreamResp.delta:type_name -> llm.StreamDelta
+	3,  // 8: llm.ChatStreamResp.tool_call:type_name -> llm.ToolCallDelta
+	10, // 9: llm.GetConfigResp.config:type_name -> llm.ChatConfig
+	0,  // 10: llm.ListConfigReq.pageQuery:type_name -> llm.PageQuery
+	19, // 11: llm.ListConfigReq.filter:type_name -> llm.ListConfigFilter
+	10, // 12: llm.ListConfigResp.configs:type_name -> llm.ChatConfig
+	22, // 13: llm.GetChatSessionResp.session:type_name -> llm.ChatSession
+	0,  // 14: llm.ListChatSessionReq.pageQuery:type_name -> llm.PageQuery
+	32, // 15: llm.ListChatSessionReq.filter:type_name -> llm.ListChatSessionFilter
+	22, // 16: llm.ListChatSessionResp.sessions:type_name -> llm.ChatSession
+	35, // 17: llm.GetChatMessageResp.message:type_name -> llm.ChatMessage
+	0,  // 18: llm.ListChatMessageReq.pageQuery:type_name -> llm.PageQuery
+	44, // 19: llm.ListChatMessageReq.filter:type_name -> llm.ListChatMessageFilter
+	35, // 20: llm.ListChatMessageResp.messages:type_name -> llm.ChatMessage
+	5,  // 21: llm.LlmChatService.Chat:input_type -> llm.ChatReq
+	7,  // 22: llm.LlmChatService.ChatStream:input_type -> llm.ChatStreamReq
+	11, // 23: llm.LlmConfigService.CreateConfig:input_type -> llm.CreateConfigReq
+	13, // 24: llm.LlmConfigService.DeleteConfig:input_type -> llm.DeleteConfigReq
+	15, // 25: llm.LlmConfigService.UpdateConfig:input_type -> llm.UpdateConfigReq
+	17, // 26: llm.LlmConfigService.GetConfig:input_type -> llm.GetConfigReq
+	20, // 27: llm.LlmConfigService.ListConfig:input_type -> llm.ListConfigReq
+	23, // 28: llm.ChatSessionService.CreateChatSession:input_type -> llm.CreateChatSessionReq
+	25, // 29: llm.ChatSessionService.DeleteChatSession:input_type -> llm.DeleteChatSessionReq
+	27, // 30: llm.ChatSessionService.UpdateChatSession:input_type -> llm.UpdateChatSessionReq
+	29, // 31: llm.ChatSessionService.GetChatSession:input_type -> llm.GetChatSessionReq
+	30, // 32: llm.ChatSessionService.GetChatSessionByConvId:input_type -> llm.GetChatSessionByConvIdReq
+	33, // 33: llm.ChatSessionService.ListChatSession:input_type -> llm.ListChatSessionReq
+	36, // 34: llm.ChatMessageService.CreateChatMessage:input_type -> llm.CreateChatMessageReq
+	38, // 35: llm.ChatMessageService.DeleteChatMessage:input_type -> llm.DeleteChatMessageReq
+	40, // 36: llm.ChatMessageService.UpdateChatMessage:input_type -> llm.UpdateChatMessageReq
+	42, // 37: llm.ChatMessageService.GetChatMessage:input_type -> llm.GetChatMessageReq
+	45, // 38: llm.ChatMessageService.ListChatMessage:input_type -> llm.ListChatMessageReq
+	6,  // 39: llm.LlmChatService.Chat:output_type -> llm.ChatResp
+	9,  // 40: llm.LlmChatService.ChatStream:output_type -> llm.ChatStreamResp
+	12, // 41: llm.LlmConfigService.CreateConfig:output_type -> llm.CreateConfigResp
+	14, // 42: llm.LlmConfigService.DeleteConfig:output_type -> llm.DeleteConfigResp
+	16, // 43: llm.LlmConfigService.UpdateConfig:output_type -> llm.UpdateConfigResp
+	18, // 44: llm.LlmConfigService.GetConfig:output_type -> llm.GetConfigResp
+	21, // 45: llm.LlmConfigService.ListConfig:output_type -> llm.ListConfigResp
+	24, // 46: llm.ChatSessionService.CreateChatSession:output_type -> llm.CreateChatSessionResp
+	26, // 47: llm.ChatSessionService.DeleteChatSession:output_type -> llm.DeleteChatSessionResp
+	28, // 48: llm.ChatSessionService.UpdateChatSession:output_type -> llm.UpdateChatSessionResp
+	31, // 49: llm.ChatSessionService.GetChatSession:output_type -> llm.GetChatSessionResp
+	31, // 50: llm.ChatSessionService.GetChatSessionByConvId:output_type -> llm.GetChatSessionResp
+	34, // 51: llm.ChatSessionService.ListChatSession:output_type -> llm.ListChatSessionResp
+	37, // 52: llm.ChatMessageService.CreateChatMessage:output_type -> llm.CreateChatMessageResp
+	39, // 53: llm.ChatMessageService.DeleteChatMessage:output_type -> llm.DeleteChatMessageResp
+	41, // 54: llm.ChatMessageService.UpdateChatMessage:output_type -> llm.UpdateChatMessageResp
+	43, // 55: llm.ChatMessageService.GetChatMessage:output_type -> llm.GetChatMessageResp
+	46, // 56: llm.ChatMessageService.ListChatMessage:output_type -> llm.ListChatMessageResp
 	39, // [39:57] is the sub-list for method output_type
 	21, // [21:39] is the sub-list for method input_type
 	21, // [21:21] is the sub-list for extension type_name

@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LlmChatService_Chat_FullMethodName       = "/pb.LlmChatService/Chat"
-	LlmChatService_ChatStream_FullMethodName = "/pb.LlmChatService/ChatStream"
+	LlmChatService_Chat_FullMethodName       = "/llm.LlmChatService/Chat"
+	LlmChatService_ChatStream_FullMethodName = "/llm.LlmChatService/ChatStream"
 )
 
 // LlmChatServiceClient is the client API for LlmChatService service.
@@ -144,7 +144,7 @@ type LlmChatService_ChatStreamServer = grpc.ServerStreamingServer[ChatStreamResp
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var LlmChatService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.LlmChatService",
+	ServiceName: "llm.LlmChatService",
 	HandlerType: (*LlmChatServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -163,11 +163,11 @@ var LlmChatService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	LlmConfigService_CreateConfig_FullMethodName = "/pb.LlmConfigService/CreateConfig"
-	LlmConfigService_DeleteConfig_FullMethodName = "/pb.LlmConfigService/DeleteConfig"
-	LlmConfigService_UpdateConfig_FullMethodName = "/pb.LlmConfigService/UpdateConfig"
-	LlmConfigService_GetConfig_FullMethodName    = "/pb.LlmConfigService/GetConfig"
-	LlmConfigService_ListConfig_FullMethodName   = "/pb.LlmConfigService/ListConfig"
+	LlmConfigService_CreateConfig_FullMethodName = "/llm.LlmConfigService/CreateConfig"
+	LlmConfigService_DeleteConfig_FullMethodName = "/llm.LlmConfigService/DeleteConfig"
+	LlmConfigService_UpdateConfig_FullMethodName = "/llm.LlmConfigService/UpdateConfig"
+	LlmConfigService_GetConfig_FullMethodName    = "/llm.LlmConfigService/GetConfig"
+	LlmConfigService_ListConfig_FullMethodName   = "/llm.LlmConfigService/ListConfig"
 )
 
 // LlmConfigServiceClient is the client API for LlmConfigService service.
@@ -388,7 +388,7 @@ func _LlmConfigService_ListConfig_Handler(srv interface{}, ctx context.Context, 
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var LlmConfigService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.LlmConfigService",
+	ServiceName: "llm.LlmConfigService",
 	HandlerType: (*LlmConfigServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -417,12 +417,12 @@ var LlmConfigService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	ChatSessionService_CreateChatSession_FullMethodName      = "/pb.ChatSessionService/CreateChatSession"
-	ChatSessionService_DeleteChatSession_FullMethodName      = "/pb.ChatSessionService/DeleteChatSession"
-	ChatSessionService_UpdateChatSession_FullMethodName      = "/pb.ChatSessionService/UpdateChatSession"
-	ChatSessionService_GetChatSession_FullMethodName         = "/pb.ChatSessionService/GetChatSession"
-	ChatSessionService_GetChatSessionByConvId_FullMethodName = "/pb.ChatSessionService/GetChatSessionByConvId"
-	ChatSessionService_ListChatSession_FullMethodName        = "/pb.ChatSessionService/ListChatSession"
+	ChatSessionService_CreateChatSession_FullMethodName      = "/llm.ChatSessionService/CreateChatSession"
+	ChatSessionService_DeleteChatSession_FullMethodName      = "/llm.ChatSessionService/DeleteChatSession"
+	ChatSessionService_UpdateChatSession_FullMethodName      = "/llm.ChatSessionService/UpdateChatSession"
+	ChatSessionService_GetChatSession_FullMethodName         = "/llm.ChatSessionService/GetChatSession"
+	ChatSessionService_GetChatSessionByConvId_FullMethodName = "/llm.ChatSessionService/GetChatSessionByConvId"
+	ChatSessionService_ListChatSession_FullMethodName        = "/llm.ChatSessionService/ListChatSession"
 )
 
 // ChatSessionServiceClient is the client API for ChatSessionService service.
@@ -676,7 +676,7 @@ func _ChatSessionService_ListChatSession_Handler(srv interface{}, ctx context.Co
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ChatSessionService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.ChatSessionService",
+	ServiceName: "llm.ChatSessionService",
 	HandlerType: (*ChatSessionServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -709,11 +709,11 @@ var ChatSessionService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	ChatMessageService_CreateChatMessage_FullMethodName = "/pb.ChatMessageService/CreateChatMessage"
-	ChatMessageService_DeleteChatMessage_FullMethodName = "/pb.ChatMessageService/DeleteChatMessage"
-	ChatMessageService_UpdateChatMessage_FullMethodName = "/pb.ChatMessageService/UpdateChatMessage"
-	ChatMessageService_GetChatMessage_FullMethodName    = "/pb.ChatMessageService/GetChatMessage"
-	ChatMessageService_ListChatMessage_FullMethodName   = "/pb.ChatMessageService/ListChatMessage"
+	ChatMessageService_CreateChatMessage_FullMethodName = "/llm.ChatMessageService/CreateChatMessage"
+	ChatMessageService_DeleteChatMessage_FullMethodName = "/llm.ChatMessageService/DeleteChatMessage"
+	ChatMessageService_UpdateChatMessage_FullMethodName = "/llm.ChatMessageService/UpdateChatMessage"
+	ChatMessageService_GetChatMessage_FullMethodName    = "/llm.ChatMessageService/GetChatMessage"
+	ChatMessageService_ListChatMessage_FullMethodName   = "/llm.ChatMessageService/ListChatMessage"
 )
 
 // ChatMessageServiceClient is the client API for ChatMessageService service.
@@ -934,7 +934,7 @@ func _ChatMessageService_ListChatMessage_Handler(srv interface{}, ctx context.Co
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ChatMessageService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.ChatMessageService",
+	ServiceName: "llm.ChatMessageService",
 	HandlerType: (*ChatMessageServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

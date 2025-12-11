@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package pb;
+package usercenter;
 option go_package="./pb";
 
 message User {

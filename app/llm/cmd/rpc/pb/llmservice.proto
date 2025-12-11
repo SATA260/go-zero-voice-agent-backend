@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package pb;
+package llm;
 option go_package="./pb";
 
 // 分页查询
