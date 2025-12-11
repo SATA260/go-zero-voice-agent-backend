@@ -45,16 +45,28 @@ message LlmConfig {
     // 上下文长度 (可选)
     int64 content_length = 15;
 }
-
 // 流式输出选项
 message StreamOptions {
     // 是否在输出的最后一行显示所使用的Token数 (可选)
     bool include_usage = 1;
 }
 
+
+// 工具调用增量信息（模板）
+message ToolCallDelta {
+    string id = 1; //工具调用唯一标识
+    string name = 2; //工具名称
+    string arguments_json = 3; //工具调用参数，JSON格式
+    string result = 4; //工具调用结果
+    string error = 5; //工具调用错误信息
+    string scope = 6; //工具调用作用域 server/client
+    string status = 7; //工具调用状态 start/executing/finished
+}
+
 message ChatMsg {
     string role = 1; //System,User,Assistant,tool
     string content = 2;
+    ToolCallDelta tool_calls = 3;
 }
 
 // 创建聊天请求
@@ -95,17 +107,6 @@ message StreamDelta {
     bool completed = 2;
 }
 
-// 工具调用增量信息（模板）
-message ToolCallDelta {
-    string id = 1; //工具调用唯一标识
-    string name = 2; //工具名称
-    string arguments_json = 3; //工具调用参数，JSON格式
-    string result = 4; //工具调用结果
-    string error = 5; //工具调用错误信息
-    string scope = 6; //工具调用作用域 server/client
-    string status = 7; //工具调用状态 start/executing/finished
-}
-
 message ChatStreamResp {
     string id = 1;
     oneof payload {
@@ -114,8 +115,6 @@ message ChatStreamResp {
         string error = 4;
     }
 }
-
-
 
 
 // ChatConfig represents the configuration for a chat session.

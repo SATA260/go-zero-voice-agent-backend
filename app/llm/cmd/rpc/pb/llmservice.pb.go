@@ -300,326 +300,6 @@ func (x *StreamOptions) GetIncludeUsage() bool {
 	return false
 }
 
-type ChatMsg struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Role          string                 `protobuf:"bytes,1,opt,name=role,proto3" json:"role,omitempty"` //System,User,Assistant,tool
-	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ChatMsg) Reset() {
-	*x = ChatMsg{}
-	mi := &file_llmservice_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ChatMsg) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ChatMsg) ProtoMessage() {}
-
-func (x *ChatMsg) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ChatMsg.ProtoReflect.Descriptor instead.
-func (*ChatMsg) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *ChatMsg) GetRole() string {
-	if x != nil {
-		return x.Role
-	}
-	return ""
-}
-
-func (x *ChatMsg) GetContent() string {
-	if x != nil {
-		return x.Content
-	}
-	return ""
-}
-
-// 创建聊天请求
-type ChatReq struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 已存在的会话标识，用于继续对话（可选）
-	ConversationId string `protobuf:"bytes,1,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
-	// 用户标识，用于权限校验（必选）
-	UserId int64 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	// 当前大模型请求配置
-	LlmConfig *LlmConfig `protobuf:"bytes,3,opt,name=llmConfig,proto3" json:"llmConfig,omitempty"`
-	// 当创建新会话时的上下文消息（继续会话时可选）
-	Messages []*ChatMsg `protobuf:"bytes,4,rep,name=messages,proto3" json:"messages,omitempty"`
-	// 是否允许服务端自动回填历史记录（默认 true）
-	AutoFillHistory bool `protobuf:"varint,5,opt,name=auto_fill_history,json=autoFillHistory,proto3" json:"auto_fill_history,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
-}
-
-func (x *ChatReq) Reset() {
-	*x = ChatReq{}
-	mi := &file_llmservice_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ChatReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ChatReq) ProtoMessage() {}
-
-func (x *ChatReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ChatReq.ProtoReflect.Descriptor instead.
-func (*ChatReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *ChatReq) GetConversationId() string {
-	if x != nil {
-		return x.ConversationId
-	}
-	return ""
-}
-
-func (x *ChatReq) GetUserId() int64 {
-	if x != nil {
-		return x.UserId
-	}
-	return 0
-}
-
-func (x *ChatReq) GetLlmConfig() *LlmConfig {
-	if x != nil {
-		return x.LlmConfig
-	}
-	return nil
-}
-
-func (x *ChatReq) GetMessages() []*ChatMsg {
-	if x != nil {
-		return x.Messages
-	}
-	return nil
-}
-
-func (x *ChatReq) GetAutoFillHistory() bool {
-	if x != nil {
-		return x.AutoFillHistory
-	}
-	return false
-}
-
-type ChatResp struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	RespMsg       []*ChatMsg             `protobuf:"bytes,2,rep,name=respMsg,proto3" json:"respMsg,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ChatResp) Reset() {
-	*x = ChatResp{}
-	mi := &file_llmservice_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ChatResp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ChatResp) ProtoMessage() {}
-
-func (x *ChatResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ChatResp.ProtoReflect.Descriptor instead.
-func (*ChatResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *ChatResp) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *ChatResp) GetRespMsg() []*ChatMsg {
-	if x != nil {
-		return x.RespMsg
-	}
-	return nil
-}
-
-type ChatStreamReq struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 已存在的会话标识，用于继续对话（可选）
-	ConversationId string `protobuf:"bytes,1,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
-	// 用户标识，用于权限校验（必选）
-	UserId int64 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	// 当前大模型请求配置
-	LlmConfig *LlmConfig `protobuf:"bytes,3,opt,name=llmConfig,proto3" json:"llmConfig,omitempty"`
-	// 当创建新会话时的上下文消息（继续会话时可选）
-	Messages []*ChatMsg `protobuf:"bytes,4,rep,name=messages,proto3" json:"messages,omitempty"`
-	// 是否允许服务端自动回填历史记录（默认 true）
-	AutoFillHistory bool `protobuf:"varint,5,opt,name=auto_fill_history,json=autoFillHistory,proto3" json:"auto_fill_history,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
-}
-
-func (x *ChatStreamReq) Reset() {
-	*x = ChatStreamReq{}
-	mi := &file_llmservice_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ChatStreamReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ChatStreamReq) ProtoMessage() {}
-
-func (x *ChatStreamReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ChatStreamReq.ProtoReflect.Descriptor instead.
-func (*ChatStreamReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *ChatStreamReq) GetConversationId() string {
-	if x != nil {
-		return x.ConversationId
-	}
-	return ""
-}
-
-func (x *ChatStreamReq) GetUserId() int64 {
-	if x != nil {
-		return x.UserId
-	}
-	return 0
-}
-
-func (x *ChatStreamReq) GetLlmConfig() *LlmConfig {
-	if x != nil {
-		return x.LlmConfig
-	}
-	return nil
-}
-
-func (x *ChatStreamReq) GetMessages() []*ChatMsg {
-	if x != nil {
-		return x.Messages
-	}
-	return nil
-}
-
-func (x *ChatStreamReq) GetAutoFillHistory() bool {
-	if x != nil {
-		return x.AutoFillHistory
-	}
-	return false
-}
-
-// 流式内容增量
-type StreamDelta struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Content       string                 `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
-	Completed     bool                   `protobuf:"varint,2,opt,name=completed,proto3" json:"completed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *StreamDelta) Reset() {
-	*x = StreamDelta{}
-	mi := &file_llmservice_proto_msgTypes[7]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *StreamDelta) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*StreamDelta) ProtoMessage() {}
-
-func (x *StreamDelta) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[7]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use StreamDelta.ProtoReflect.Descriptor instead.
-func (*StreamDelta) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *StreamDelta) GetContent() string {
-	if x != nil {
-		return x.Content
-	}
-	return ""
-}
-
-func (x *StreamDelta) GetCompleted() bool {
-	if x != nil {
-		return x.Completed
-	}
-	return false
-}
-
 // 工具调用增量信息（模板）
 type ToolCallDelta struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -636,7 +316,7 @@ type ToolCallDelta struct {
 
 func (x *ToolCallDelta) Reset() {
 	*x = ToolCallDelta{}
-	mi := &file_llmservice_proto_msgTypes[8]
+	mi := &file_llmservice_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -648,7 +328,7 @@ func (x *ToolCallDelta) String() string {
 func (*ToolCallDelta) ProtoMessage() {}
 
 func (x *ToolCallDelta) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[8]
+	mi := &file_llmservice_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -661,7 +341,7 @@ func (x *ToolCallDelta) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ToolCallDelta.ProtoReflect.Descriptor instead.
 func (*ToolCallDelta) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{8}
+	return file_llmservice_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ToolCallDelta) GetId() string {
@@ -711,6 +391,334 @@ func (x *ToolCallDelta) GetStatus() string {
 		return x.Status
 	}
 	return ""
+}
+
+type ChatMsg struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Role          string                 `protobuf:"bytes,1,opt,name=role,proto3" json:"role,omitempty"` //System,User,Assistant,tool
+	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
+	ToolCalls     *ToolCallDelta         `protobuf:"bytes,3,opt,name=tool_calls,json=toolCalls,proto3" json:"tool_calls,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ChatMsg) Reset() {
+	*x = ChatMsg{}
+	mi := &file_llmservice_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChatMsg) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChatMsg) ProtoMessage() {}
+
+func (x *ChatMsg) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChatMsg.ProtoReflect.Descriptor instead.
+func (*ChatMsg) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ChatMsg) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
+func (x *ChatMsg) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *ChatMsg) GetToolCalls() *ToolCallDelta {
+	if x != nil {
+		return x.ToolCalls
+	}
+	return nil
+}
+
+// 创建聊天请求
+type ChatReq struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 已存在的会话标识，用于继续对话（可选）
+	ConversationId string `protobuf:"bytes,1,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
+	// 用户标识，用于权限校验（必选）
+	UserId int64 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// 当前大模型请求配置
+	LlmConfig *LlmConfig `protobuf:"bytes,3,opt,name=llmConfig,proto3" json:"llmConfig,omitempty"`
+	// 当创建新会话时的上下文消息（继续会话时可选）
+	Messages []*ChatMsg `protobuf:"bytes,4,rep,name=messages,proto3" json:"messages,omitempty"`
+	// 是否允许服务端自动回填历史记录（默认 true）
+	AutoFillHistory bool `protobuf:"varint,5,opt,name=auto_fill_history,json=autoFillHistory,proto3" json:"auto_fill_history,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *ChatReq) Reset() {
+	*x = ChatReq{}
+	mi := &file_llmservice_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChatReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChatReq) ProtoMessage() {}
+
+func (x *ChatReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChatReq.ProtoReflect.Descriptor instead.
+func (*ChatReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ChatReq) GetConversationId() string {
+	if x != nil {
+		return x.ConversationId
+	}
+	return ""
+}
+
+func (x *ChatReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *ChatReq) GetLlmConfig() *LlmConfig {
+	if x != nil {
+		return x.LlmConfig
+	}
+	return nil
+}
+
+func (x *ChatReq) GetMessages() []*ChatMsg {
+	if x != nil {
+		return x.Messages
+	}
+	return nil
+}
+
+func (x *ChatReq) GetAutoFillHistory() bool {
+	if x != nil {
+		return x.AutoFillHistory
+	}
+	return false
+}
+
+type ChatResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	RespMsg       []*ChatMsg             `protobuf:"bytes,2,rep,name=respMsg,proto3" json:"respMsg,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ChatResp) Reset() {
+	*x = ChatResp{}
+	mi := &file_llmservice_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChatResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChatResp) ProtoMessage() {}
+
+func (x *ChatResp) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChatResp.ProtoReflect.Descriptor instead.
+func (*ChatResp) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ChatResp) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ChatResp) GetRespMsg() []*ChatMsg {
+	if x != nil {
+		return x.RespMsg
+	}
+	return nil
+}
+
+type ChatStreamReq struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 已存在的会话标识，用于继续对话（可选）
+	ConversationId string `protobuf:"bytes,1,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
+	// 用户标识，用于权限校验（必选）
+	UserId int64 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// 当前大模型请求配置
+	LlmConfig *LlmConfig `protobuf:"bytes,3,opt,name=llmConfig,proto3" json:"llmConfig,omitempty"`
+	// 当创建新会话时的上下文消息（继续会话时可选）
+	Messages []*ChatMsg `protobuf:"bytes,4,rep,name=messages,proto3" json:"messages,omitempty"`
+	// 是否允许服务端自动回填历史记录（默认 true）
+	AutoFillHistory bool `protobuf:"varint,5,opt,name=auto_fill_history,json=autoFillHistory,proto3" json:"auto_fill_history,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *ChatStreamReq) Reset() {
+	*x = ChatStreamReq{}
+	mi := &file_llmservice_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChatStreamReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChatStreamReq) ProtoMessage() {}
+
+func (x *ChatStreamReq) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChatStreamReq.ProtoReflect.Descriptor instead.
+func (*ChatStreamReq) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ChatStreamReq) GetConversationId() string {
+	if x != nil {
+		return x.ConversationId
+	}
+	return ""
+}
+
+func (x *ChatStreamReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *ChatStreamReq) GetLlmConfig() *LlmConfig {
+	if x != nil {
+		return x.LlmConfig
+	}
+	return nil
+}
+
+func (x *ChatStreamReq) GetMessages() []*ChatMsg {
+	if x != nil {
+		return x.Messages
+	}
+	return nil
+}
+
+func (x *ChatStreamReq) GetAutoFillHistory() bool {
+	if x != nil {
+		return x.AutoFillHistory
+	}
+	return false
+}
+
+// 流式内容增量
+type StreamDelta struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Content       string                 `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
+	Completed     bool                   `protobuf:"varint,2,opt,name=completed,proto3" json:"completed,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StreamDelta) Reset() {
+	*x = StreamDelta{}
+	mi := &file_llmservice_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StreamDelta) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StreamDelta) ProtoMessage() {}
+
+func (x *StreamDelta) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StreamDelta.ProtoReflect.Descriptor instead.
+func (*StreamDelta) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *StreamDelta) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *StreamDelta) GetCompleted() bool {
+	if x != nil {
+		return x.Completed
+	}
+	return false
 }
 
 type ChatStreamResp struct {
@@ -3233,10 +3241,20 @@ const file_llmservice_proto_rawDesc = "" +
 	"\renable_search\x18\x0e \x01(\bR\fenableSearch\x12%\n" +
 	"\x0econtent_length\x18\x0f \x01(\x03R\rcontentLength\"4\n" +
 	"\rStreamOptions\x12#\n" +
-	"\rinclude_usage\x18\x01 \x01(\bR\fincludeUsage\"7\n" +
+	"\rinclude_usage\x18\x01 \x01(\bR\fincludeUsage\"\xb6\x01\n" +
+	"\rToolCallDelta\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12%\n" +
+	"\x0earguments_json\x18\x03 \x01(\tR\rargumentsJson\x12\x16\n" +
+	"\x06result\x18\x04 \x01(\tR\x06result\x12\x14\n" +
+	"\x05error\x18\x05 \x01(\tR\x05error\x12\x14\n" +
+	"\x05scope\x18\x06 \x01(\tR\x05scope\x12\x16\n" +
+	"\x06status\x18\a \x01(\tR\x06status\"i\n" +
 	"\aChatMsg\x12\x12\n" +
 	"\x04role\x18\x01 \x01(\tR\x04role\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\"\xcd\x01\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\x120\n" +
+	"\n" +
+	"tool_calls\x18\x03 \x01(\v2\x11.pb.ToolCallDeltaR\ttoolCalls\"\xcd\x01\n" +
 	"\aChatReq\x12'\n" +
 	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12+\n" +
@@ -3254,15 +3272,7 @@ const file_llmservice_proto_rawDesc = "" +
 	"\x11auto_fill_history\x18\x05 \x01(\bR\x0fautoFillHistory\"E\n" +
 	"\vStreamDelta\x12\x18\n" +
 	"\acontent\x18\x01 \x01(\tR\acontent\x12\x1c\n" +
-	"\tcompleted\x18\x02 \x01(\bR\tcompleted\"\xb6\x01\n" +
-	"\rToolCallDelta\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12%\n" +
-	"\x0earguments_json\x18\x03 \x01(\tR\rargumentsJson\x12\x16\n" +
-	"\x06result\x18\x04 \x01(\tR\x06result\x12\x14\n" +
-	"\x05error\x18\x05 \x01(\tR\x05error\x12\x14\n" +
-	"\x05scope\x18\x06 \x01(\tR\x05scope\x12\x16\n" +
-	"\x06status\x18\a \x01(\tR\x06status\"\x9e\x01\n" +
+	"\tcompleted\x18\x02 \x01(\bR\tcompleted\"\x9e\x01\n" +
 	"\x0eChatStreamResp\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12'\n" +
 	"\x05delta\x18\x02 \x01(\v2\x0f.pb.StreamDeltaH\x00R\x05delta\x120\n" +
@@ -3497,12 +3507,12 @@ var file_llmservice_proto_goTypes = []any{
 	(*PageQuery)(nil),                 // 0: pb.PageQuery
 	(*LlmConfig)(nil),                 // 1: pb.LlmConfig
 	(*StreamOptions)(nil),             // 2: pb.StreamOptions
-	(*ChatMsg)(nil),                   // 3: pb.ChatMsg
-	(*ChatReq)(nil),                   // 4: pb.ChatReq
-	(*ChatResp)(nil),                  // 5: pb.ChatResp
-	(*ChatStreamReq)(nil),             // 6: pb.ChatStreamReq
-	(*StreamDelta)(nil),               // 7: pb.StreamDelta
-	(*ToolCallDelta)(nil),             // 8: pb.ToolCallDelta
+	(*ToolCallDelta)(nil),             // 3: pb.ToolCallDelta
+	(*ChatMsg)(nil),                   // 4: pb.ChatMsg
+	(*ChatReq)(nil),                   // 5: pb.ChatReq
+	(*ChatResp)(nil),                  // 6: pb.ChatResp
+	(*ChatStreamReq)(nil),             // 7: pb.ChatStreamReq
+	(*StreamDelta)(nil),               // 8: pb.StreamDelta
 	(*ChatStreamResp)(nil),            // 9: pb.ChatStreamResp
 	(*ChatConfig)(nil),                // 10: pb.ChatConfig
 	(*CreateConfigReq)(nil),           // 11: pb.CreateConfigReq
@@ -3544,66 +3554,67 @@ var file_llmservice_proto_goTypes = []any{
 }
 var file_llmservice_proto_depIdxs = []int32{
 	2,  // 0: pb.LlmConfig.stream_options:type_name -> pb.StreamOptions
-	1,  // 1: pb.ChatReq.llmConfig:type_name -> pb.LlmConfig
-	3,  // 2: pb.ChatReq.messages:type_name -> pb.ChatMsg
-	3,  // 3: pb.ChatResp.respMsg:type_name -> pb.ChatMsg
-	1,  // 4: pb.ChatStreamReq.llmConfig:type_name -> pb.LlmConfig
-	3,  // 5: pb.ChatStreamReq.messages:type_name -> pb.ChatMsg
-	7,  // 6: pb.ChatStreamResp.delta:type_name -> pb.StreamDelta
-	8,  // 7: pb.ChatStreamResp.tool_call:type_name -> pb.ToolCallDelta
-	10, // 8: pb.GetConfigResp.config:type_name -> pb.ChatConfig
-	0,  // 9: pb.ListConfigReq.pageQuery:type_name -> pb.PageQuery
-	19, // 10: pb.ListConfigReq.filter:type_name -> pb.ListConfigFilter
-	10, // 11: pb.ListConfigResp.configs:type_name -> pb.ChatConfig
-	22, // 12: pb.GetChatSessionResp.session:type_name -> pb.ChatSession
-	0,  // 13: pb.ListChatSessionReq.pageQuery:type_name -> pb.PageQuery
-	32, // 14: pb.ListChatSessionReq.filter:type_name -> pb.ListChatSessionFilter
-	22, // 15: pb.ListChatSessionResp.sessions:type_name -> pb.ChatSession
-	35, // 16: pb.GetChatMessageResp.message:type_name -> pb.ChatMessage
-	0,  // 17: pb.ListChatMessageReq.pageQuery:type_name -> pb.PageQuery
-	44, // 18: pb.ListChatMessageReq.filter:type_name -> pb.ListChatMessageFilter
-	35, // 19: pb.ListChatMessageResp.messages:type_name -> pb.ChatMessage
-	4,  // 20: pb.LlmChatService.Chat:input_type -> pb.ChatReq
-	6,  // 21: pb.LlmChatService.ChatStream:input_type -> pb.ChatStreamReq
-	11, // 22: pb.LlmConfigService.CreateConfig:input_type -> pb.CreateConfigReq
-	13, // 23: pb.LlmConfigService.DeleteConfig:input_type -> pb.DeleteConfigReq
-	15, // 24: pb.LlmConfigService.UpdateConfig:input_type -> pb.UpdateConfigReq
-	17, // 25: pb.LlmConfigService.GetConfig:input_type -> pb.GetConfigReq
-	20, // 26: pb.LlmConfigService.ListConfig:input_type -> pb.ListConfigReq
-	23, // 27: pb.ChatSessionService.CreateChatSession:input_type -> pb.CreateChatSessionReq
-	25, // 28: pb.ChatSessionService.DeleteChatSession:input_type -> pb.DeleteChatSessionReq
-	27, // 29: pb.ChatSessionService.UpdateChatSession:input_type -> pb.UpdateChatSessionReq
-	29, // 30: pb.ChatSessionService.GetChatSession:input_type -> pb.GetChatSessionReq
-	30, // 31: pb.ChatSessionService.GetChatSessionByConvId:input_type -> pb.GetChatSessionByConvIdReq
-	33, // 32: pb.ChatSessionService.ListChatSession:input_type -> pb.ListChatSessionReq
-	36, // 33: pb.ChatMessageService.CreateChatMessage:input_type -> pb.CreateChatMessageReq
-	38, // 34: pb.ChatMessageService.DeleteChatMessage:input_type -> pb.DeleteChatMessageReq
-	40, // 35: pb.ChatMessageService.UpdateChatMessage:input_type -> pb.UpdateChatMessageReq
-	42, // 36: pb.ChatMessageService.GetChatMessage:input_type -> pb.GetChatMessageReq
-	45, // 37: pb.ChatMessageService.ListChatMessage:input_type -> pb.ListChatMessageReq
-	5,  // 38: pb.LlmChatService.Chat:output_type -> pb.ChatResp
-	9,  // 39: pb.LlmChatService.ChatStream:output_type -> pb.ChatStreamResp
-	12, // 40: pb.LlmConfigService.CreateConfig:output_type -> pb.CreateConfigResp
-	14, // 41: pb.LlmConfigService.DeleteConfig:output_type -> pb.DeleteConfigResp
-	16, // 42: pb.LlmConfigService.UpdateConfig:output_type -> pb.UpdateConfigResp
-	18, // 43: pb.LlmConfigService.GetConfig:output_type -> pb.GetConfigResp
-	21, // 44: pb.LlmConfigService.ListConfig:output_type -> pb.ListConfigResp
-	24, // 45: pb.ChatSessionService.CreateChatSession:output_type -> pb.CreateChatSessionResp
-	26, // 46: pb.ChatSessionService.DeleteChatSession:output_type -> pb.DeleteChatSessionResp
-	28, // 47: pb.ChatSessionService.UpdateChatSession:output_type -> pb.UpdateChatSessionResp
-	31, // 48: pb.ChatSessionService.GetChatSession:output_type -> pb.GetChatSessionResp
-	31, // 49: pb.ChatSessionService.GetChatSessionByConvId:output_type -> pb.GetChatSessionResp
-	34, // 50: pb.ChatSessionService.ListChatSession:output_type -> pb.ListChatSessionResp
-	37, // 51: pb.ChatMessageService.CreateChatMessage:output_type -> pb.CreateChatMessageResp
-	39, // 52: pb.ChatMessageService.DeleteChatMessage:output_type -> pb.DeleteChatMessageResp
-	41, // 53: pb.ChatMessageService.UpdateChatMessage:output_type -> pb.UpdateChatMessageResp
-	43, // 54: pb.ChatMessageService.GetChatMessage:output_type -> pb.GetChatMessageResp
-	46, // 55: pb.ChatMessageService.ListChatMessage:output_type -> pb.ListChatMessageResp
-	38, // [38:56] is the sub-list for method output_type
-	20, // [20:38] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	3,  // 1: pb.ChatMsg.tool_calls:type_name -> pb.ToolCallDelta
+	1,  // 2: pb.ChatReq.llmConfig:type_name -> pb.LlmConfig
+	4,  // 3: pb.ChatReq.messages:type_name -> pb.ChatMsg
+	4,  // 4: pb.ChatResp.respMsg:type_name -> pb.ChatMsg
+	1,  // 5: pb.ChatStreamReq.llmConfig:type_name -> pb.LlmConfig
+	4,  // 6: pb.ChatStreamReq.messages:type_name -> pb.ChatMsg
+	8,  // 7: pb.ChatStreamResp.delta:type_name -> pb.StreamDelta
+	3,  // 8: pb.ChatStreamResp.tool_call:type_name -> pb.ToolCallDelta
+	10, // 9: pb.GetConfigResp.config:type_name -> pb.ChatConfig
+	0,  // 10: pb.ListConfigReq.pageQuery:type_name -> pb.PageQuery
+	19, // 11: pb.ListConfigReq.filter:type_name -> pb.ListConfigFilter
+	10, // 12: pb.ListConfigResp.configs:type_name -> pb.ChatConfig
+	22, // 13: pb.GetChatSessionResp.session:type_name -> pb.ChatSession
+	0,  // 14: pb.ListChatSessionReq.pageQuery:type_name -> pb.PageQuery
+	32, // 15: pb.ListChatSessionReq.filter:type_name -> pb.ListChatSessionFilter
+	22, // 16: pb.ListChatSessionResp.sessions:type_name -> pb.ChatSession
+	35, // 17: pb.GetChatMessageResp.message:type_name -> pb.ChatMessage
+	0,  // 18: pb.ListChatMessageReq.pageQuery:type_name -> pb.PageQuery
+	44, // 19: pb.ListChatMessageReq.filter:type_name -> pb.ListChatMessageFilter
+	35, // 20: pb.ListChatMessageResp.messages:type_name -> pb.ChatMessage
+	5,  // 21: pb.LlmChatService.Chat:input_type -> pb.ChatReq
+	7,  // 22: pb.LlmChatService.ChatStream:input_type -> pb.ChatStreamReq
+	11, // 23: pb.LlmConfigService.CreateConfig:input_type -> pb.CreateConfigReq
+	13, // 24: pb.LlmConfigService.DeleteConfig:input_type -> pb.DeleteConfigReq
+	15, // 25: pb.LlmConfigService.UpdateConfig:input_type -> pb.UpdateConfigReq
+	17, // 26: pb.LlmConfigService.GetConfig:input_type -> pb.GetConfigReq
+	20, // 27: pb.LlmConfigService.ListConfig:input_type -> pb.ListConfigReq
+	23, // 28: pb.ChatSessionService.CreateChatSession:input_type -> pb.CreateChatSessionReq
+	25, // 29: pb.ChatSessionService.DeleteChatSession:input_type -> pb.DeleteChatSessionReq
+	27, // 30: pb.ChatSessionService.UpdateChatSession:input_type -> pb.UpdateChatSessionReq
+	29, // 31: pb.ChatSessionService.GetChatSession:input_type -> pb.GetChatSessionReq
+	30, // 32: pb.ChatSessionService.GetChatSessionByConvId:input_type -> pb.GetChatSessionByConvIdReq
+	33, // 33: pb.ChatSessionService.ListChatSession:input_type -> pb.ListChatSessionReq
+	36, // 34: pb.ChatMessageService.CreateChatMessage:input_type -> pb.CreateChatMessageReq
+	38, // 35: pb.ChatMessageService.DeleteChatMessage:input_type -> pb.DeleteChatMessageReq
+	40, // 36: pb.ChatMessageService.UpdateChatMessage:input_type -> pb.UpdateChatMessageReq
+	42, // 37: pb.ChatMessageService.GetChatMessage:input_type -> pb.GetChatMessageReq
+	45, // 38: pb.ChatMessageService.ListChatMessage:input_type -> pb.ListChatMessageReq
+	6,  // 39: pb.LlmChatService.Chat:output_type -> pb.ChatResp
+	9,  // 40: pb.LlmChatService.ChatStream:output_type -> pb.ChatStreamResp
+	12, // 41: pb.LlmConfigService.CreateConfig:output_type -> pb.CreateConfigResp
+	14, // 42: pb.LlmConfigService.DeleteConfig:output_type -> pb.DeleteConfigResp
+	16, // 43: pb.LlmConfigService.UpdateConfig:output_type -> pb.UpdateConfigResp
+	18, // 44: pb.LlmConfigService.GetConfig:output_type -> pb.GetConfigResp
+	21, // 45: pb.LlmConfigService.ListConfig:output_type -> pb.ListConfigResp
+	24, // 46: pb.ChatSessionService.CreateChatSession:output_type -> pb.CreateChatSessionResp
+	26, // 47: pb.ChatSessionService.DeleteChatSession:output_type -> pb.DeleteChatSessionResp
+	28, // 48: pb.ChatSessionService.UpdateChatSession:output_type -> pb.UpdateChatSessionResp
+	31, // 49: pb.ChatSessionService.GetChatSession:output_type -> pb.GetChatSessionResp
+	31, // 50: pb.ChatSessionService.GetChatSessionByConvId:output_type -> pb.GetChatSessionResp
+	34, // 51: pb.ChatSessionService.ListChatSession:output_type -> pb.ListChatSessionResp
+	37, // 52: pb.ChatMessageService.CreateChatMessage:output_type -> pb.CreateChatMessageResp
+	39, // 53: pb.ChatMessageService.DeleteChatMessage:output_type -> pb.DeleteChatMessageResp
+	41, // 54: pb.ChatMessageService.UpdateChatMessage:output_type -> pb.UpdateChatMessageResp
+	43, // 55: pb.ChatMessageService.GetChatMessage:output_type -> pb.GetChatMessageResp
+	46, // 56: pb.ChatMessageService.ListChatMessage:output_type -> pb.ListChatMessageResp
+	39, // [39:57] is the sub-list for method output_type
+	21, // [21:39] is the sub-list for method input_type
+	21, // [21:21] is the sub-list for extension type_name
+	21, // [21:21] is the sub-list for extension extendee
+	0,  // [0:21] is the sub-list for field type_name
 }
 
 func init() { file_llmservice_proto_init() }
