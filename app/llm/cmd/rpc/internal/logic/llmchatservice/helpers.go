@@ -142,7 +142,7 @@ func MapRoleToOpenAI(role string) string {
 }
 
 // BuildChatCompletionRequest 构建通用请求参数
-func BuildChatCompletionRequest(cfg *pb.LlmConfig, messages []openai.ChatCompletionMessage, stream bool) openai.ChatCompletionRequest {
+func BuildChatCompletionRequest(cfg *pb.LlmConfig, messages []openai.ChatCompletionMessage, stream bool, tools []openai.Tool) openai.ChatCompletionRequest {
 	req := openai.ChatCompletionRequest{
 		Model:    cfg.GetModel(),
 		Messages: messages,
@@ -171,6 +171,12 @@ func BuildChatCompletionRequest(cfg *pb.LlmConfig, messages []openai.ChatComplet
 		s := int(seed)
 		req.Seed = &s
 	}
+
+	if len(tools) > 0 {
+		req.Tools = tools
+		req.ToolChoice = "auto"
+	}
+
 	return req
 }
 

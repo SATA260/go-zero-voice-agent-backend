@@ -52,6 +52,9 @@ func (l *ChatStreamLogic) ChatStream(in *pb.ChatStreamReq, stream pb.LlmChatServ
 	}
 	openaiMsgs := BuildOpenAIMessages(historyMsgs)
 
+	// 获取可用的工具列表
+	openaiToolList := l.svcCtx.OpenaiToolList
+
 	// 创建 OpenAI 客户端
 	llmClient, err := NewOpenAIClient(in.LlmConfig)
 	if err != nil {
@@ -59,7 +62,7 @@ func (l *ChatStreamLogic) ChatStream(in *pb.ChatStreamReq, stream pb.LlmChatServ
 	}
 
 	// 构建聊天请求
-	chatCompletionReq := BuildChatCompletionRequest(in.LlmConfig, openaiMsgs, true)
+	chatCompletionReq := BuildChatCompletionRequest(in.LlmConfig, openaiMsgs, true, openaiToolList)
 
 	chatStream, err := llmClient.CreateChatCompletionStream(l.ctx, chatCompletionReq)
 	if err != nil {
@@ -107,12 +110,12 @@ func (l *ChatStreamLogic) ChatStream(in *pb.ChatStreamReq, stream pb.LlmChatServ
 					// 注意：在流式响应中，ID 和 Name 通常只在第一个包中出现
 					// Arguments 会分散在后续的包中
 
-					scope := consts.ToolCallScopeClient
+					scope := consts.TOOL_CALLING_SCOPE_SERVER
 					requiresConfirmation := false
 					status := ""
 
 					if tool, ok := l.svcCtx.ToolRegistry[toolCall.Function.Name]; ok {
-						scope = consts.ToolCallScopeServer
+						scope = consts.TOOL_CALLING_SCOPE_SERVER
 						requiresConfirmation = tool.RequiresConfirmation()
 					}
 
