@@ -77,11 +77,100 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	// 使用递归处理多轮工具调用
-	// 首次调用时，先存储用户输入的消息
+	// 0. 检查是否是针对某个 ToolCall 的确认请求
+	// 约定：如果 Messages 中包含一条 Role=tool 且 Status 为 CONFIRMED/REJECTED 的消息，则视为确认指令
 	if len(in.Messages) > 0 {
+		lastMsg := in.Messages[len(in.Messages)-1]
+		if lastMsg.Role == chatconsts.ChatMessageRoleTool && lastMsg.ToolCalls != nil {
+			status := lastMsg.ToolCalls.Status
+			if status == consts.TOOL_CALLING_CONFIRMED || status == consts.TOOL_CALLING_REJECTED {
+				l.Logger.Infof("Received tool confirmation request: %s, status: %s", lastMsg.ToolCalls.Id, status)
+				return l.handleToolConfirmation(in, chatSession, client, openaiMsgs, lastMsg.ToolCalls.Id, status == consts.TOOL_CALLING_CONFIRMED)
+			}
+		}
 		go l.svcCtx.CacheConversation(chatSession.ConvId, in.Messages, nil)
 	}
+
+	return l.handleChatInteraction(in, chatSession, client, openaiMsgs, 0)
+}
+
+// handleToolConfirmation 处理工具确认逻辑
+func (l *ChatLogic) handleToolConfirmation(
+	in *pb.ChatReq,
+	chatSession *model.ChatSession,
+	client *openai.Client,
+	openaiMsgs []openai.ChatCompletionMessage,
+	toolCallID string,
+	confirmed bool,
+) (*pb.ChatResp, error) {
+	// 1. 找到对应的 ToolCall (通常在历史记录的最后一条 Assistant 消息中)
+	var toolCallToExecute *openai.ToolCall
+	found := false
+
+	// 从后往前找，找到最近的一条 Assistant 消息
+	for i := len(openaiMsgs) - 1; i >= 0; i-- {
+		msg := openaiMsgs[i]
+		if msg.Role == openai.ChatMessageRoleAssistant && len(msg.ToolCalls) > 0 {
+			for _, tc := range msg.ToolCalls {
+				if tc.ID == toolCallID {
+					toolCallToExecute = &tc
+					found = true
+					break
+				}
+			}
+		}
+		if found {
+			break
+		}
+	}
+
+	if !found || toolCallToExecute == nil {
+		return nil, status.Errorf(codes.NotFound, "tool call %s not found in history", toolCallID)
+	}
+
+	var content string
+	if confirmed {
+		// 2. 如果 confirmed == true，执行工具
+		tool, ok := l.svcCtx.ToolRegistry[toolCallToExecute.Function.Name]
+		if !ok {
+			content = "Error: Tool not found"
+		} else {
+			toolResult, err := tool.Execute(l.ctx, toolCallToExecute.Function.Arguments)
+			if err != nil {
+				content = "Error: " + err.Error()
+			} else {
+				content = toolResult
+			}
+		}
+	} else {
+		// 3. 如果 confirmed == false，生成拒绝消息
+		content = "User rejected the tool execution."
+	}
+
+	// 4. 将结果存入历史
+	toolMsg := openai.ChatCompletionMessage{
+		Role:       openai.ChatMessageRoleTool,
+		Content:    content,
+		ToolCallID: toolCallID,
+	}
+	openaiMsgs = append(openaiMsgs, toolMsg)
+
+	// 异步存储 Tool 执行结果
+	pbToolMsg := &pb.ChatMsg{
+		Role:    chatconsts.ChatMessageRoleTool,
+		Content: content,
+		ToolCalls: &pb.ToolCallDelta{
+			Id:     toolCallID,
+			Status: consts.TOOL_CALLING_FINISHED,
+			Result: content,
+		},
+	}
+	if !confirmed {
+		pbToolMsg.ToolCalls.Status = consts.TOOL_CALLING_REJECTED
+	}
+	go l.svcCtx.CacheConversation(chatSession.ConvId, nil, pbToolMsg)
+
+	// 5. 递归调用 handleChatInteraction，继续后续对话
 	return l.handleChatInteraction(in, chatSession, client, openaiMsgs, 0)
 }
 
@@ -119,33 +208,21 @@ func (l *ChatLogic) handleChatInteraction(
 	choice := completion.Choices[0]
 	respMsgs := make([]*pb.ChatMsg, 0)
 
-	// 2. 判断是否有工具调用
+	// 判断是否有工具调用
 	if len(choice.Message.ToolCalls) > 0 {
-		// 2.1 预检查：是否有任何工具需要“前端确认”
-		needsConfirmation := false
+		// 用来存储返回给前端的需要确认的工具调用
+		respMsgs = make([]*pb.ChatMsg, 0)
+
+		// 先执行不需要确认的工具调用, 收集需要确认的工具调用
 		for _, toolCall := range choice.Message.ToolCalls {
 			tool, ok := l.svcCtx.ToolRegistry[toolCall.Function.Name]
-			if ok && tool.RequiresConfirmation() {
-				needsConfirmation = true
-				break
+			if !ok {
+				l.Logger.Errorf("unknown tool called: %s", toolCall.Function.Name)
+				continue
 			}
-		}
 
-		// 2.2 如果需要确认，直接中断递归，返回给前端
-		if needsConfirmation {
-			l.Logger.Info("Tool calls require confirmation, returning to client.")
-
-			for _, toolCall := range choice.Message.ToolCalls {
-				tool, ok := l.svcCtx.ToolRegistry[toolCall.Function.Name]
-				scope := consts.TOOL_CALLING_SCOPE_SERVER
-				requiresConfirm := false
-				if ok {
-					if tool.Scope() == consts.TOOL_CALLING_SCOPE_CLIENT {
-						scope = consts.TOOL_CALLING_SCOPE_CLIENT
-					}
-					requiresConfirm = tool.RequiresConfirmation()
-				}
-
+			// 需要确认的工具调用，存储起来
+			if tool.RequiresConfirmation() {
 				respMsgs = append(respMsgs, &pb.ChatMsg{
 					Role: chatconsts.ChatMessageRoleTool,
 					ToolCalls: &pb.ToolCallDelta{
@@ -153,41 +230,21 @@ func (l *ChatLogic) handleChatInteraction(
 						Name:                 toolCall.Function.Name,
 						ArgumentsJson:        toolCall.Function.Arguments,
 						Status:               consts.TOOL_CALLING_WAITING_CONFIRMATION,
-						Scope:                scope,
-						RequiresConfirmation: requiresConfirm,
+						Scope:                tool.Scope(),
+						RequiresConfirmation: tool.RequiresConfirmation(),
 					},
-				})
-			}
-
-			return &pb.ChatResp{
-				Id:      chatSession.ConvId,
-				RespMsg: respMsgs,
-			}, nil
-		}
-
-		// 2.3 如果不需要确认，执行工具并递归调用
-		l.Logger.Info("Auto-executing tools...")
-
-		// 重要：必须将 Assistant 的 ToolCall 消息加入历史上下文
-		openaiMsgs = append(openaiMsgs, choice.Message)
-
-		for _, toolCall := range choice.Message.ToolCalls {
-			tool, ok := l.svcCtx.ToolRegistry[toolCall.Function.Name]
-			if !ok {
-				l.Logger.Errorf("unknown tool called: %s", toolCall.Function.Name)
-				openaiMsgs = append(openaiMsgs, openai.ChatCompletionMessage{
-					Role:       openai.ChatMessageRoleTool,
-					Content:    "Error: Tool not found",
-					ToolCallID: toolCall.ID,
 				})
 				continue
 			}
 
-			// 执行工具
+			// 不需要确认的工具调用，执行它
+			l.Logger.Infof("Auto-executing tool: %s", toolCall.Function.Name)
+			content := ""
 			toolResult, err := tool.Execute(l.ctx, toolCall.Function.Arguments)
-			content := toolResult
 			if err != nil {
 				content = "Error: " + err.Error()
+			} else {
+				content = toolResult
 			}
 
 			// 将执行结果作为 Tool 消息加入历史
@@ -206,14 +263,21 @@ func (l *ChatLogic) handleChatInteraction(
 				},
 			}
 			go l.svcCtx.CacheConversation(chatSession.ConvId, nil, toolMsg)
+
+			if len(respMsgs) > 0 {
+				// 有需要确认的工具调用，先返回给前端
+				return &pb.ChatResp{
+					Id:      chatSession.ConvId,
+					RespMsg: respMsgs,
+				}, nil
+			}
+
+			// 递归调用自己，继续处理后续的对话
+			return l.handleChatInteraction(in, chatSession, client, openaiMsgs, depth+1)
 		}
-
-		// 递归调用下一轮
-		return l.handleChatInteraction(in, chatSession, client, openaiMsgs, depth+1)
-
 	}
 
-	// 3. 没有工具调用，这是最终文本回复
+	// 没有工具调用，这时为最终文本回复
 	// 只有当 Content 不为空时，才构建文本消息
 	if choice.Message.Content != "" {
 		assistantMsg := &pb.ChatMsg{
