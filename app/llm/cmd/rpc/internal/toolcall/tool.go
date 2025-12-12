@@ -8,6 +8,7 @@ type Tool interface {
 	Name() string
 	Description() string
 	ArgumentsJson() string
-	Execute(ctx context.Context, argsJson string) (string, error)
 	RequiresConfirmation() bool
+	Scope() string
+	Execute(ctx context.Context, argsJson string) (string, error)
 }

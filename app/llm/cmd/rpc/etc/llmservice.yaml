@@ -7,6 +7,12 @@ Etcd:
 DB:
   DataSource: ${LLM_DB_DSN}
 
+Redis:
+  Host: ${REDIS_HOST}
+  Type: node
+  Pass: ${REDIS_PASS}
+  Key: llm
+
 Cache:
   - Host: ${REDIS_HOST}
     Type: node

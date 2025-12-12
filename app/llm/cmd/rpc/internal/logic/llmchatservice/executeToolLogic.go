@@ -36,7 +36,7 @@ func (l *ExecuteToolLogic) ExecuteTool(in *pb.ExecuteToolReq) (*pb.ExecuteToolRe
 		return nil, status.Error(codes.InvalidArgument, "tool name is required")
 	}
 
-	if in.Scope != "" && in.Scope != consts.ToolCallScopeServer {
+	if in.Scope != "" && in.Scope != consts.TOOL_CALLING_SCOPE_SERVER {
 		return nil, status.Error(codes.InvalidArgument, "executeTool only supports server scope")
 	}
 
@@ -57,7 +57,7 @@ func (l *ExecuteToolLogic) ExecuteTool(in *pb.ExecuteToolReq) (*pb.ExecuteToolRe
 		Id:                   in.Id,
 		Name:                 in.Name,
 		ArgumentsJson:        in.ArgumentsJson,
-		Scope:                consts.ToolCallScopeServer,
+		Scope:                consts.TOOL_CALLING_SCOPE_SERVER,
 		Status:               consts.TOOL_CALLING_EXECUTING,
 		RequiresConfirmation: toolIns.RequiresConfirmation(),
 	}

@@ -2,6 +2,7 @@ package toolcall
 
 import (
 	"context"
+	"go-zero-voice-agent/app/llm/pkg/consts"
 	"time"
 )
 
@@ -24,7 +25,11 @@ func (t *TimeTool) ArgumentsJson() string {
 }
 
 func (t *TimeTool) RequiresConfirmation() bool {
-	return true
+	return false
+}
+
+func (t *TimeTool) Scope() string {
+	return consts.TOOL_CALLING_SCOPE_SERVER
 }
 
 func (t *TimeTool) Execute(ctx context.Context, argsJson string) (string, error) {

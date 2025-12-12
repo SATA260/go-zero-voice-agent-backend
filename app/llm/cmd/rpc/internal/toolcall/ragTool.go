@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"go-zero-voice-agent/app/llm/pkg/consts"
 	"go-zero-voice-agent/app/rag/cmd/rpc/client/ragservice"
 	"go-zero-voice-agent/app/rag/cmd/rpc/pb" // 引入 RAG 服务的 pb 包
 )
@@ -41,6 +42,14 @@ func (t *RagTool) ArgumentsJson() string {
 	}`
 }
 
+func (t *RagTool) RequiresConfirmation() bool {
+	return false
+}
+
+func (t *RagTool) Scope() string {
+	return consts.TOOL_CALLING_SCOPE_SERVER
+}
+
 func (t *RagTool) Execute(ctx context.Context, argsJson string) (string, error) {
 	// 解析参数
 	var params RagToolParams
@@ -74,8 +83,4 @@ func (t *RagTool) Execute(ctx context.Context, argsJson string) (string, error) 
 	}
 
 	return string(resultBytes), nil
-}
-
-func (t *RagTool) RequiresConfirmation() bool {
-	return false
 }

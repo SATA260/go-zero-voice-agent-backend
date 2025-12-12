@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/hibiken/asynq"
+	"github.com/sashabaranov/go-openai"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -32,7 +33,8 @@ type ServiceContext struct {
 
 	RagRpc ragservice.RagService
 
-	ToolRegistry map[string]toolcall.Tool
+	ToolRegistry   map[string]toolcall.Tool
+	OpenaiToolList []openai.Tool
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -60,6 +62,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 
 	svcCtx.ToolRegistry = newToolRegistry(svcCtx)
+	svcCtx.OpenaiToolList = svcCtx.getOpenaiToolList()
 
 	return svcCtx
 }
@@ -82,6 +85,22 @@ func newToolRegistry(svcCtx *ServiceContext) map[string]toolcall.Tool {
 	}
 
 	return registry
+}
+
+func (svc *ServiceContext) getOpenaiToolList() []openai.Tool {
+	toolList := make([]openai.Tool, 0, len(svc.ToolRegistry))
+	for _, tool := range svc.ToolRegistry {
+		toolList = append(toolList, openai.Tool{
+			Type: openai.ToolTypeFunction,
+			Function: &openai.FunctionDefinition{
+				Name:        tool.Name(),
+				Description: tool.Description(),
+				Parameters:  tool.ArgumentsJson(),
+			},
+		})
+	}
+
+	return toolList
 }
 
 // CacheConversation 缓存对话记录并异步同步到数据库

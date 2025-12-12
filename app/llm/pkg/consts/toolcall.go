@@ -5,6 +5,7 @@ const (
 	TOOL_CALLING_EXECUTING            = "tool_calling_executing"
 	TOOL_CALLING_FINISHED             = "tool_calling_finished"
 	TOOL_CALLING_WAITING_CONFIRMATION = "tool_calling_waiting_confirmation"
+	TOOL_CALLING_FAILED               = "tool_calling_failed"
 )
 
 const (
@@ -12,6 +13,6 @@ const (
 )
 
 const (
-	ToolCallScopeServer = "server"
-	ToolCallScopeClient = "client"
+	TOOL_CALLING_SCOPE_SERVER = "server"
+	TOOL_CALLING_SCOPE_CLIENT = "client"
 )
