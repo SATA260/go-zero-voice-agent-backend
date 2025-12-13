@@ -62,9 +62,44 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 	l.Logger.Infof("Collected %d history messages for conversation %s", len(historyMsgs), chatSession.ConvId)
 	l.Logger.Debugf("History messages: %+v", historyMsgs)
 
-	// 将当前请求的消息追加到历史消息中
-	if len(in.Messages) > 0 {
-		historyMsgs = append(historyMsgs, in.Messages...)
+	// 获取工具调用相关，并处理工具调用
+	for _, msg := range in.Messages {
+		if msg.GetRole() == consts.ChatMessageRoleTool && msg.GetToolCalls() != nil {
+			if msg.GetToolCalls().Status == consts.TOOL_CALLING_CONFIRMED {
+				// 用户确认工具调用，执行它，并将结果加入历史消息
+				tool, ok := l.svcCtx.ToolRegistry[msg.GetToolCalls().Name]
+				if !ok {
+					l.Logger.Errorf("unknown tool called: %s", msg.GetToolCalls().Name)
+					continue
+				}
+				l.Logger.Infof("User confirmed tool execution: %s", msg.GetToolCalls().Name)
+				content := ""
+				toolResult, err := tool.Execute(l.ctx, msg.GetToolCalls().ArgumentsJson)
+				if err != nil {
+					content = "Error: " + err.Error()
+				} else {
+					content = toolResult
+				}
+
+				// 将执行结果作为 Tool 消息加入历史
+				historyMsgs = append(historyMsgs, &pb.ChatMsg{
+					Role:    chatconsts.ChatMessageRoleTool,
+					Content: content,
+					ToolCalls: msg.GetToolCalls(),
+				})
+			} else {
+				// 用户拒绝执行该工具调用，直接加入历史消息
+				l.Logger.Infof("User rejected tool execution: %s", msg.GetToolCalls().Name)
+				historyMsgs = append(historyMsgs, &pb.ChatMsg{
+					Role:     chatconsts.ChatMessageRoleTool,
+					Content:  "Tool execution was rejected by the user.",
+					ToolCalls: msg.GetToolCalls(),
+				})
+			}
+		} else {
+			// 普通消息，直接加入历史
+			historyMsgs = append(historyMsgs, msg)
+		}
 	}
 
 	// 构建 OpenAI 格式的消息列表
@@ -77,100 +112,6 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	// 0. 检查是否是针对某个 ToolCall 的确认请求
-	// 约定：如果 Messages 中包含一条 Role=tool 且 Status 为 CONFIRMED/REJECTED 的消息，则视为确认指令
-	if len(in.Messages) > 0 {
-		lastMsg := in.Messages[len(in.Messages)-1]
-		if lastMsg.Role == chatconsts.ChatMessageRoleTool && lastMsg.ToolCalls != nil {
-			status := lastMsg.ToolCalls.Status
-			if status == consts.TOOL_CALLING_CONFIRMED || status == consts.TOOL_CALLING_REJECTED {
-				l.Logger.Infof("Received tool confirmation request: %s, status: %s", lastMsg.ToolCalls.Id, status)
-				return l.handleToolConfirmation(in, chatSession, client, openaiMsgs, lastMsg.ToolCalls.Id, status == consts.TOOL_CALLING_CONFIRMED)
-			}
-		}
-		go l.svcCtx.CacheConversation(chatSession.ConvId, in.Messages, nil)
-	}
-
-	return l.handleChatInteraction(in, chatSession, client, openaiMsgs, 0)
-}
-
-// handleToolConfirmation 处理工具确认逻辑
-func (l *ChatLogic) handleToolConfirmation(
-	in *pb.ChatReq,
-	chatSession *model.ChatSession,
-	client *openai.Client,
-	openaiMsgs []openai.ChatCompletionMessage,
-	toolCallID string,
-	confirmed bool,
-) (*pb.ChatResp, error) {
-	// 1. 找到对应的 ToolCall (通常在历史记录的最后一条 Assistant 消息中)
-	var toolCallToExecute *openai.ToolCall
-	found := false
-
-	// 从后往前找，找到最近的一条 Assistant 消息
-	for i := len(openaiMsgs) - 1; i >= 0; i-- {
-		msg := openaiMsgs[i]
-		if msg.Role == openai.ChatMessageRoleAssistant && len(msg.ToolCalls) > 0 {
-			for _, tc := range msg.ToolCalls {
-				if tc.ID == toolCallID {
-					toolCallToExecute = &tc
-					found = true
-					break
-				}
-			}
-		}
-		if found {
-			break
-		}
-	}
-
-	if !found || toolCallToExecute == nil {
-		return nil, status.Errorf(codes.NotFound, "tool call %s not found in history", toolCallID)
-	}
-
-	var content string
-	if confirmed {
-		// 2. 如果 confirmed == true，执行工具
-		tool, ok := l.svcCtx.ToolRegistry[toolCallToExecute.Function.Name]
-		if !ok {
-			content = "Error: Tool not found"
-		} else {
-			toolResult, err := tool.Execute(l.ctx, toolCallToExecute.Function.Arguments)
-			if err != nil {
-				content = "Error: " + err.Error()
-			} else {
-				content = toolResult
-			}
-		}
-	} else {
-		// 3. 如果 confirmed == false，生成拒绝消息
-		content = "User rejected the tool execution."
-	}
-
-	// 4. 将结果存入历史
-	toolMsg := openai.ChatCompletionMessage{
-		Role:       openai.ChatMessageRoleTool,
-		Content:    content,
-		ToolCallID: toolCallID,
-	}
-	openaiMsgs = append(openaiMsgs, toolMsg)
-
-	// 异步存储 Tool 执行结果
-	pbToolMsg := &pb.ChatMsg{
-		Role:    chatconsts.ChatMessageRoleTool,
-		Content: content,
-		ToolCalls: &pb.ToolCallDelta{
-			Id:     toolCallID,
-			Status: consts.TOOL_CALLING_FINISHED,
-			Result: content,
-		},
-	}
-	if !confirmed {
-		pbToolMsg.ToolCalls.Status = consts.TOOL_CALLING_REJECTED
-	}
-	go l.svcCtx.CacheConversation(chatSession.ConvId, nil, pbToolMsg)
-
-	// 5. 递归调用 handleChatInteraction，继续后续对话
 	return l.handleChatInteraction(in, chatSession, client, openaiMsgs, 0)
 }
 
