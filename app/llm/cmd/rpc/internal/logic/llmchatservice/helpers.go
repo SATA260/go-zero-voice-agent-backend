@@ -119,10 +119,17 @@ func BuildOpenAIMessages(msgs []*pb.ChatMsg) []openai.ChatCompletionMessage {
 		if msg == nil {
 			continue
 		}
-		result = append(result, openai.ChatCompletionMessage{
+
+		openaiMsg := openai.ChatCompletionMessage{
 			Role:    MapRoleToOpenAI(msg.Role),
 			Content: msg.Content,
-		})
+		}
+
+		if openaiMsg.Role == openai.ChatMessageRoleTool && msg.GetToolCalls() != nil {
+			// 如果有工具调用，添加 ToolCallID
+			openaiMsg.ToolCallID = msg.GetToolCalls().Id
+		}
+		result = append(result, openaiMsg)
 	}
 	return result
 }
