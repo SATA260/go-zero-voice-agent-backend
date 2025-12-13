@@ -144,10 +144,10 @@ func (l *ChatLogic) handleChatInteraction(
 	}
 
 	// 获取可用的工具列表
-	OpenaiToolList := l.svcCtx.OpenaiToolList
+	OpenaiToolListWithoutConfirm := l.svcCtx.OpenaiToolListWithoutConfirm
 
 	// 构建并发送聊天完成请求
-	req := BuildChatCompletionRequest(in.LlmConfig, openaiMsgs, false, OpenaiToolList)
+	req := BuildChatCompletionRequest(in.LlmConfig, openaiMsgs, false, OpenaiToolListWithoutConfirm)
 	l.Logger.Infof("OpenAI request (depth %d): %+v", depth, req)
 
 	completion, err := client.CreateChatCompletion(l.ctx, req)
