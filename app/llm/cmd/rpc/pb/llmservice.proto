@@ -6,8 +6,8 @@ option go_package="./pb";
 // 分页查询
 message PageQuery {
     int64 page = 1;
-    int64 page_size = 2;
-    string order_by = 3;
+    int64 pageSize = 2;
+    string orderBy = 3;
 }
 
 
@@ -23,40 +23,40 @@ message LlmConfig {
     // 采样温度，控制模型生成文本的多样性 (可选)
     double temperature = 4;
     // 核采样的概率阈值 (可选)
-    double top_p = 5;
+    double topP = 5;
     // 生成过程中采样候选集的大小 (可选)
-    int64 top_k = 6;
+    int64 topK = 6;
     // 是否开启思考模式 (可选)
-    bool enable_thinking = 7;
+    bool enableThinking = 7;
     // 控制模型生成文本时的内容重复度（已弃用，请使用presence_penalty）(可选)
-    double repetition_penalty = 8;
+    double repetitionPenalty = 8;
     // 控制模型生成文本时的内容重复度 (可选)
-    double presence_penalty = 9;
+    double presencePenalty = 9;
     // 返回内容的格式, e.g., "text", "json_object" (可选)
-    string response_format = 10;
+    string responseFormat = 10;
     // 流式输出特定选项 (可选)
-    StreamOptions stream_options = 11;
+    StreamOptions streamOptions = 11;
     // 本次请求返回的最大 Token 数 (可选)
-    int64 max_tokens = 12;
+    int64 maxTokens = 12;
     // 随机种子，用于结果可复现 (可选)
     int64 seed = 13;
     // 是否启用互联网搜索 (可选)
-    bool enable_search = 14;
+    bool enableSearch = 14;
     // 上下文长度 (可选)
-    int64 content_length = 15;
+    int64 contentLength = 15;
 }
 // 流式输出选项
 message StreamOptions {
     // 是否在输出的最后一行显示所使用的Token数 (可选)
-    bool include_usage = 1;
+    bool includeUsage = 1;
 }
 
 message ToolCallInfo {
     string id = 1;
     string name = 2;
-    string arguments_json = 3;
+    string argumentsJson = 3;
     string scope = 4; //工具调用作用域 server/client
-    bool requires_confirmation = 5; //后端工具调用是否需要用户确认
+    bool requiresConfirmation = 5; //后端工具调用是否需要用户确认
 }
 
 // 工具调用增量信息
@@ -70,55 +70,47 @@ message ToolCall {
 message ChatMsg {
     string role = 1; //System,User,Assistant,tool
     string content = 2;
-    repeated ToolCall tool_calls = 3;
-    string tool_call_id = 4;
+    repeated ToolCall toolCalls = 3;
+    string toolCallId = 4;
 }
 
 // 创建聊天请求
 message ChatReq {
     // 已存在的会话标识，用于继续对话（可选）
-    string conversation_id = 1;
+    string conversationId = 1;
     // 用户标识，用于权限校验（必选）
-    int64 user_id = 2;
+    int64 userId = 2;
     // 当前大模型请求配置
     LlmConfig llmConfig = 3;
     // 是否允许服务端自动回填历史记录（默认 true）
-    bool auto_fill_history = 4;
+    bool autoFillHistory = 4;
     // 当创建新会话时的上下文消息（继续会话时可选）
     repeated ChatMsg messages = 5;
 }
 
 message ChatResp {
-    string conversation_id = 1;
+    string conversationId = 1;
     repeated ChatMsg respMsg = 2;
 }
 
 message ChatStreamReq {
     // 已存在的会话标识，用于继续对话（可选）
-    string conversation_id = 1;
+    string conversationId = 1;
     // 用户标识，用于权限校验（必选）
-    int64 user_id = 2;
+    int64 userId = 2;
     // 当前大模型请求配置
     LlmConfig llmConfig = 3;
     // 是否允许服务端自动回填历史记录（默认 true）
-    bool auto_fill_history = 4;
+    bool autoFillHistory = 4;
     // 当创建新会话时的上下文消息（继续会话时可选）
     repeated ChatMsg messages = 5;
 }
 
-// 流式内容增量
-message StreamDelta {
-    string content = 1;
-    bool completed = 2;
-}
-
 message ChatStreamResp {
-    string id = 1;
-    oneof payload {
-        StreamDelta delta = 2;
-        ToolCall tool_call = 3;
-        string error = 4;
-    }
+    string conversationId = 1;
+    ChatMsg respMsg = 2;
+    string error = 3;
+    bool isComplete = 4;
 }
 
 // ChatConfig represents the configuration for a chat session.
@@ -126,21 +118,21 @@ message ChatConfig {
     int64 id = 1;
     string name = 2;
     string description = 3;
-    int64 user_id = 4;
-    string base_url = 5;
-    string api_key = 6;
+    int64 userId = 4;
+    string baseUrl = 5;
+    string apiKey = 6;
     string model = 7;
     int64 stream = 8;
     double temperature = 9;
-    double top_p = 10;
-    int64 top_k = 11;
-    int64 enable_thinking = 12;
-    double repetition_penalty = 13;
-    double presence_penalty = 14;
-    int64 max_tokens = 15;
+    double topP = 10;
+    int64 topK = 11;
+    int64 enableThinking = 12;
+    double repetitionPenalty = 13;
+    double presencePenalty = 14;
+    int64 maxTokens = 15;
     int64 seed = 16;
-    int64 enable_search = 17;
-    int64 context_length = 18;
+    int64 enableSearch = 17;
+    int64 contextLength = 18;
 }
 
 // --- Config Management ---
@@ -149,21 +141,21 @@ message ChatConfig {
 message CreateConfigReq {
     string name = 1;
     string description = 2;
-    int64 user_id = 3;
-    string base_url = 4;
-    string api_key = 5;
+    int64 userId = 3;
+    string baseUrl = 4;
+    string apiKey = 5;
     string model = 6;
     int64 stream = 7;
     double temperature = 8;
-    double top_p = 9;
-    int64 top_k = 10;
-    int64 enable_thinking = 11;
-    double repetition_penalty = 12;
-    double presence_penalty = 13;
-    int64 max_tokens = 14;
+    double topP = 9;
+    int64 topK = 10;
+    int64 enableThinking = 11;
+    double repetitionPenalty = 12;
+    double presencePenalty = 13;
+    int64 maxTokens = 14;
     int64 seed = 15;
-    int64 enable_search = 16;
-    int64 context_length = 17;
+    int64 enableSearch = 16;
+    int64 contextLength = 17;
 }
 message CreateConfigResp {
     int64 id = 1;
@@ -181,21 +173,21 @@ message UpdateConfigReq {
     int64 id = 1;
     string name = 2;
     string description = 3;
-    int64 user_id = 4;
-    string base_url = 5;
-    string api_key = 6;
+    int64 userId = 4;
+    string baseUrl = 5;
+    string apiKey = 6;
     string model = 7;
     int64 stream = 8;
     double temperature = 9;
-    double top_p = 10;
-    int64 top_k = 11;
-    int64 enable_thinking = 12;
-    double repetition_penalty = 13;
-    double presence_penalty = 14;
-    int64 max_tokens = 15;
+    double topP = 10;
+    int64 topK = 11;
+    int64 enableThinking = 12;
+    double repetitionPenalty = 13;
+    double presencePenalty = 14;
+    int64 maxTokens = 15;
     int64 seed = 16;
-    int64 enable_search = 17;
-    int64 context_length = 18;
+    int64 enableSearch = 17;
+    int64 contextLength = 18;
 }
 message UpdateConfigResp {
 }
@@ -211,7 +203,7 @@ message GetConfigResp {
 // List
 message ListConfigFilter {
     int64 id = 1;
-    int64 user_id = 2;
+    int64 userId = 2;
     string name = 3;
     string description = 4;
 }
@@ -229,19 +221,19 @@ message ListConfigResp {
 
 message ChatSession {
     int64 id = 1;
-    string conv_id = 2;
-    int64 user_id = 3;
+    string convId = 2;
+    int64 userId = 3;
     string title = 4;
     int64 version = 5;
-    int64 del_state = 6;
-    int64 create_time = 7;
-    int64 update_time = 8;
-    int64 delete_time = 9;
+    int64 delState = 6;
+    int64 createTime = 7;
+    int64 updateTime = 8;
+    int64 deleteTime = 9;
 }
 
 message CreateChatSessionReq {
-    string conv_id = 1;
-    int64 user_id = 2;
+    string convId = 1;
+    int64 userId = 2;
     string title = 3;
 }
 
@@ -258,8 +250,8 @@ message DeleteChatSessionResp {
 
 message UpdateChatSessionReq {
     int64 id = 1;
-    string conv_id = 2;
-    int64 user_id = 3;
+    string convId = 2;
+    int64 userId = 3;
     string title = 4;
     int64 version = 5;
 }
@@ -272,7 +264,7 @@ message GetChatSessionReq {
 }
 
 message GetChatSessionByConvIdReq {
-    string conv_id = 1;
+    string convId = 1;
 }
 
 message GetChatSessionResp {
@@ -281,8 +273,8 @@ message GetChatSessionResp {
 
 message ListChatSessionFilter {
     int64 id = 1;
-    string conv_id = 2;
-    int64 user_id = 3;
+    string convId = 2;
+    int64 userId = 3;
     string title = 4;
 }
 
@@ -301,21 +293,21 @@ message ListChatSessionResp {
 
 message ChatMessage {
     int64 id = 1;
-    int64 session_id = 2;
-    int64 config_id = 3;
+    int64 sessionId = 2;
+    int64 configId = 3;
     string role = 4;
     string content = 5;
     string extra = 6;
     int64 version = 7;
-    int64 del_state = 8;
-    int64 create_time = 9;
-    int64 update_time = 10;
-    int64 delete_time = 11;
+    int64 delState = 8;
+    int64 createTime = 9;
+    int64 updateTime = 10;
+    int64 deleteTime = 11;
 }
 
 message CreateChatMessageReq {
-    int64 session_id = 1;
-    int64 config_id = 2;
+    int64 sessionId = 1;
+    int64 configId = 2;
     string role = 3;
     string content = 4;
     string extra = 5;
@@ -335,8 +327,8 @@ message DeleteChatMessageResp {
 
 message UpdateChatMessageReq {
     int64 id = 1;
-    int64 session_id = 2;
-    int64 config_id = 3;
+    int64 sessionId = 2;
+    int64 configId = 3;
     string role = 4;
     string content = 5;
     string extra = 6;
@@ -356,8 +348,8 @@ message GetChatMessageResp {
 
 message ListChatMessageFilter {
     int64 id = 1;
-    int64 session_id = 2;
-    int64 config_id = 3;
+    int64 sessionId = 2;
+    int64 configId = 3;
     string role = 4;
 }
 
