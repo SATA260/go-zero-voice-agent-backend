@@ -35,10 +35,7 @@ func (t *RagTool) Description() string {
 
 func (t *RagTool) ArgumentsJson() string {
 	return `{
-		"query": "查询内容，字符串类型",
-		"user_id": "用户ID，整数类型",
-		"file_ids": "知识库文件ID列表，字符串数组类型",
-		"top_k": "返回的相关内容数量，整数类型，默认为3"
+		"query": "查询内容，字符串类型"
 	}`
 }
 

@@ -525,7 +525,9 @@ type ChatReq struct {
 	// 是否允许服务端自动回填历史记录（默认 true）
 	AutoFillHistory bool `protobuf:"varint,4,opt,name=autoFillHistory,proto3" json:"autoFillHistory,omitempty"`
 	// 当创建新会话时的上下文消息（继续会话时可选）
-	Messages      []*ChatMsg `protobuf:"bytes,5,rep,name=messages,proto3" json:"messages,omitempty"`
+	Messages []*ChatMsg `protobuf:"bytes,5,rep,name=messages,proto3" json:"messages,omitempty"`
+	// 指定的rag知识库文件ID列表（可选）
+	RagFileIds    []string `protobuf:"bytes,6,rep,name=ragFileIds,proto3" json:"ragFileIds,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -595,6 +597,13 @@ func (x *ChatReq) GetMessages() []*ChatMsg {
 	return nil
 }
 
+func (x *ChatReq) GetRagFileIds() []string {
+	if x != nil {
+		return x.RagFileIds
+	}
+	return nil
+}
+
 type ChatResp struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	ConversationId string                 `protobuf:"bytes,1,opt,name=conversationId,proto3" json:"conversationId,omitempty"`
@@ -658,7 +667,9 @@ type ChatStreamReq struct {
 	// 是否允许服务端自动回填历史记录（默认 true）
 	AutoFillHistory bool `protobuf:"varint,4,opt,name=autoFillHistory,proto3" json:"autoFillHistory,omitempty"`
 	// 当创建新会话时的上下文消息（继续会话时可选）
-	Messages      []*ChatMsg `protobuf:"bytes,5,rep,name=messages,proto3" json:"messages,omitempty"`
+	Messages []*ChatMsg `protobuf:"bytes,5,rep,name=messages,proto3" json:"messages,omitempty"`
+	// 指定的rag知识库文件ID列表（可选）
+	RagFileIds    []string `protobuf:"bytes,6,rep,name=ragFileIds,proto3" json:"ragFileIds,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -724,6 +735,13 @@ func (x *ChatStreamReq) GetAutoFillHistory() bool {
 func (x *ChatStreamReq) GetMessages() []*ChatMsg {
 	if x != nil {
 		return x.Messages
+	}
+	return nil
+}
+
+func (x *ChatStreamReq) GetRagFileIds() []string {
+	if x != nil {
+		return x.RagFileIds
 	}
 	return nil
 }
@@ -3227,22 +3245,28 @@ const file_llmservice_proto_rawDesc = "" +
 	"\ttoolCalls\x18\x03 \x03(\v2\r.llm.ToolCallR\ttoolCalls\x12\x1e\n" +
 	"\n" +
 	"toolCallId\x18\x04 \x01(\tR\n" +
-	"toolCallId\"\xcb\x01\n" +
+	"toolCallId\"\xeb\x01\n" +
 	"\aChatReq\x12&\n" +
 	"\x0econversationId\x18\x01 \x01(\tR\x0econversationId\x12\x16\n" +
 	"\x06userId\x18\x02 \x01(\x03R\x06userId\x12,\n" +
 	"\tllmConfig\x18\x03 \x01(\v2\x0e.llm.LlmConfigR\tllmConfig\x12(\n" +
 	"\x0fautoFillHistory\x18\x04 \x01(\bR\x0fautoFillHistory\x12(\n" +
-	"\bmessages\x18\x05 \x03(\v2\f.llm.ChatMsgR\bmessages\"Z\n" +
+	"\bmessages\x18\x05 \x03(\v2\f.llm.ChatMsgR\bmessages\x12\x1e\n" +
+	"\n" +
+	"ragFileIds\x18\x06 \x03(\tR\n" +
+	"ragFileIds\"Z\n" +
 	"\bChatResp\x12&\n" +
 	"\x0econversationId\x18\x01 \x01(\tR\x0econversationId\x12&\n" +
-	"\arespMsg\x18\x02 \x03(\v2\f.llm.ChatMsgR\arespMsg\"\xd1\x01\n" +
+	"\arespMsg\x18\x02 \x03(\v2\f.llm.ChatMsgR\arespMsg\"\xf1\x01\n" +
 	"\rChatStreamReq\x12&\n" +
 	"\x0econversationId\x18\x01 \x01(\tR\x0econversationId\x12\x16\n" +
 	"\x06userId\x18\x02 \x01(\x03R\x06userId\x12,\n" +
 	"\tllmConfig\x18\x03 \x01(\v2\x0e.llm.LlmConfigR\tllmConfig\x12(\n" +
 	"\x0fautoFillHistory\x18\x04 \x01(\bR\x0fautoFillHistory\x12(\n" +
-	"\bmessages\x18\x05 \x03(\v2\f.llm.ChatMsgR\bmessages\"\x96\x01\n" +
+	"\bmessages\x18\x05 \x03(\v2\f.llm.ChatMsgR\bmessages\x12\x1e\n" +
+	"\n" +
+	"ragFileIds\x18\x06 \x03(\tR\n" +
+	"ragFileIds\"\x96\x01\n" +
 	"\x0eChatStreamResp\x12&\n" +
 	"\x0econversationId\x18\x01 \x01(\tR\x0econversationId\x12&\n" +
 	"\arespMsg\x18\x02 \x01(\v2\f.llm.ChatMsgR\arespMsg\x12\x14\n" +

@@ -2,6 +2,7 @@ package llmchatservicelogic
 
 import (
 	"context"
+	"encoding/json"
 
 	"go-zero-voice-agent/app/llm/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
@@ -239,7 +240,26 @@ func (l *ChatLogic) handleChatInteraction(
 			continue
 		}
 
-		// 不需要确认的工具调用，执行它
+		// 不需要确认的工具调用，直接执行
+		// 如果是rag工具，注入用户ID和文件ID列表
+		if toolCall.Function.Name == consts.TOOL_CALLING_SELF_RAG {
+			var argsMap map[string]interface{}
+			err := json.Unmarshal([]byte(toolCall.Function.Arguments), &argsMap)
+			if err != nil {
+				l.Logger.Errorf("failed to unmarshal rag tool arguments: %v", err)
+			} else {
+				argsMap["user_id"] = in.UserId
+				argsMap["file_ids"] = in.RagFileIds
+				newArgs, err := json.Marshal(argsMap)
+				if err != nil {
+					l.Logger.Errorf("failed to marshal updated rag tool arguments: %v", err)
+				} else {
+					toolCall.Function.Arguments = string(newArgs)
+				}
+			}
+		}
+
+		// 自动执行工具调用
 		l.Logger.Infof("Auto-executing tool: %s", toolCall.Function.Name)
 		content := ""
 		toolResult, err := tool.Execute(l.ctx, toolCall.Function.Arguments)
