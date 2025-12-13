@@ -18,7 +18,6 @@ func chatMessageToPb(message *model.ChatMessage) *pb.ChatMessage {
 	return &pb.ChatMessage{
 		Id:         message.Id,
 		SessionId:  message.SessionId,
-		ConfigId:   tool.NullInt64ToInt64(message.ConfigId),
 		Role:       message.Role,
 		Content:    tool.NullStringToString(message.Content),
 		Extra:      tool.NullStringToString(message.Extra),

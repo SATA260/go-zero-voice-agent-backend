@@ -64,9 +64,10 @@ type (
 		DelState   int64          `db:"del_state"`
 		Version    int64          `db:"version"`
 		SessionId  int64          `db:"session_id"`
-		ConfigId   sql.NullInt64  `db:"config_id"`
 		Role       string         `db:"role"`
 		Content    sql.NullString `db:"content"`
+		ToolCalls  sql.NullString `db:"tool_calls"`
+		ToolCallId sql.NullString `db:"tool_call_id"`
 		Extra      sql.NullString `db:"extra"`
 	}
 )
@@ -110,11 +111,11 @@ func (m *defaultChatMessageModel) Insert(ctx context.Context, session sqlx.Sessi
 	data.DelState = globalkey.DelStateNo
 	gzvaLlmserviceChatMessageIdKey := fmt.Sprintf("%s%v", cacheGzvaLlmserviceChatMessageIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, chatMessageRowsExpectAutoSet)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, chatMessageRowsExpectAutoSet)
 		if session != nil {
-			return session.ExecCtx(ctx, query, data.DelState, data.Version, data.SessionId, data.ConfigId, data.Role, data.Content, data.Extra)
+			return session.ExecCtx(ctx, query, data.DelState, data.Version, data.SessionId, data.Role, data.Content, data.ToolCalls, data.ToolCallId, data.Extra)
 		}
-		return conn.ExecCtx(ctx, query, data.DelState, data.Version, data.SessionId, data.ConfigId, data.Role, data.Content, data.Extra)
+		return conn.ExecCtx(ctx, query, data.DelState, data.Version, data.SessionId, data.Role, data.Content, data.ToolCalls, data.ToolCallId, data.Extra)
 	}, gzvaLlmserviceChatMessageIdKey)
 	return ret, err
 }
@@ -124,9 +125,9 @@ func (m *defaultChatMessageModel) Update(ctx context.Context, session sqlx.Sessi
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, chatMessageRowsWithPlaceHolder)
 		if session != nil {
-			return session.ExecCtx(ctx, query, data.DelState, data.Version, data.SessionId, data.ConfigId, data.Role, data.Content, data.Extra, data.Id)
+			return session.ExecCtx(ctx, query, data.DelState, data.Version, data.SessionId, data.Role, data.Content, data.ToolCalls, data.ToolCallId, data.Extra, data.Id)
 		}
-		return conn.ExecCtx(ctx, query, data.DelState, data.Version, data.SessionId, data.ConfigId, data.Role, data.Content, data.Extra, data.Id)
+		return conn.ExecCtx(ctx, query, data.DelState, data.Version, data.SessionId, data.Role, data.Content, data.ToolCalls, data.ToolCallId, data.Extra, data.Id)
 	}, gzvaLlmserviceChatMessageIdKey)
 }
 
@@ -142,9 +143,9 @@ func (m *defaultChatMessageModel) UpdateWithVersion(ctx context.Context, session
 	sqlResult, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ? and version = ? ", m.table, chatMessageRowsWithPlaceHolder)
 		if session != nil {
-			return session.ExecCtx(ctx, query, data.DelState, data.Version, data.SessionId, data.ConfigId, data.Role, data.Content, data.Extra, data.Id, oldVersion)
+			return session.ExecCtx(ctx, query, data.DelState, data.Version, data.SessionId, data.Role, data.Content, data.ToolCalls, data.ToolCallId, data.Extra, data.Id, oldVersion)
 		}
-		return conn.ExecCtx(ctx, query, data.DelState, data.Version, data.SessionId, data.ConfigId, data.Role, data.Content, data.Extra, data.Id, oldVersion)
+		return conn.ExecCtx(ctx, query, data.DelState, data.Version, data.SessionId, data.Role, data.Content, data.ToolCalls, data.ToolCallId, data.Extra, data.Id, oldVersion)
 	}, gzvaLlmserviceChatMessageIdKey)
 	if err != nil {
 		return err

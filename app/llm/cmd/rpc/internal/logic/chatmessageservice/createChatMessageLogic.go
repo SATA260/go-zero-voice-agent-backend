@@ -42,7 +42,6 @@ func (l *CreateChatMessageLogic) CreateChatMessage(in *pb.CreateChatMessageReq) 
 
 	message := &model.ChatMessage{
 		SessionId: in.GetSessionId(),
-		ConfigId:  toNullInt64(in.GetConfigId()),
 		Role:      role,
 		Content:   toNullString(in.GetContent()),
 		Extra:     toNullString(in.GetExtra()),

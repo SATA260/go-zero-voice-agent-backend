@@ -48,7 +48,7 @@ func CollectHistory(ctx context.Context, svcCtx *svc.ServiceContext, log logx.Lo
 				log.Errorf("decode cached message failed, key: %s, index: %d, err: %v", cacheKey, idx, err)
 				continue
 			}
-			messages = append(messages, &pb.ChatMsg{Role: decoded.Role, Content: decoded.Content})
+			messages = append(messages, &decoded)
 		}
 		if len(messages) > 0 {
 			return messages, nil
@@ -67,7 +67,23 @@ func CollectHistory(ctx context.Context, svcCtx *svc.ServiceContext, log logx.Lo
 	messages := make([]*pb.ChatMsg, 0, len(pageMsgs))
 	for i := len(pageMsgs) - 1; i >= 0; i-- {
 		msg := pageMsgs[i]
-		messages = append(messages, &pb.ChatMsg{Role: msg.Role, Content: tool.NullStringToString(msg.Content)})
+
+		var toolcalls []*pb.ToolCall
+		if msg.ToolCalls.Valid && msg.ToolCalls.String != "" {
+			var tc []*pb.ToolCall
+			if err := json.Unmarshal([]byte(msg.ToolCalls.String), &tc); err != nil {
+				log.Errorf("decode db tool_calls failed, session_id: %d, msg_id: %d, err: %v", msg.SessionId, msg.Id, err)
+			} else {
+				toolcalls = tc
+			}
+		}
+
+		messages = append(messages, &pb.ChatMsg{
+			Role:       msg.Role,
+			Content:    tool.NullStringToString(msg.Content),
+			ToolCalls:  toolcalls,
+			ToolCallId: tool.NullStringToString(msg.ToolCallId),
+		})
 	}
 
 	// 3. 回填 Redis
@@ -125,10 +141,28 @@ func BuildOpenAIMessages(msgs []*pb.ChatMsg) []openai.ChatCompletionMessage {
 			Content: msg.Content,
 		}
 
-		if openaiMsg.Role == openai.ChatMessageRoleTool && msg.GetToolCalls() != nil {
-			// 如果有工具调用，添加 ToolCallID
-			openaiMsg.ToolCallID = msg.GetToolCalls().Id
+		if openaiMsg.Role == openai.ChatMessageRoleTool && msg.ToolCallId != "" {
+			openaiMsg.ToolCallID = msg.ToolCallId
 		}
+
+		if len(msg.ToolCalls) > 0 {
+			openaiToolCalls := make([]openai.ToolCall, 0, len(msg.ToolCalls))
+			for _, tc := range msg.ToolCalls {
+				if tc.Info == nil {
+					continue
+				}
+				openaiToolCalls = append(openaiToolCalls, openai.ToolCall{
+					ID:   tc.Info.Id,
+					Type: openai.ToolTypeFunction,
+					Function: openai.FunctionCall{
+						tc.Info.Name,
+						tc.Info.ArgumentsJson,
+					},
+				})
+			}
+			openaiMsg.ToolCalls = openaiToolCalls
+		}
+
 		result = append(result, openaiMsg)
 	}
 	return result

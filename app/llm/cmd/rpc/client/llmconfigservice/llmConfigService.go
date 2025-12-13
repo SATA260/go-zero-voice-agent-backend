@@ -34,8 +34,6 @@ type (
 	DeleteChatSessionResp     = pb.DeleteChatSessionResp
 	DeleteConfigReq           = pb.DeleteConfigReq
 	DeleteConfigResp          = pb.DeleteConfigResp
-	ExecuteToolReq            = pb.ExecuteToolReq
-	ExecuteToolResp           = pb.ExecuteToolResp
 	GetChatMessageReq         = pb.GetChatMessageReq
 	GetChatMessageResp        = pb.GetChatMessageResp
 	GetChatSessionByConvIdReq = pb.GetChatSessionByConvIdReq
@@ -56,7 +54,8 @@ type (
 	PageQuery                 = pb.PageQuery
 	StreamDelta               = pb.StreamDelta
 	StreamOptions             = pb.StreamOptions
-	ToolCallDelta             = pb.ToolCallDelta
+	ToolCall                  = pb.ToolCall
+	ToolCallInfo              = pb.ToolCallInfo
 	UpdateChatMessageReq      = pb.UpdateChatMessageReq
 	UpdateChatMessageResp     = pb.UpdateChatMessageResp
 	UpdateChatSessionReq      = pb.UpdateChatSessionReq
