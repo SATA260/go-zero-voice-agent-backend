@@ -35,6 +35,7 @@ type ServiceContext struct {
 
 	ToolRegistry   map[string]toolcall.Tool
 	OpenaiToolList []openai.Tool
+	OpenaiToolListWithoutConfirm []openai.Tool
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -63,6 +64,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	svcCtx.ToolRegistry = newToolRegistry(svcCtx)
 	svcCtx.OpenaiToolList = svcCtx.getOpenaiToolList()
+	svcCtx.OpenaiToolListWithoutConfirm = svcCtx.getOpenaiToolListWithoutConfirm()
 
 	return svcCtx
 }
@@ -99,6 +101,24 @@ func (svc *ServiceContext) getOpenaiToolList() []openai.Tool {
 				Parameters:  tool.ArgumentsJson(),
 			},
 		})
+	}
+
+	return toolList
+}
+
+func (svc *ServiceContext) getOpenaiToolListWithoutConfirm() []openai.Tool {
+	toolList := make([]openai.Tool, 0, len(svc.ToolRegistry))
+	for _, tool := range svc.ToolRegistry {
+		if !tool.RequiresConfirmation() && tool.Scope() == chatconsts.TOOL_CALLING_SCOPE_SERVER {
+			toolList = append(toolList, openai.Tool{
+				Type: openai.ToolTypeFunction,
+				Function: &openai.FunctionDefinition{
+					Name:        tool.Name(),
+					Description: tool.Description(),
+					Parameters:  tool.ArgumentsJson(),
+				},
+			})
+		}
 	}
 
 	return toolList
