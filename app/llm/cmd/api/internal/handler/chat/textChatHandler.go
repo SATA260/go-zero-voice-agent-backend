@@ -69,7 +69,40 @@ func TextChatHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				break
 			}
 
-			dataBytes, err := json.Marshal(resp)
+			// 转换 RPC 响应到 API 响应
+			apiResp := types.StreamChatResp{
+				ConversationId: resp.ConversationId,
+				Error:          resp.Error,
+				IsComplete:     resp.IsComplete,
+			}
+
+			if resp.RespMsg != nil {
+				var toolCalls []types.ToolCall
+				if len(resp.RespMsg.ToolCalls) > 0 {
+					toolCalls = make([]types.ToolCall, len(resp.RespMsg.ToolCalls))
+					for i, tc := range resp.RespMsg.ToolCalls {
+						toolCalls[i] = types.ToolCall{
+							Info: types.ToolCallInfo{
+								Id:                   tc.Info.Id,
+								Name:                 tc.Info.Name,
+								ArgumentsJson:        tc.Info.ArgumentsJson,
+								Scope:                tc.Info.Scope,
+								RequiresConfirmation: tc.Info.RequiresConfirmation,
+							},
+							Status: tc.Status,
+						}
+					}
+				}
+
+				apiResp.Message = types.TextChatMessage{
+					Role:       resp.RespMsg.Role,
+					Content:    resp.RespMsg.Content,
+					ToolCalls:  toolCalls,
+					ToolCallId: resp.RespMsg.ToolCallId,
+				}
+			}
+
+			dataBytes, err := json.Marshal(apiResp)
 			if err != nil {
 				fmt.Fprintf(w, "event: error\ndata: %s\n\n", err.Error())
 				flusher.Flush()

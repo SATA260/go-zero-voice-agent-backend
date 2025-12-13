@@ -1,26 +1,45 @@
 syntax = "v1"
 
 type (
+	ToolCallInfo {
+		Id                   string `json:"id"`
+		Name                 string `json:"name"`
+		ArgumentsJson        string `json:"argumentsJson"`
+		Scope                string `json:"scope"`
+		RequiresConfirmation bool   `json:"requiresConfirmation"`
+	}
+	ToolCall {
+		Info   ToolCallInfo `json:"info"`
+		Status string       `json:"status"`
+	}
 	TextChatMessage {
-		Role    string `json:"role"`
-		Content string `json:"content"`
+		Role       string     `json:"role"`
+		Content    string     `json:"content"`
+		ToolCalls  []ToolCall `json:"toolCalls,optional"`
+		ToolCallId string     `json:"toolCallId,optional"`
 	}
 )
 
 type (
 	TextChatReq {
-		UserId          int64  `header:"X-User-Id"`
-		ConfigId        int64  `json:"configId"`
-		ConversationId  string `json:"conversationId,optional"`
-		RagFileIds    	[]int64 `json:"ragFileIds,optional"`
-		Message         string `json:"message"`
-		SystemPrompt    string `json:"systemPrompt,optional"`
-		AutoFillHistory bool   `json:"autoFillHistory,optional"`
-		IsStream        bool   `json:"isStream,optional"`
+		UserId          int64   `header:"X-User-Id"`
+		ConfigId        int64   `json:"configId"`
+		ConversationId  string  `json:"conversationId,optional"`
+		RagFileIds      []int64 `json:"ragFileIds,optional"`
+		Message         string  `json:"message"`
+		SystemPrompt    string  `json:"systemPrompt,optional"`
+		AutoFillHistory bool    `json:"autoFillHistory,optional"`
+		IsStream        bool    `json:"isStream,optional"`
 	}
 	TextChatResp {
 		ConversationId string            `json:"conversationId"`
 		Messages       []TextChatMessage `json:"messages"`
+	}
+	StreamChatResp {
+		ConversationId string          `json:"conversationId"`
+		Message        TextChatMessage `json:"message,optional"`
+		Error          string          `json:"error,optional"`
+		IsComplete     bool            `json:"isComplete,optional"`
 	}
 )
 
