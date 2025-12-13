@@ -52,7 +52,6 @@ type (
 	ListConfigResp            = pb.ListConfigResp
 	LlmConfig                 = pb.LlmConfig
 	PageQuery                 = pb.PageQuery
-	StreamDelta               = pb.StreamDelta
 	StreamOptions             = pb.StreamOptions
 	ToolCall                  = pb.ToolCall
 	ToolCallInfo              = pb.ToolCallInfo
