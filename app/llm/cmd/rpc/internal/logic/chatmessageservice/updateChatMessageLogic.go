@@ -43,8 +43,6 @@ func (l *UpdateChatMessageLogic) UpdateChatMessage(in *pb.UpdateChatMessageReq) 
 		message.SessionId = sessionID
 	}
 
-	message.ConfigId = toNullInt64(in.GetConfigId())
-
 	if role := strings.TrimSpace(in.GetRole()); role != "" {
 		message.Role = role
 	}

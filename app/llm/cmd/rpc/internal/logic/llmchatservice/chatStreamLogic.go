@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"strings"
 
 	"go-zero-voice-agent/app/llm/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
@@ -70,6 +71,14 @@ func (l *ChatStreamLogic) ChatStream(in *pb.ChatStreamReq, stream pb.LlmChatServ
 	}
 	defer chatStream.Close()
 
+	// 累积工具调用（因为流式返回会分片）
+	type toolAcc struct {
+		id        string
+		name      string
+		arguments strings.Builder
+	}
+	toolCallsAcc := map[string]*toolAcc{}
+
 	// 处理流式响应
 	for {
 		resp, err := chatStream.Recv()
@@ -88,68 +97,116 @@ func (l *ChatStreamLogic) ChatStream(in *pb.ChatStreamReq, stream pb.LlmChatServ
 			break
 		}
 
-		if len(resp.Choices) > 0 {
-			delta := resp.Choices[0].Delta
+		if len(resp.Choices) == 0 {
+			continue
+		}
 
-			// 处理文本内容
-			if delta.Content != "" {
+		delta := resp.Choices[0].Delta
+		// 处理文本内容
+		if delta.Content != "" {
+			stream.Send(&pb.ChatStreamResp{
+				Id: chatSession.ConvId,
+				Payload: &pb.ChatStreamResp_Delta{
+					Delta: &pb.StreamDelta{
+						Content: delta.Content,
+					},
+				},
+			})
+		}
+
+		// 检测并处理工具调用 (Tool Calling)
+		if len(delta.ToolCalls) > 0 {
+			for _, toolCall := range delta.ToolCalls {
+				// 构建工具调用增量信息
+				// 注意：在流式响应中，ID 和 Name 通常只在第一个包中出现
+				// Arguments 会分散在后续的包中
+
+				scope := consts.TOOL_CALLING_SCOPE_SERVER
+				requiresConfirmation := false
+				status := ""
+
+				if tool, ok := l.svcCtx.ToolRegistry[toolCall.Function.Name]; ok {
+					scope = consts.TOOL_CALLING_SCOPE_SERVER
+					requiresConfirmation = tool.RequiresConfirmation()
+				}
+
+				if toolCall.ID != "" {
+					status = consts.TOOL_CALLING_START
+					if requiresConfirmation {
+						status = consts.TOOL_CALLING_WAITING_CONFIRMATION
+					}
+				}
+
+				// 聚合参数
+				if toolCall.ID != "" {
+					acc, ok := toolCallsAcc[toolCall.ID]
+					if !ok {
+						acc = &toolAcc{id: toolCall.ID, name: toolCall.Function.Name}
+						toolCallsAcc[toolCall.ID] = acc
+					}
+					if toolCall.Function.Name != "" {
+						acc.name = toolCall.Function.Name
+					}
+					if toolCall.Function.Arguments != "" {
+						acc.arguments.WriteString(toolCall.Function.Arguments)
+					}
+				}
+
 				stream.Send(&pb.ChatStreamResp{
 					Id: chatSession.ConvId,
-					Payload: &pb.ChatStreamResp_Delta{
-						Delta: &pb.StreamDelta{
-							Content: delta.Content,
+					Payload: &pb.ChatStreamResp_ToolCall{
+						ToolCall: &pb.ToolCall{
+							Info: &pb.ToolCallInfo{
+								Id:                   toolCall.ID,
+								Name:                 toolCall.Function.Name,
+								ArgumentsJson:        toolCall.Function.Arguments,
+								Scope:                scope,
+								RequiresConfirmation: requiresConfirmation,
+							},
+							Status: status,
 						},
 					},
 				})
 			}
+		}
 
-			// 检测并处理工具调用 (Tool Calling)
-			if len(delta.ToolCalls) > 0 {
-				for _, toolCall := range delta.ToolCalls {
-					// 构建工具调用增量信息
-					// 注意：在流式响应中，ID 和 Name 通常只在第一个包中出现
-					// Arguments 会分散在后续的包中
+		// 检查是否因为工具调用而结束
+		if resp.Choices[0].FinishReason == openai.FinishReasonToolCalls {
+			// 汇总所有工具调用并发送最终状态（与 ChatLogic 对齐：区分客户端/服务端、是否需要确认）
+			for _, acc := range toolCallsAcc {
+				scope := consts.TOOL_CALLING_SCOPE_SERVER
+				requiresConfirmation := false
+				status := consts.TOOL_CALLING_FINISHED
 
-					scope := consts.TOOL_CALLING_SCOPE_SERVER
-					requiresConfirmation := false
-					status := ""
-
-					if tool, ok := l.svcCtx.ToolRegistry[toolCall.Function.Name]; ok {
-						scope = consts.TOOL_CALLING_SCOPE_SERVER
-						requiresConfirmation = tool.RequiresConfirmation()
-					}
-
-					if toolCall.ID != "" {
+				if tool, ok := l.svcCtx.ToolRegistry[acc.name]; ok {
+					scope = tool.Scope()
+					requiresConfirmation = tool.RequiresConfirmation()
+					if scope == consts.TOOL_CALLING_SCOPE_CLIENT {
+						// 客户端执行：交由前端处理
 						status = consts.TOOL_CALLING_START
 						if requiresConfirmation {
 							status = consts.TOOL_CALLING_WAITING_CONFIRMATION
 						}
+					} else {
+						// 服务端执行：如需确认则等待确认，否则标记已完成参数聚合
+						if requiresConfirmation {
+							status = consts.TOOL_CALLING_WAITING_CONFIRMATION
+						}
 					}
-
-					stream.Send(&pb.ChatStreamResp{
-						Id: chatSession.ConvId,
-						Payload: &pb.ChatStreamResp_ToolCall{
-							ToolCall: &pb.ToolCallDelta{
-								Id:                   toolCall.ID,
-								Name:                 toolCall.Function.Name,
-								ArgumentsJson:        toolCall.Function.Arguments,
-								Status:               status,
-								Scope:                scope,
-								RequiresConfirmation: requiresConfirmation,
-							},
-						},
-					})
 				}
-			}
 
-			// 检查是否因为工具调用而结束
-			if resp.Choices[0].FinishReason == openai.FinishReasonToolCalls {
-				// 发送一个 finished 状态，告知客户端工具调用参数接收完毕
 				stream.Send(&pb.ChatStreamResp{
 					Id: chatSession.ConvId,
 					Payload: &pb.ChatStreamResp_ToolCall{
-						ToolCall: &pb.ToolCallDelta{
-							Status: consts.TOOL_CALLING_FINISHED,
+						ToolCall: &pb.ToolCall{
+							Info: &pb.ToolCallInfo{
+								Id:                   acc.id,
+								Name:                 acc.name,
+								ArgumentsJson:        acc.arguments.String(),
+								Scope:                scope,
+								RequiresConfirmation: requiresConfirmation,
+							},
+							Status: status,
 						},
 					},
 				})

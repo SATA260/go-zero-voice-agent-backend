@@ -51,23 +51,27 @@ message StreamOptions {
     bool include_usage = 1;
 }
 
+message ToolCallInfo {
+    string id = 1;
+    string name = 2;
+    string arguments_json = 3;
+    string scope = 4; //工具调用作用域 server/client
+    bool requires_confirmation = 5; //后端工具调用是否需要用户确认
+}
 
-// 工具调用增量信息（模板）
-message ToolCallDelta {
-    string id = 1; //工具调用唯一标识
-    string name = 2; //工具名称
-    string arguments_json = 3; //工具调用参数，JSON格式
-    string result = 4; //工具调用结果
-    string error = 5; //工具调用错误信息
-    string scope = 6; //工具调用作用域 server/client
-    string status = 7; //工具调用状态 start/executing/finished/confirmed/rejected
-    bool requires_confirmation = 8; //后端工具调用是否需要用户确认
+// 工具调用增量信息
+message ToolCall {
+    ToolCallInfo info = 1; //工具调用基本信息
+    string status = 2; //工具调用状态 start/executing/finished/confirmed/rejected
+    string result = 3; //工具调用结果
+    string error = 4; //工具调用错误信息
 }
 
 message ChatMsg {
     string role = 1; //System,User,Assistant,tool
     string content = 2;
-    ToolCallDelta tool_calls = 3;
+    repeated ToolCall tool_calls = 3;
+    string tool_call_id = 4;
 }
 
 // 创建聊天请求
@@ -78,14 +82,14 @@ message ChatReq {
     int64 user_id = 2;
     // 当前大模型请求配置
     LlmConfig llmConfig = 3;
-    // 当创建新会话时的上下文消息（继续会话时可选）
-    repeated ChatMsg messages = 4;
     // 是否允许服务端自动回填历史记录（默认 true）
-    bool auto_fill_history = 5;
+    bool auto_fill_history = 4;
+    // 当创建新会话时的上下文消息（继续会话时可选）
+    repeated ChatMsg messages = 5;
 }
 
 message ChatResp {
-    string id = 1;
+    string conversation_id = 1;
     repeated ChatMsg respMsg = 2;
 }
 
@@ -96,10 +100,10 @@ message ChatStreamReq {
     int64 user_id = 2;
     // 当前大模型请求配置
     LlmConfig llmConfig = 3;
-    // 当创建新会话时的上下文消息（继续会话时可选）
-    repeated ChatMsg messages = 4;
     // 是否允许服务端自动回填历史记录（默认 true）
-    bool auto_fill_history = 5;
+    bool auto_fill_history = 4;
+    // 当创建新会话时的上下文消息（继续会话时可选）
+    repeated ChatMsg messages = 5;
 }
 
 // 流式内容增量
@@ -112,26 +116,10 @@ message ChatStreamResp {
     string id = 1;
     oneof payload {
         StreamDelta delta = 2;
-        ToolCallDelta tool_call = 3;
+        ToolCall tool_call = 3;
         string error = 4;
     }
 }
-
-// 后端工具调用执行请求
-message ExecuteToolReq {
-    string id = 1; //工具调用唯一标识
-    string name = 2; //工具名称
-    string arguments_json = 3; //工具调用参数，JSON格式
-    int64 user_id = 4; //用户标识
-    string scope = 5; //调用作用域，后端调用固定为 server
-    bool approved = 6; //是否已在前端完成人工确认
-}
-
-// 后端工具调用执行响应
-message ExecuteToolResp {
-    ToolCallDelta tool_call = 1;
-}
-
 
 // ChatConfig represents the configuration for a chat session.
 message ChatConfig {
@@ -387,7 +375,6 @@ message ListChatMessageResp {
 service LlmChatService {
     rpc Chat(ChatReq) returns (ChatResp);
     rpc ChatStream(ChatStreamReq) returns (stream ChatStreamResp);
-    rpc ExecuteTool(ExecuteToolReq) returns (ExecuteToolResp);
 }
 
 service LlmConfigService {

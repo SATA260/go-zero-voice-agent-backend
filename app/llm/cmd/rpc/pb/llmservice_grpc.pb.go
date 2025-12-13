@@ -19,9 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LlmChatService_Chat_FullMethodName        = "/llm.LlmChatService/Chat"
-	LlmChatService_ChatStream_FullMethodName  = "/llm.LlmChatService/ChatStream"
-	LlmChatService_ExecuteTool_FullMethodName = "/llm.LlmChatService/ExecuteTool"
+	LlmChatService_Chat_FullMethodName       = "/llm.LlmChatService/Chat"
+	LlmChatService_ChatStream_FullMethodName = "/llm.LlmChatService/ChatStream"
 )
 
 // LlmChatServiceClient is the client API for LlmChatService service.
@@ -30,7 +29,6 @@ const (
 type LlmChatServiceClient interface {
 	Chat(ctx context.Context, in *ChatReq, opts ...grpc.CallOption) (*ChatResp, error)
 	ChatStream(ctx context.Context, in *ChatStreamReq, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ChatStreamResp], error)
-	ExecuteTool(ctx context.Context, in *ExecuteToolReq, opts ...grpc.CallOption) (*ExecuteToolResp, error)
 }
 
 type llmChatServiceClient struct {
@@ -70,23 +68,12 @@ func (c *llmChatServiceClient) ChatStream(ctx context.Context, in *ChatStreamReq
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type LlmChatService_ChatStreamClient = grpc.ServerStreamingClient[ChatStreamResp]
 
-func (c *llmChatServiceClient) ExecuteTool(ctx context.Context, in *ExecuteToolReq, opts ...grpc.CallOption) (*ExecuteToolResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ExecuteToolResp)
-	err := c.cc.Invoke(ctx, LlmChatService_ExecuteTool_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // LlmChatServiceServer is the server API for LlmChatService service.
 // All implementations must embed UnimplementedLlmChatServiceServer
 // for forward compatibility.
 type LlmChatServiceServer interface {
 	Chat(context.Context, *ChatReq) (*ChatResp, error)
 	ChatStream(*ChatStreamReq, grpc.ServerStreamingServer[ChatStreamResp]) error
-	ExecuteTool(context.Context, *ExecuteToolReq) (*ExecuteToolResp, error)
 	mustEmbedUnimplementedLlmChatServiceServer()
 }
 
@@ -102,9 +89,6 @@ func (UnimplementedLlmChatServiceServer) Chat(context.Context, *ChatReq) (*ChatR
 }
 func (UnimplementedLlmChatServiceServer) ChatStream(*ChatStreamReq, grpc.ServerStreamingServer[ChatStreamResp]) error {
 	return status.Errorf(codes.Unimplemented, "method ChatStream not implemented")
-}
-func (UnimplementedLlmChatServiceServer) ExecuteTool(context.Context, *ExecuteToolReq) (*ExecuteToolResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ExecuteTool not implemented")
 }
 func (UnimplementedLlmChatServiceServer) mustEmbedUnimplementedLlmChatServiceServer() {}
 func (UnimplementedLlmChatServiceServer) testEmbeddedByValue()                        {}
@@ -156,24 +140,6 @@ func _LlmChatService_ChatStream_Handler(srv interface{}, stream grpc.ServerStrea
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type LlmChatService_ChatStreamServer = grpc.ServerStreamingServer[ChatStreamResp]
 
-func _LlmChatService_ExecuteTool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ExecuteToolReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LlmChatServiceServer).ExecuteTool(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LlmChatService_ExecuteTool_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LlmChatServiceServer).ExecuteTool(ctx, req.(*ExecuteToolReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // LlmChatService_ServiceDesc is the grpc.ServiceDesc for LlmChatService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -184,10 +150,6 @@ var LlmChatService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Chat",
 			Handler:    _LlmChatService_Chat_Handler,
-		},
-		{
-			MethodName: "ExecuteTool",
-			Handler:    _LlmChatService_ExecuteTool_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

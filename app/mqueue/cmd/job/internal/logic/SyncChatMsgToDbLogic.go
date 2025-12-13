@@ -134,6 +134,16 @@ func (l *SyncChatMsgToDbLogic) persistMessages(sessionID int64, messages []*pb.C
 			if msg.Content != "" {
 				record.Content = sql.NullString{String: msg.Content, Valid: true}
 			}
+			if msg.ToolCallId != "" {
+				record.Content = sql.NullString{String: msg.ToolCallId, Valid: true}
+			}
+			if len(msg.ToolCalls) > 0 {
+				toolCallsBytes, err := json.Marshal(msg.ToolCalls)
+				if err != nil {
+					return errors.Wrapf(err, "marshal tool calls failed, session_id: %d, index: %d", sessionID, idx)
+				}
+				record.ToolCalls = sql.NullString{String: string(toolCallsBytes), Valid: true}
+			}
 			// 插入每条消息
 			if _, err := l.svcCtx.ChatMessageModel.Insert(ctx, session, record); err != nil {
 				return errors.Wrapf(err, "insert chat message failed, session_id: %d, index: %d", sessionID, idx)

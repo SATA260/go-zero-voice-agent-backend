@@ -297,7 +297,7 @@ func (s *SignalingClient) handleAsrFinal(evt EventMessage) {
 	}
 
 	// 填充conversation-id
-	s.LlmConversationID = chatResp.Id
+	s.LlmConversationID = chatResp.ConversationId
 
 	// 发送 TTS 消息
 	llmMsg := chatResp.RespMsg[len(chatResp.RespMsg)-1].Content

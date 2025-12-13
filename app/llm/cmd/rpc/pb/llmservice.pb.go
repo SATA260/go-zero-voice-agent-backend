@@ -300,35 +300,31 @@ func (x *StreamOptions) GetIncludeUsage() bool {
 	return false
 }
 
-// 工具调用增量信息（模板）
-type ToolCallDelta struct {
+type ToolCallInfo struct {
 	state                protoimpl.MessageState `protogen:"open.v1"`
-	Id                   string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                                                  //工具调用唯一标识
-	Name                 string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                                                              //工具名称
-	ArgumentsJson        string                 `protobuf:"bytes,3,opt,name=arguments_json,json=argumentsJson,proto3" json:"arguments_json,omitempty"`                       //工具调用参数，JSON格式
-	Result               string                 `protobuf:"bytes,4,opt,name=result,proto3" json:"result,omitempty"`                                                          //工具调用结果
-	Error                string                 `protobuf:"bytes,5,opt,name=error,proto3" json:"error,omitempty"`                                                            //工具调用错误信息
-	Scope                string                 `protobuf:"bytes,6,opt,name=scope,proto3" json:"scope,omitempty"`                                                            //工具调用作用域 server/client
-	Status               string                 `protobuf:"bytes,7,opt,name=status,proto3" json:"status,omitempty"`                                                          //工具调用状态 start/executing/finished
-	RequiresConfirmation bool                   `protobuf:"varint,8,opt,name=requires_confirmation,json=requiresConfirmation,proto3" json:"requires_confirmation,omitempty"` //后端工具调用是否需要用户确认
+	Id                   string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name                 string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	ArgumentsJson        string                 `protobuf:"bytes,3,opt,name=arguments_json,json=argumentsJson,proto3" json:"arguments_json,omitempty"`
+	Scope                string                 `protobuf:"bytes,4,opt,name=scope,proto3" json:"scope,omitempty"`                                                            //工具调用作用域 server/client
+	RequiresConfirmation bool                   `protobuf:"varint,5,opt,name=requires_confirmation,json=requiresConfirmation,proto3" json:"requires_confirmation,omitempty"` //后端工具调用是否需要用户确认
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *ToolCallDelta) Reset() {
-	*x = ToolCallDelta{}
+func (x *ToolCallInfo) Reset() {
+	*x = ToolCallInfo{}
 	mi := &file_llmservice_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ToolCallDelta) String() string {
+func (x *ToolCallInfo) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ToolCallDelta) ProtoMessage() {}
+func (*ToolCallInfo) ProtoMessage() {}
 
-func (x *ToolCallDelta) ProtoReflect() protoreflect.Message {
+func (x *ToolCallInfo) ProtoReflect() protoreflect.Message {
 	mi := &file_llmservice_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -340,79 +336,128 @@ func (x *ToolCallDelta) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ToolCallDelta.ProtoReflect.Descriptor instead.
-func (*ToolCallDelta) Descriptor() ([]byte, []int) {
+// Deprecated: Use ToolCallInfo.ProtoReflect.Descriptor instead.
+func (*ToolCallInfo) Descriptor() ([]byte, []int) {
 	return file_llmservice_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *ToolCallDelta) GetId() string {
+func (x *ToolCallInfo) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *ToolCallDelta) GetName() string {
+func (x *ToolCallInfo) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *ToolCallDelta) GetArgumentsJson() string {
+func (x *ToolCallInfo) GetArgumentsJson() string {
 	if x != nil {
 		return x.ArgumentsJson
 	}
 	return ""
 }
 
-func (x *ToolCallDelta) GetResult() string {
-	if x != nil {
-		return x.Result
-	}
-	return ""
-}
-
-func (x *ToolCallDelta) GetError() string {
-	if x != nil {
-		return x.Error
-	}
-	return ""
-}
-
-func (x *ToolCallDelta) GetScope() string {
+func (x *ToolCallInfo) GetScope() string {
 	if x != nil {
 		return x.Scope
 	}
 	return ""
 }
 
-func (x *ToolCallDelta) GetStatus() string {
-	if x != nil {
-		return x.Status
-	}
-	return ""
-}
-
-func (x *ToolCallDelta) GetRequiresConfirmation() bool {
+func (x *ToolCallInfo) GetRequiresConfirmation() bool {
 	if x != nil {
 		return x.RequiresConfirmation
 	}
 	return false
 }
 
+// 工具调用增量信息
+type ToolCall struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Info          *ToolCallInfo          `protobuf:"bytes,1,opt,name=info,proto3" json:"info,omitempty"`     //工具调用基本信息
+	Status        string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"` //工具调用状态 start/executing/finished/confirmed/rejected
+	Result        string                 `protobuf:"bytes,3,opt,name=result,proto3" json:"result,omitempty"` //工具调用结果
+	Error         string                 `protobuf:"bytes,4,opt,name=error,proto3" json:"error,omitempty"`   //工具调用错误信息
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ToolCall) Reset() {
+	*x = ToolCall{}
+	mi := &file_llmservice_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ToolCall) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ToolCall) ProtoMessage() {}
+
+func (x *ToolCall) ProtoReflect() protoreflect.Message {
+	mi := &file_llmservice_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ToolCall.ProtoReflect.Descriptor instead.
+func (*ToolCall) Descriptor() ([]byte, []int) {
+	return file_llmservice_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ToolCall) GetInfo() *ToolCallInfo {
+	if x != nil {
+		return x.Info
+	}
+	return nil
+}
+
+func (x *ToolCall) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *ToolCall) GetResult() string {
+	if x != nil {
+		return x.Result
+	}
+	return ""
+}
+
+func (x *ToolCall) GetError() string {
+	if x != nil {
+		return x.Error
+	}
+	return ""
+}
+
 type ChatMsg struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Role          string                 `protobuf:"bytes,1,opt,name=role,proto3" json:"role,omitempty"` //System,User,Assistant,tool
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	ToolCalls     *ToolCallDelta         `protobuf:"bytes,3,opt,name=tool_calls,json=toolCalls,proto3" json:"tool_calls,omitempty"`
+	ToolCalls     []*ToolCall            `protobuf:"bytes,3,rep,name=tool_calls,json=toolCalls,proto3" json:"tool_calls,omitempty"`
+	ToolCallId    string                 `protobuf:"bytes,4,opt,name=tool_call_id,json=toolCallId,proto3" json:"tool_call_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ChatMsg) Reset() {
 	*x = ChatMsg{}
-	mi := &file_llmservice_proto_msgTypes[4]
+	mi := &file_llmservice_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -424,7 +469,7 @@ func (x *ChatMsg) String() string {
 func (*ChatMsg) ProtoMessage() {}
 
 func (x *ChatMsg) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[4]
+	mi := &file_llmservice_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -437,7 +482,7 @@ func (x *ChatMsg) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatMsg.ProtoReflect.Descriptor instead.
 func (*ChatMsg) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{4}
+	return file_llmservice_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ChatMsg) GetRole() string {
@@ -454,11 +499,18 @@ func (x *ChatMsg) GetContent() string {
 	return ""
 }
 
-func (x *ChatMsg) GetToolCalls() *ToolCallDelta {
+func (x *ChatMsg) GetToolCalls() []*ToolCall {
 	if x != nil {
 		return x.ToolCalls
 	}
 	return nil
+}
+
+func (x *ChatMsg) GetToolCallId() string {
+	if x != nil {
+		return x.ToolCallId
+	}
+	return ""
 }
 
 // 创建聊天请求
@@ -470,17 +522,17 @@ type ChatReq struct {
 	UserId int64 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	// 当前大模型请求配置
 	LlmConfig *LlmConfig `protobuf:"bytes,3,opt,name=llmConfig,proto3" json:"llmConfig,omitempty"`
-	// 当创建新会话时的上下文消息（继续会话时可选）
-	Messages []*ChatMsg `protobuf:"bytes,4,rep,name=messages,proto3" json:"messages,omitempty"`
 	// 是否允许服务端自动回填历史记录（默认 true）
-	AutoFillHistory bool `protobuf:"varint,5,opt,name=auto_fill_history,json=autoFillHistory,proto3" json:"auto_fill_history,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	AutoFillHistory bool `protobuf:"varint,4,opt,name=auto_fill_history,json=autoFillHistory,proto3" json:"auto_fill_history,omitempty"`
+	// 当创建新会话时的上下文消息（继续会话时可选）
+	Messages      []*ChatMsg `protobuf:"bytes,5,rep,name=messages,proto3" json:"messages,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ChatReq) Reset() {
 	*x = ChatReq{}
-	mi := &file_llmservice_proto_msgTypes[5]
+	mi := &file_llmservice_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -492,7 +544,7 @@ func (x *ChatReq) String() string {
 func (*ChatReq) ProtoMessage() {}
 
 func (x *ChatReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[5]
+	mi := &file_llmservice_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -505,7 +557,7 @@ func (x *ChatReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatReq.ProtoReflect.Descriptor instead.
 func (*ChatReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{5}
+	return file_llmservice_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ChatReq) GetConversationId() string {
@@ -529,13 +581,6 @@ func (x *ChatReq) GetLlmConfig() *LlmConfig {
 	return nil
 }
 
-func (x *ChatReq) GetMessages() []*ChatMsg {
-	if x != nil {
-		return x.Messages
-	}
-	return nil
-}
-
 func (x *ChatReq) GetAutoFillHistory() bool {
 	if x != nil {
 		return x.AutoFillHistory
@@ -543,17 +588,24 @@ func (x *ChatReq) GetAutoFillHistory() bool {
 	return false
 }
 
+func (x *ChatReq) GetMessages() []*ChatMsg {
+	if x != nil {
+		return x.Messages
+	}
+	return nil
+}
+
 type ChatResp struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	RespMsg       []*ChatMsg             `protobuf:"bytes,2,rep,name=respMsg,proto3" json:"respMsg,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	ConversationId string                 `protobuf:"bytes,1,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
+	RespMsg        []*ChatMsg             `protobuf:"bytes,2,rep,name=respMsg,proto3" json:"respMsg,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *ChatResp) Reset() {
 	*x = ChatResp{}
-	mi := &file_llmservice_proto_msgTypes[6]
+	mi := &file_llmservice_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -565,7 +617,7 @@ func (x *ChatResp) String() string {
 func (*ChatResp) ProtoMessage() {}
 
 func (x *ChatResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[6]
+	mi := &file_llmservice_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -578,12 +630,12 @@ func (x *ChatResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatResp.ProtoReflect.Descriptor instead.
 func (*ChatResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{6}
+	return file_llmservice_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *ChatResp) GetId() string {
+func (x *ChatResp) GetConversationId() string {
 	if x != nil {
-		return x.Id
+		return x.ConversationId
 	}
 	return ""
 }
@@ -603,17 +655,17 @@ type ChatStreamReq struct {
 	UserId int64 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	// 当前大模型请求配置
 	LlmConfig *LlmConfig `protobuf:"bytes,3,opt,name=llmConfig,proto3" json:"llmConfig,omitempty"`
-	// 当创建新会话时的上下文消息（继续会话时可选）
-	Messages []*ChatMsg `protobuf:"bytes,4,rep,name=messages,proto3" json:"messages,omitempty"`
 	// 是否允许服务端自动回填历史记录（默认 true）
-	AutoFillHistory bool `protobuf:"varint,5,opt,name=auto_fill_history,json=autoFillHistory,proto3" json:"auto_fill_history,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	AutoFillHistory bool `protobuf:"varint,4,opt,name=auto_fill_history,json=autoFillHistory,proto3" json:"auto_fill_history,omitempty"`
+	// 当创建新会话时的上下文消息（继续会话时可选）
+	Messages      []*ChatMsg `protobuf:"bytes,5,rep,name=messages,proto3" json:"messages,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ChatStreamReq) Reset() {
 	*x = ChatStreamReq{}
-	mi := &file_llmservice_proto_msgTypes[7]
+	mi := &file_llmservice_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -625,7 +677,7 @@ func (x *ChatStreamReq) String() string {
 func (*ChatStreamReq) ProtoMessage() {}
 
 func (x *ChatStreamReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[7]
+	mi := &file_llmservice_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -638,7 +690,7 @@ func (x *ChatStreamReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatStreamReq.ProtoReflect.Descriptor instead.
 func (*ChatStreamReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{7}
+	return file_llmservice_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ChatStreamReq) GetConversationId() string {
@@ -662,18 +714,18 @@ func (x *ChatStreamReq) GetLlmConfig() *LlmConfig {
 	return nil
 }
 
-func (x *ChatStreamReq) GetMessages() []*ChatMsg {
-	if x != nil {
-		return x.Messages
-	}
-	return nil
-}
-
 func (x *ChatStreamReq) GetAutoFillHistory() bool {
 	if x != nil {
 		return x.AutoFillHistory
 	}
 	return false
+}
+
+func (x *ChatStreamReq) GetMessages() []*ChatMsg {
+	if x != nil {
+		return x.Messages
+	}
+	return nil
 }
 
 // 流式内容增量
@@ -687,7 +739,7 @@ type StreamDelta struct {
 
 func (x *StreamDelta) Reset() {
 	*x = StreamDelta{}
-	mi := &file_llmservice_proto_msgTypes[8]
+	mi := &file_llmservice_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -699,7 +751,7 @@ func (x *StreamDelta) String() string {
 func (*StreamDelta) ProtoMessage() {}
 
 func (x *StreamDelta) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[8]
+	mi := &file_llmservice_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -712,7 +764,7 @@ func (x *StreamDelta) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StreamDelta.ProtoReflect.Descriptor instead.
 func (*StreamDelta) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{8}
+	return file_llmservice_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *StreamDelta) GetContent() string {
@@ -744,7 +796,7 @@ type ChatStreamResp struct {
 
 func (x *ChatStreamResp) Reset() {
 	*x = ChatStreamResp{}
-	mi := &file_llmservice_proto_msgTypes[9]
+	mi := &file_llmservice_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -756,7 +808,7 @@ func (x *ChatStreamResp) String() string {
 func (*ChatStreamResp) ProtoMessage() {}
 
 func (x *ChatStreamResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[9]
+	mi := &file_llmservice_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -769,7 +821,7 @@ func (x *ChatStreamResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatStreamResp.ProtoReflect.Descriptor instead.
 func (*ChatStreamResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{9}
+	return file_llmservice_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ChatStreamResp) GetId() string {
@@ -795,7 +847,7 @@ func (x *ChatStreamResp) GetDelta() *StreamDelta {
 	return nil
 }
 
-func (x *ChatStreamResp) GetToolCall() *ToolCallDelta {
+func (x *ChatStreamResp) GetToolCall() *ToolCall {
 	if x != nil {
 		if x, ok := x.Payload.(*ChatStreamResp_ToolCall); ok {
 			return x.ToolCall
@@ -822,7 +874,7 @@ type ChatStreamResp_Delta struct {
 }
 
 type ChatStreamResp_ToolCall struct {
-	ToolCall *ToolCallDelta `protobuf:"bytes,3,opt,name=tool_call,json=toolCall,proto3,oneof"`
+	ToolCall *ToolCall `protobuf:"bytes,3,opt,name=tool_call,json=toolCall,proto3,oneof"`
 }
 
 type ChatStreamResp_Error struct {
@@ -834,136 +886,6 @@ func (*ChatStreamResp_Delta) isChatStreamResp_Payload() {}
 func (*ChatStreamResp_ToolCall) isChatStreamResp_Payload() {}
 
 func (*ChatStreamResp_Error) isChatStreamResp_Payload() {}
-
-// 后端工具调用执行请求
-type ExecuteToolReq struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                            //工具调用唯一标识
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                                        //工具名称
-	ArgumentsJson string                 `protobuf:"bytes,3,opt,name=arguments_json,json=argumentsJson,proto3" json:"arguments_json,omitempty"` //工具调用参数，JSON格式
-	UserId        int64                  `protobuf:"varint,4,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`                     //用户标识
-	Scope         string                 `protobuf:"bytes,5,opt,name=scope,proto3" json:"scope,omitempty"`                                      //调用作用域，后端调用固定为 server
-	Approved      bool                   `protobuf:"varint,6,opt,name=approved,proto3" json:"approved,omitempty"`                               //是否已在前端完成人工确认
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ExecuteToolReq) Reset() {
-	*x = ExecuteToolReq{}
-	mi := &file_llmservice_proto_msgTypes[10]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ExecuteToolReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ExecuteToolReq) ProtoMessage() {}
-
-func (x *ExecuteToolReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[10]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ExecuteToolReq.ProtoReflect.Descriptor instead.
-func (*ExecuteToolReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{10}
-}
-
-func (x *ExecuteToolReq) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *ExecuteToolReq) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *ExecuteToolReq) GetArgumentsJson() string {
-	if x != nil {
-		return x.ArgumentsJson
-	}
-	return ""
-}
-
-func (x *ExecuteToolReq) GetUserId() int64 {
-	if x != nil {
-		return x.UserId
-	}
-	return 0
-}
-
-func (x *ExecuteToolReq) GetScope() string {
-	if x != nil {
-		return x.Scope
-	}
-	return ""
-}
-
-func (x *ExecuteToolReq) GetApproved() bool {
-	if x != nil {
-		return x.Approved
-	}
-	return false
-}
-
-// 后端工具调用执行响应
-type ExecuteToolResp struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ToolCall      *ToolCallDelta         `protobuf:"bytes,1,opt,name=tool_call,json=toolCall,proto3" json:"tool_call,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ExecuteToolResp) Reset() {
-	*x = ExecuteToolResp{}
-	mi := &file_llmservice_proto_msgTypes[11]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ExecuteToolResp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ExecuteToolResp) ProtoMessage() {}
-
-func (x *ExecuteToolResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[11]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ExecuteToolResp.ProtoReflect.Descriptor instead.
-func (*ExecuteToolResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{11}
-}
-
-func (x *ExecuteToolResp) GetToolCall() *ToolCallDelta {
-	if x != nil {
-		return x.ToolCall
-	}
-	return nil
-}
 
 // ChatConfig represents the configuration for a chat session.
 type ChatConfig struct {
@@ -992,7 +914,7 @@ type ChatConfig struct {
 
 func (x *ChatConfig) Reset() {
 	*x = ChatConfig{}
-	mi := &file_llmservice_proto_msgTypes[12]
+	mi := &file_llmservice_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1004,7 +926,7 @@ func (x *ChatConfig) String() string {
 func (*ChatConfig) ProtoMessage() {}
 
 func (x *ChatConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[12]
+	mi := &file_llmservice_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1017,7 +939,7 @@ func (x *ChatConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatConfig.ProtoReflect.Descriptor instead.
 func (*ChatConfig) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{12}
+	return file_llmservice_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *ChatConfig) GetId() int64 {
@@ -1172,7 +1094,7 @@ type CreateConfigReq struct {
 
 func (x *CreateConfigReq) Reset() {
 	*x = CreateConfigReq{}
-	mi := &file_llmservice_proto_msgTypes[13]
+	mi := &file_llmservice_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1184,7 +1106,7 @@ func (x *CreateConfigReq) String() string {
 func (*CreateConfigReq) ProtoMessage() {}
 
 func (x *CreateConfigReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[13]
+	mi := &file_llmservice_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1197,7 +1119,7 @@ func (x *CreateConfigReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateConfigReq.ProtoReflect.Descriptor instead.
 func (*CreateConfigReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{13}
+	return file_llmservice_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *CreateConfigReq) GetName() string {
@@ -1328,7 +1250,7 @@ type CreateConfigResp struct {
 
 func (x *CreateConfigResp) Reset() {
 	*x = CreateConfigResp{}
-	mi := &file_llmservice_proto_msgTypes[14]
+	mi := &file_llmservice_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1340,7 +1262,7 @@ func (x *CreateConfigResp) String() string {
 func (*CreateConfigResp) ProtoMessage() {}
 
 func (x *CreateConfigResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[14]
+	mi := &file_llmservice_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1353,7 +1275,7 @@ func (x *CreateConfigResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateConfigResp.ProtoReflect.Descriptor instead.
 func (*CreateConfigResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{14}
+	return file_llmservice_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *CreateConfigResp) GetId() int64 {
@@ -1373,7 +1295,7 @@ type DeleteConfigReq struct {
 
 func (x *DeleteConfigReq) Reset() {
 	*x = DeleteConfigReq{}
-	mi := &file_llmservice_proto_msgTypes[15]
+	mi := &file_llmservice_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1385,7 +1307,7 @@ func (x *DeleteConfigReq) String() string {
 func (*DeleteConfigReq) ProtoMessage() {}
 
 func (x *DeleteConfigReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[15]
+	mi := &file_llmservice_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1398,7 +1320,7 @@ func (x *DeleteConfigReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteConfigReq.ProtoReflect.Descriptor instead.
 func (*DeleteConfigReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{15}
+	return file_llmservice_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *DeleteConfigReq) GetId() int64 {
@@ -1416,7 +1338,7 @@ type DeleteConfigResp struct {
 
 func (x *DeleteConfigResp) Reset() {
 	*x = DeleteConfigResp{}
-	mi := &file_llmservice_proto_msgTypes[16]
+	mi := &file_llmservice_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1428,7 +1350,7 @@ func (x *DeleteConfigResp) String() string {
 func (*DeleteConfigResp) ProtoMessage() {}
 
 func (x *DeleteConfigResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[16]
+	mi := &file_llmservice_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1441,7 +1363,7 @@ func (x *DeleteConfigResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteConfigResp.ProtoReflect.Descriptor instead.
 func (*DeleteConfigResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{16}
+	return file_llmservice_proto_rawDescGZIP(), []int{15}
 }
 
 // Update
@@ -1471,7 +1393,7 @@ type UpdateConfigReq struct {
 
 func (x *UpdateConfigReq) Reset() {
 	*x = UpdateConfigReq{}
-	mi := &file_llmservice_proto_msgTypes[17]
+	mi := &file_llmservice_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1483,7 +1405,7 @@ func (x *UpdateConfigReq) String() string {
 func (*UpdateConfigReq) ProtoMessage() {}
 
 func (x *UpdateConfigReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[17]
+	mi := &file_llmservice_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1496,7 +1418,7 @@ func (x *UpdateConfigReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateConfigReq.ProtoReflect.Descriptor instead.
 func (*UpdateConfigReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{17}
+	return file_llmservice_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *UpdateConfigReq) GetId() int64 {
@@ -1633,7 +1555,7 @@ type UpdateConfigResp struct {
 
 func (x *UpdateConfigResp) Reset() {
 	*x = UpdateConfigResp{}
-	mi := &file_llmservice_proto_msgTypes[18]
+	mi := &file_llmservice_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1645,7 +1567,7 @@ func (x *UpdateConfigResp) String() string {
 func (*UpdateConfigResp) ProtoMessage() {}
 
 func (x *UpdateConfigResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[18]
+	mi := &file_llmservice_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1658,7 +1580,7 @@ func (x *UpdateConfigResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateConfigResp.ProtoReflect.Descriptor instead.
 func (*UpdateConfigResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{18}
+	return file_llmservice_proto_rawDescGZIP(), []int{17}
 }
 
 // Get
@@ -1671,7 +1593,7 @@ type GetConfigReq struct {
 
 func (x *GetConfigReq) Reset() {
 	*x = GetConfigReq{}
-	mi := &file_llmservice_proto_msgTypes[19]
+	mi := &file_llmservice_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1683,7 +1605,7 @@ func (x *GetConfigReq) String() string {
 func (*GetConfigReq) ProtoMessage() {}
 
 func (x *GetConfigReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[19]
+	mi := &file_llmservice_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1696,7 +1618,7 @@ func (x *GetConfigReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetConfigReq.ProtoReflect.Descriptor instead.
 func (*GetConfigReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{19}
+	return file_llmservice_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GetConfigReq) GetId() int64 {
@@ -1715,7 +1637,7 @@ type GetConfigResp struct {
 
 func (x *GetConfigResp) Reset() {
 	*x = GetConfigResp{}
-	mi := &file_llmservice_proto_msgTypes[20]
+	mi := &file_llmservice_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1727,7 +1649,7 @@ func (x *GetConfigResp) String() string {
 func (*GetConfigResp) ProtoMessage() {}
 
 func (x *GetConfigResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[20]
+	mi := &file_llmservice_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1740,7 +1662,7 @@ func (x *GetConfigResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetConfigResp.ProtoReflect.Descriptor instead.
 func (*GetConfigResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{20}
+	return file_llmservice_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GetConfigResp) GetConfig() *ChatConfig {
@@ -1763,7 +1685,7 @@ type ListConfigFilter struct {
 
 func (x *ListConfigFilter) Reset() {
 	*x = ListConfigFilter{}
-	mi := &file_llmservice_proto_msgTypes[21]
+	mi := &file_llmservice_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1775,7 +1697,7 @@ func (x *ListConfigFilter) String() string {
 func (*ListConfigFilter) ProtoMessage() {}
 
 func (x *ListConfigFilter) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[21]
+	mi := &file_llmservice_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1788,7 +1710,7 @@ func (x *ListConfigFilter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListConfigFilter.ProtoReflect.Descriptor instead.
 func (*ListConfigFilter) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{21}
+	return file_llmservice_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *ListConfigFilter) GetId() int64 {
@@ -1829,7 +1751,7 @@ type ListConfigReq struct {
 
 func (x *ListConfigReq) Reset() {
 	*x = ListConfigReq{}
-	mi := &file_llmservice_proto_msgTypes[22]
+	mi := &file_llmservice_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1841,7 +1763,7 @@ func (x *ListConfigReq) String() string {
 func (*ListConfigReq) ProtoMessage() {}
 
 func (x *ListConfigReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[22]
+	mi := &file_llmservice_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1854,7 +1776,7 @@ func (x *ListConfigReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListConfigReq.ProtoReflect.Descriptor instead.
 func (*ListConfigReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{22}
+	return file_llmservice_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *ListConfigReq) GetPageQuery() *PageQuery {
@@ -1881,7 +1803,7 @@ type ListConfigResp struct {
 
 func (x *ListConfigResp) Reset() {
 	*x = ListConfigResp{}
-	mi := &file_llmservice_proto_msgTypes[23]
+	mi := &file_llmservice_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1893,7 +1815,7 @@ func (x *ListConfigResp) String() string {
 func (*ListConfigResp) ProtoMessage() {}
 
 func (x *ListConfigResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[23]
+	mi := &file_llmservice_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1906,7 +1828,7 @@ func (x *ListConfigResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListConfigResp.ProtoReflect.Descriptor instead.
 func (*ListConfigResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{23}
+	return file_llmservice_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *ListConfigResp) GetTotal() int64 {
@@ -1940,7 +1862,7 @@ type ChatSession struct {
 
 func (x *ChatSession) Reset() {
 	*x = ChatSession{}
-	mi := &file_llmservice_proto_msgTypes[24]
+	mi := &file_llmservice_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1952,7 +1874,7 @@ func (x *ChatSession) String() string {
 func (*ChatSession) ProtoMessage() {}
 
 func (x *ChatSession) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[24]
+	mi := &file_llmservice_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1965,7 +1887,7 @@ func (x *ChatSession) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatSession.ProtoReflect.Descriptor instead.
 func (*ChatSession) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{24}
+	return file_llmservice_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *ChatSession) GetId() int64 {
@@ -2042,7 +1964,7 @@ type CreateChatSessionReq struct {
 
 func (x *CreateChatSessionReq) Reset() {
 	*x = CreateChatSessionReq{}
-	mi := &file_llmservice_proto_msgTypes[25]
+	mi := &file_llmservice_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2054,7 +1976,7 @@ func (x *CreateChatSessionReq) String() string {
 func (*CreateChatSessionReq) ProtoMessage() {}
 
 func (x *CreateChatSessionReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[25]
+	mi := &file_llmservice_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2067,7 +1989,7 @@ func (x *CreateChatSessionReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateChatSessionReq.ProtoReflect.Descriptor instead.
 func (*CreateChatSessionReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{25}
+	return file_llmservice_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *CreateChatSessionReq) GetConvId() string {
@@ -2100,7 +2022,7 @@ type CreateChatSessionResp struct {
 
 func (x *CreateChatSessionResp) Reset() {
 	*x = CreateChatSessionResp{}
-	mi := &file_llmservice_proto_msgTypes[26]
+	mi := &file_llmservice_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2112,7 +2034,7 @@ func (x *CreateChatSessionResp) String() string {
 func (*CreateChatSessionResp) ProtoMessage() {}
 
 func (x *CreateChatSessionResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[26]
+	mi := &file_llmservice_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2125,7 +2047,7 @@ func (x *CreateChatSessionResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateChatSessionResp.ProtoReflect.Descriptor instead.
 func (*CreateChatSessionResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{26}
+	return file_llmservice_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *CreateChatSessionResp) GetId() int64 {
@@ -2144,7 +2066,7 @@ type DeleteChatSessionReq struct {
 
 func (x *DeleteChatSessionReq) Reset() {
 	*x = DeleteChatSessionReq{}
-	mi := &file_llmservice_proto_msgTypes[27]
+	mi := &file_llmservice_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2156,7 +2078,7 @@ func (x *DeleteChatSessionReq) String() string {
 func (*DeleteChatSessionReq) ProtoMessage() {}
 
 func (x *DeleteChatSessionReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[27]
+	mi := &file_llmservice_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2169,7 +2091,7 @@ func (x *DeleteChatSessionReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteChatSessionReq.ProtoReflect.Descriptor instead.
 func (*DeleteChatSessionReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{27}
+	return file_llmservice_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *DeleteChatSessionReq) GetId() int64 {
@@ -2187,7 +2109,7 @@ type DeleteChatSessionResp struct {
 
 func (x *DeleteChatSessionResp) Reset() {
 	*x = DeleteChatSessionResp{}
-	mi := &file_llmservice_proto_msgTypes[28]
+	mi := &file_llmservice_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2199,7 +2121,7 @@ func (x *DeleteChatSessionResp) String() string {
 func (*DeleteChatSessionResp) ProtoMessage() {}
 
 func (x *DeleteChatSessionResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[28]
+	mi := &file_llmservice_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2212,7 +2134,7 @@ func (x *DeleteChatSessionResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteChatSessionResp.ProtoReflect.Descriptor instead.
 func (*DeleteChatSessionResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{28}
+	return file_llmservice_proto_rawDescGZIP(), []int{27}
 }
 
 type UpdateChatSessionReq struct {
@@ -2228,7 +2150,7 @@ type UpdateChatSessionReq struct {
 
 func (x *UpdateChatSessionReq) Reset() {
 	*x = UpdateChatSessionReq{}
-	mi := &file_llmservice_proto_msgTypes[29]
+	mi := &file_llmservice_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2240,7 +2162,7 @@ func (x *UpdateChatSessionReq) String() string {
 func (*UpdateChatSessionReq) ProtoMessage() {}
 
 func (x *UpdateChatSessionReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[29]
+	mi := &file_llmservice_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2253,7 +2175,7 @@ func (x *UpdateChatSessionReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateChatSessionReq.ProtoReflect.Descriptor instead.
 func (*UpdateChatSessionReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{29}
+	return file_llmservice_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *UpdateChatSessionReq) GetId() int64 {
@@ -2299,7 +2221,7 @@ type UpdateChatSessionResp struct {
 
 func (x *UpdateChatSessionResp) Reset() {
 	*x = UpdateChatSessionResp{}
-	mi := &file_llmservice_proto_msgTypes[30]
+	mi := &file_llmservice_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2311,7 +2233,7 @@ func (x *UpdateChatSessionResp) String() string {
 func (*UpdateChatSessionResp) ProtoMessage() {}
 
 func (x *UpdateChatSessionResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[30]
+	mi := &file_llmservice_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2324,7 +2246,7 @@ func (x *UpdateChatSessionResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateChatSessionResp.ProtoReflect.Descriptor instead.
 func (*UpdateChatSessionResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{30}
+	return file_llmservice_proto_rawDescGZIP(), []int{29}
 }
 
 type GetChatSessionReq struct {
@@ -2336,7 +2258,7 @@ type GetChatSessionReq struct {
 
 func (x *GetChatSessionReq) Reset() {
 	*x = GetChatSessionReq{}
-	mi := &file_llmservice_proto_msgTypes[31]
+	mi := &file_llmservice_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2348,7 +2270,7 @@ func (x *GetChatSessionReq) String() string {
 func (*GetChatSessionReq) ProtoMessage() {}
 
 func (x *GetChatSessionReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[31]
+	mi := &file_llmservice_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2361,7 +2283,7 @@ func (x *GetChatSessionReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetChatSessionReq.ProtoReflect.Descriptor instead.
 func (*GetChatSessionReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{31}
+	return file_llmservice_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *GetChatSessionReq) GetId() int64 {
@@ -2380,7 +2302,7 @@ type GetChatSessionByConvIdReq struct {
 
 func (x *GetChatSessionByConvIdReq) Reset() {
 	*x = GetChatSessionByConvIdReq{}
-	mi := &file_llmservice_proto_msgTypes[32]
+	mi := &file_llmservice_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2392,7 +2314,7 @@ func (x *GetChatSessionByConvIdReq) String() string {
 func (*GetChatSessionByConvIdReq) ProtoMessage() {}
 
 func (x *GetChatSessionByConvIdReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[32]
+	mi := &file_llmservice_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2405,7 +2327,7 @@ func (x *GetChatSessionByConvIdReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetChatSessionByConvIdReq.ProtoReflect.Descriptor instead.
 func (*GetChatSessionByConvIdReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{32}
+	return file_llmservice_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *GetChatSessionByConvIdReq) GetConvId() string {
@@ -2424,7 +2346,7 @@ type GetChatSessionResp struct {
 
 func (x *GetChatSessionResp) Reset() {
 	*x = GetChatSessionResp{}
-	mi := &file_llmservice_proto_msgTypes[33]
+	mi := &file_llmservice_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2436,7 +2358,7 @@ func (x *GetChatSessionResp) String() string {
 func (*GetChatSessionResp) ProtoMessage() {}
 
 func (x *GetChatSessionResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[33]
+	mi := &file_llmservice_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2449,7 +2371,7 @@ func (x *GetChatSessionResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetChatSessionResp.ProtoReflect.Descriptor instead.
 func (*GetChatSessionResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{33}
+	return file_llmservice_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *GetChatSessionResp) GetSession() *ChatSession {
@@ -2471,7 +2393,7 @@ type ListChatSessionFilter struct {
 
 func (x *ListChatSessionFilter) Reset() {
 	*x = ListChatSessionFilter{}
-	mi := &file_llmservice_proto_msgTypes[34]
+	mi := &file_llmservice_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2483,7 +2405,7 @@ func (x *ListChatSessionFilter) String() string {
 func (*ListChatSessionFilter) ProtoMessage() {}
 
 func (x *ListChatSessionFilter) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[34]
+	mi := &file_llmservice_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2496,7 +2418,7 @@ func (x *ListChatSessionFilter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListChatSessionFilter.ProtoReflect.Descriptor instead.
 func (*ListChatSessionFilter) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{34}
+	return file_llmservice_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *ListChatSessionFilter) GetId() int64 {
@@ -2537,7 +2459,7 @@ type ListChatSessionReq struct {
 
 func (x *ListChatSessionReq) Reset() {
 	*x = ListChatSessionReq{}
-	mi := &file_llmservice_proto_msgTypes[35]
+	mi := &file_llmservice_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2549,7 +2471,7 @@ func (x *ListChatSessionReq) String() string {
 func (*ListChatSessionReq) ProtoMessage() {}
 
 func (x *ListChatSessionReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[35]
+	mi := &file_llmservice_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2562,7 +2484,7 @@ func (x *ListChatSessionReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListChatSessionReq.ProtoReflect.Descriptor instead.
 func (*ListChatSessionReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{35}
+	return file_llmservice_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *ListChatSessionReq) GetPageQuery() *PageQuery {
@@ -2589,7 +2511,7 @@ type ListChatSessionResp struct {
 
 func (x *ListChatSessionResp) Reset() {
 	*x = ListChatSessionResp{}
-	mi := &file_llmservice_proto_msgTypes[36]
+	mi := &file_llmservice_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2601,7 +2523,7 @@ func (x *ListChatSessionResp) String() string {
 func (*ListChatSessionResp) ProtoMessage() {}
 
 func (x *ListChatSessionResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[36]
+	mi := &file_llmservice_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2614,7 +2536,7 @@ func (x *ListChatSessionResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListChatSessionResp.ProtoReflect.Descriptor instead.
 func (*ListChatSessionResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{36}
+	return file_llmservice_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *ListChatSessionResp) GetTotal() int64 {
@@ -2650,7 +2572,7 @@ type ChatMessage struct {
 
 func (x *ChatMessage) Reset() {
 	*x = ChatMessage{}
-	mi := &file_llmservice_proto_msgTypes[37]
+	mi := &file_llmservice_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2662,7 +2584,7 @@ func (x *ChatMessage) String() string {
 func (*ChatMessage) ProtoMessage() {}
 
 func (x *ChatMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[37]
+	mi := &file_llmservice_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2675,7 +2597,7 @@ func (x *ChatMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatMessage.ProtoReflect.Descriptor instead.
 func (*ChatMessage) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{37}
+	return file_llmservice_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *ChatMessage) GetId() int64 {
@@ -2768,7 +2690,7 @@ type CreateChatMessageReq struct {
 
 func (x *CreateChatMessageReq) Reset() {
 	*x = CreateChatMessageReq{}
-	mi := &file_llmservice_proto_msgTypes[38]
+	mi := &file_llmservice_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2780,7 +2702,7 @@ func (x *CreateChatMessageReq) String() string {
 func (*CreateChatMessageReq) ProtoMessage() {}
 
 func (x *CreateChatMessageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[38]
+	mi := &file_llmservice_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2793,7 +2715,7 @@ func (x *CreateChatMessageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateChatMessageReq.ProtoReflect.Descriptor instead.
 func (*CreateChatMessageReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{38}
+	return file_llmservice_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *CreateChatMessageReq) GetSessionId() int64 {
@@ -2840,7 +2762,7 @@ type CreateChatMessageResp struct {
 
 func (x *CreateChatMessageResp) Reset() {
 	*x = CreateChatMessageResp{}
-	mi := &file_llmservice_proto_msgTypes[39]
+	mi := &file_llmservice_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2852,7 +2774,7 @@ func (x *CreateChatMessageResp) String() string {
 func (*CreateChatMessageResp) ProtoMessage() {}
 
 func (x *CreateChatMessageResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[39]
+	mi := &file_llmservice_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2865,7 +2787,7 @@ func (x *CreateChatMessageResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateChatMessageResp.ProtoReflect.Descriptor instead.
 func (*CreateChatMessageResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{39}
+	return file_llmservice_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *CreateChatMessageResp) GetId() int64 {
@@ -2885,7 +2807,7 @@ type DeleteChatMessageReq struct {
 
 func (x *DeleteChatMessageReq) Reset() {
 	*x = DeleteChatMessageReq{}
-	mi := &file_llmservice_proto_msgTypes[40]
+	mi := &file_llmservice_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2897,7 +2819,7 @@ func (x *DeleteChatMessageReq) String() string {
 func (*DeleteChatMessageReq) ProtoMessage() {}
 
 func (x *DeleteChatMessageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[40]
+	mi := &file_llmservice_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2910,7 +2832,7 @@ func (x *DeleteChatMessageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteChatMessageReq.ProtoReflect.Descriptor instead.
 func (*DeleteChatMessageReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{40}
+	return file_llmservice_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *DeleteChatMessageReq) GetId() int64 {
@@ -2935,7 +2857,7 @@ type DeleteChatMessageResp struct {
 
 func (x *DeleteChatMessageResp) Reset() {
 	*x = DeleteChatMessageResp{}
-	mi := &file_llmservice_proto_msgTypes[41]
+	mi := &file_llmservice_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2947,7 +2869,7 @@ func (x *DeleteChatMessageResp) String() string {
 func (*DeleteChatMessageResp) ProtoMessage() {}
 
 func (x *DeleteChatMessageResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[41]
+	mi := &file_llmservice_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2960,7 +2882,7 @@ func (x *DeleteChatMessageResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteChatMessageResp.ProtoReflect.Descriptor instead.
 func (*DeleteChatMessageResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{41}
+	return file_llmservice_proto_rawDescGZIP(), []int{40}
 }
 
 type UpdateChatMessageReq struct {
@@ -2978,7 +2900,7 @@ type UpdateChatMessageReq struct {
 
 func (x *UpdateChatMessageReq) Reset() {
 	*x = UpdateChatMessageReq{}
-	mi := &file_llmservice_proto_msgTypes[42]
+	mi := &file_llmservice_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2990,7 +2912,7 @@ func (x *UpdateChatMessageReq) String() string {
 func (*UpdateChatMessageReq) ProtoMessage() {}
 
 func (x *UpdateChatMessageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[42]
+	mi := &file_llmservice_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3003,7 +2925,7 @@ func (x *UpdateChatMessageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateChatMessageReq.ProtoReflect.Descriptor instead.
 func (*UpdateChatMessageReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{42}
+	return file_llmservice_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *UpdateChatMessageReq) GetId() int64 {
@@ -3063,7 +2985,7 @@ type UpdateChatMessageResp struct {
 
 func (x *UpdateChatMessageResp) Reset() {
 	*x = UpdateChatMessageResp{}
-	mi := &file_llmservice_proto_msgTypes[43]
+	mi := &file_llmservice_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3075,7 +2997,7 @@ func (x *UpdateChatMessageResp) String() string {
 func (*UpdateChatMessageResp) ProtoMessage() {}
 
 func (x *UpdateChatMessageResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[43]
+	mi := &file_llmservice_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3088,7 +3010,7 @@ func (x *UpdateChatMessageResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateChatMessageResp.ProtoReflect.Descriptor instead.
 func (*UpdateChatMessageResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{43}
+	return file_llmservice_proto_rawDescGZIP(), []int{42}
 }
 
 type GetChatMessageReq struct {
@@ -3100,7 +3022,7 @@ type GetChatMessageReq struct {
 
 func (x *GetChatMessageReq) Reset() {
 	*x = GetChatMessageReq{}
-	mi := &file_llmservice_proto_msgTypes[44]
+	mi := &file_llmservice_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3112,7 +3034,7 @@ func (x *GetChatMessageReq) String() string {
 func (*GetChatMessageReq) ProtoMessage() {}
 
 func (x *GetChatMessageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[44]
+	mi := &file_llmservice_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3125,7 +3047,7 @@ func (x *GetChatMessageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetChatMessageReq.ProtoReflect.Descriptor instead.
 func (*GetChatMessageReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{44}
+	return file_llmservice_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *GetChatMessageReq) GetId() int64 {
@@ -3144,7 +3066,7 @@ type GetChatMessageResp struct {
 
 func (x *GetChatMessageResp) Reset() {
 	*x = GetChatMessageResp{}
-	mi := &file_llmservice_proto_msgTypes[45]
+	mi := &file_llmservice_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3156,7 +3078,7 @@ func (x *GetChatMessageResp) String() string {
 func (*GetChatMessageResp) ProtoMessage() {}
 
 func (x *GetChatMessageResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[45]
+	mi := &file_llmservice_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3169,7 +3091,7 @@ func (x *GetChatMessageResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetChatMessageResp.ProtoReflect.Descriptor instead.
 func (*GetChatMessageResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{45}
+	return file_llmservice_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *GetChatMessageResp) GetMessage() *ChatMessage {
@@ -3191,7 +3113,7 @@ type ListChatMessageFilter struct {
 
 func (x *ListChatMessageFilter) Reset() {
 	*x = ListChatMessageFilter{}
-	mi := &file_llmservice_proto_msgTypes[46]
+	mi := &file_llmservice_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3203,7 +3125,7 @@ func (x *ListChatMessageFilter) String() string {
 func (*ListChatMessageFilter) ProtoMessage() {}
 
 func (x *ListChatMessageFilter) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[46]
+	mi := &file_llmservice_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3216,7 +3138,7 @@ func (x *ListChatMessageFilter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListChatMessageFilter.ProtoReflect.Descriptor instead.
 func (*ListChatMessageFilter) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{46}
+	return file_llmservice_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *ListChatMessageFilter) GetId() int64 {
@@ -3257,7 +3179,7 @@ type ListChatMessageReq struct {
 
 func (x *ListChatMessageReq) Reset() {
 	*x = ListChatMessageReq{}
-	mi := &file_llmservice_proto_msgTypes[47]
+	mi := &file_llmservice_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3269,7 +3191,7 @@ func (x *ListChatMessageReq) String() string {
 func (*ListChatMessageReq) ProtoMessage() {}
 
 func (x *ListChatMessageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[47]
+	mi := &file_llmservice_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3282,7 +3204,7 @@ func (x *ListChatMessageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListChatMessageReq.ProtoReflect.Descriptor instead.
 func (*ListChatMessageReq) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{47}
+	return file_llmservice_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *ListChatMessageReq) GetPageQuery() *PageQuery {
@@ -3309,7 +3231,7 @@ type ListChatMessageResp struct {
 
 func (x *ListChatMessageResp) Reset() {
 	*x = ListChatMessageResp{}
-	mi := &file_llmservice_proto_msgTypes[48]
+	mi := &file_llmservice_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3321,7 +3243,7 @@ func (x *ListChatMessageResp) String() string {
 func (*ListChatMessageResp) ProtoMessage() {}
 
 func (x *ListChatMessageResp) ProtoReflect() protoreflect.Message {
-	mi := &file_llmservice_proto_msgTypes[48]
+	mi := &file_llmservice_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3334,7 +3256,7 @@ func (x *ListChatMessageResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListChatMessageResp.ProtoReflect.Descriptor instead.
 func (*ListChatMessageResp) Descriptor() ([]byte, []int) {
-	return file_llmservice_proto_rawDescGZIP(), []int{48}
+	return file_llmservice_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *ListChatMessageResp) GetTotal() int64 {
@@ -3379,54 +3301,49 @@ const file_llmservice_proto_rawDesc = "" +
 	"\renable_search\x18\x0e \x01(\bR\fenableSearch\x12%\n" +
 	"\x0econtent_length\x18\x0f \x01(\x03R\rcontentLength\"4\n" +
 	"\rStreamOptions\x12#\n" +
-	"\rinclude_usage\x18\x01 \x01(\bR\fincludeUsage\"\xeb\x01\n" +
-	"\rToolCallDelta\x12\x0e\n" +
+	"\rinclude_usage\x18\x01 \x01(\bR\fincludeUsage\"\xa4\x01\n" +
+	"\fToolCallInfo\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12%\n" +
-	"\x0earguments_json\x18\x03 \x01(\tR\rargumentsJson\x12\x16\n" +
-	"\x06result\x18\x04 \x01(\tR\x06result\x12\x14\n" +
-	"\x05error\x18\x05 \x01(\tR\x05error\x12\x14\n" +
-	"\x05scope\x18\x06 \x01(\tR\x05scope\x12\x16\n" +
-	"\x06status\x18\a \x01(\tR\x06status\x123\n" +
-	"\x15requires_confirmation\x18\b \x01(\bR\x14requiresConfirmation\"j\n" +
+	"\x0earguments_json\x18\x03 \x01(\tR\rargumentsJson\x12\x14\n" +
+	"\x05scope\x18\x04 \x01(\tR\x05scope\x123\n" +
+	"\x15requires_confirmation\x18\x05 \x01(\bR\x14requiresConfirmation\"w\n" +
+	"\bToolCall\x12%\n" +
+	"\x04info\x18\x01 \x01(\v2\x11.llm.ToolCallInfoR\x04info\x12\x16\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\x12\x16\n" +
+	"\x06result\x18\x03 \x01(\tR\x06result\x12\x14\n" +
+	"\x05error\x18\x04 \x01(\tR\x05error\"\x87\x01\n" +
 	"\aChatMsg\x12\x12\n" +
 	"\x04role\x18\x01 \x01(\tR\x04role\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\x121\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\x12,\n" +
 	"\n" +
-	"tool_calls\x18\x03 \x01(\v2\x12.llm.ToolCallDeltaR\ttoolCalls\"\xcf\x01\n" +
+	"tool_calls\x18\x03 \x03(\v2\r.llm.ToolCallR\ttoolCalls\x12 \n" +
+	"\ftool_call_id\x18\x04 \x01(\tR\n" +
+	"toolCallId\"\xcf\x01\n" +
 	"\aChatReq\x12'\n" +
 	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12,\n" +
-	"\tllmConfig\x18\x03 \x01(\v2\x0e.llm.LlmConfigR\tllmConfig\x12(\n" +
-	"\bmessages\x18\x04 \x03(\v2\f.llm.ChatMsgR\bmessages\x12*\n" +
-	"\x11auto_fill_history\x18\x05 \x01(\bR\x0fautoFillHistory\"B\n" +
-	"\bChatResp\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12&\n" +
+	"\tllmConfig\x18\x03 \x01(\v2\x0e.llm.LlmConfigR\tllmConfig\x12*\n" +
+	"\x11auto_fill_history\x18\x04 \x01(\bR\x0fautoFillHistory\x12(\n" +
+	"\bmessages\x18\x05 \x03(\v2\f.llm.ChatMsgR\bmessages\"[\n" +
+	"\bChatResp\x12'\n" +
+	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\x12&\n" +
 	"\arespMsg\x18\x02 \x03(\v2\f.llm.ChatMsgR\arespMsg\"\xd5\x01\n" +
 	"\rChatStreamReq\x12'\n" +
 	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12,\n" +
-	"\tllmConfig\x18\x03 \x01(\v2\x0e.llm.LlmConfigR\tllmConfig\x12(\n" +
-	"\bmessages\x18\x04 \x03(\v2\f.llm.ChatMsgR\bmessages\x12*\n" +
-	"\x11auto_fill_history\x18\x05 \x01(\bR\x0fautoFillHistory\"E\n" +
+	"\tllmConfig\x18\x03 \x01(\v2\x0e.llm.LlmConfigR\tllmConfig\x12*\n" +
+	"\x11auto_fill_history\x18\x04 \x01(\bR\x0fautoFillHistory\x12(\n" +
+	"\bmessages\x18\x05 \x03(\v2\f.llm.ChatMsgR\bmessages\"E\n" +
 	"\vStreamDelta\x12\x18\n" +
 	"\acontent\x18\x01 \x01(\tR\acontent\x12\x1c\n" +
-	"\tcompleted\x18\x02 \x01(\bR\tcompleted\"\xa0\x01\n" +
+	"\tcompleted\x18\x02 \x01(\bR\tcompleted\"\x9b\x01\n" +
 	"\x0eChatStreamResp\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12(\n" +
-	"\x05delta\x18\x02 \x01(\v2\x10.llm.StreamDeltaH\x00R\x05delta\x121\n" +
-	"\ttool_call\x18\x03 \x01(\v2\x12.llm.ToolCallDeltaH\x00R\btoolCall\x12\x16\n" +
+	"\x05delta\x18\x02 \x01(\v2\x10.llm.StreamDeltaH\x00R\x05delta\x12,\n" +
+	"\ttool_call\x18\x03 \x01(\v2\r.llm.ToolCallH\x00R\btoolCall\x12\x16\n" +
 	"\x05error\x18\x04 \x01(\tH\x00R\x05errorB\t\n" +
-	"\apayload\"\xa6\x01\n" +
-	"\x0eExecuteToolReq\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12%\n" +
-	"\x0earguments_json\x18\x03 \x01(\tR\rargumentsJson\x12\x17\n" +
-	"\auser_id\x18\x04 \x01(\x03R\x06userId\x12\x14\n" +
-	"\x05scope\x18\x05 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bapproved\x18\x06 \x01(\bR\bapproved\"B\n" +
-	"\x0fExecuteToolResp\x12/\n" +
-	"\ttool_call\x18\x01 \x01(\v2\x12.llm.ToolCallDeltaR\btoolCall\"\x9b\x04\n" +
+	"\apayload\"\x9b\x04\n" +
 	"\n" +
 	"ChatConfig\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
@@ -3612,12 +3529,11 @@ const file_llmservice_proto_rawDesc = "" +
 	"\x06filter\x18\x02 \x01(\v2\x1a.llm.ListChatMessageFilterR\x06filter\"Y\n" +
 	"\x13ListChatMessageResp\x12\x14\n" +
 	"\x05total\x18\x01 \x01(\x03R\x05total\x12,\n" +
-	"\bmessages\x18\x02 \x03(\v2\x10.llm.ChatMessageR\bmessages2\xa8\x01\n" +
+	"\bmessages\x18\x02 \x03(\v2\x10.llm.ChatMessageR\bmessages2n\n" +
 	"\x0eLlmChatService\x12#\n" +
 	"\x04Chat\x12\f.llm.ChatReq\x1a\r.llm.ChatResp\x127\n" +
 	"\n" +
-	"ChatStream\x12\x12.llm.ChatStreamReq\x1a\x13.llm.ChatStreamResp0\x01\x128\n" +
-	"\vExecuteTool\x12\x13.llm.ExecuteToolReq\x1a\x14.llm.ExecuteToolResp2\xb4\x02\n" +
+	"ChatStream\x12\x12.llm.ChatStreamReq\x1a\x13.llm.ChatStreamResp0\x012\xb4\x02\n" +
 	"\x10LlmConfigService\x12;\n" +
 	"\fCreateConfig\x12\x14.llm.CreateConfigReq\x1a\x15.llm.CreateConfigResp\x12;\n" +
 	"\fDeleteConfig\x12\x14.llm.DeleteConfigReq\x1a\x15.llm.DeleteConfigResp\x12;\n" +
@@ -3651,121 +3567,118 @@ func file_llmservice_proto_rawDescGZIP() []byte {
 	return file_llmservice_proto_rawDescData
 }
 
-var file_llmservice_proto_msgTypes = make([]protoimpl.MessageInfo, 49)
+var file_llmservice_proto_msgTypes = make([]protoimpl.MessageInfo, 48)
 var file_llmservice_proto_goTypes = []any{
 	(*PageQuery)(nil),                 // 0: llm.PageQuery
 	(*LlmConfig)(nil),                 // 1: llm.LlmConfig
 	(*StreamOptions)(nil),             // 2: llm.StreamOptions
-	(*ToolCallDelta)(nil),             // 3: llm.ToolCallDelta
-	(*ChatMsg)(nil),                   // 4: llm.ChatMsg
-	(*ChatReq)(nil),                   // 5: llm.ChatReq
-	(*ChatResp)(nil),                  // 6: llm.ChatResp
-	(*ChatStreamReq)(nil),             // 7: llm.ChatStreamReq
-	(*StreamDelta)(nil),               // 8: llm.StreamDelta
-	(*ChatStreamResp)(nil),            // 9: llm.ChatStreamResp
-	(*ExecuteToolReq)(nil),            // 10: llm.ExecuteToolReq
-	(*ExecuteToolResp)(nil),           // 11: llm.ExecuteToolResp
-	(*ChatConfig)(nil),                // 12: llm.ChatConfig
-	(*CreateConfigReq)(nil),           // 13: llm.CreateConfigReq
-	(*CreateConfigResp)(nil),          // 14: llm.CreateConfigResp
-	(*DeleteConfigReq)(nil),           // 15: llm.DeleteConfigReq
-	(*DeleteConfigResp)(nil),          // 16: llm.DeleteConfigResp
-	(*UpdateConfigReq)(nil),           // 17: llm.UpdateConfigReq
-	(*UpdateConfigResp)(nil),          // 18: llm.UpdateConfigResp
-	(*GetConfigReq)(nil),              // 19: llm.GetConfigReq
-	(*GetConfigResp)(nil),             // 20: llm.GetConfigResp
-	(*ListConfigFilter)(nil),          // 21: llm.ListConfigFilter
-	(*ListConfigReq)(nil),             // 22: llm.ListConfigReq
-	(*ListConfigResp)(nil),            // 23: llm.ListConfigResp
-	(*ChatSession)(nil),               // 24: llm.ChatSession
-	(*CreateChatSessionReq)(nil),      // 25: llm.CreateChatSessionReq
-	(*CreateChatSessionResp)(nil),     // 26: llm.CreateChatSessionResp
-	(*DeleteChatSessionReq)(nil),      // 27: llm.DeleteChatSessionReq
-	(*DeleteChatSessionResp)(nil),     // 28: llm.DeleteChatSessionResp
-	(*UpdateChatSessionReq)(nil),      // 29: llm.UpdateChatSessionReq
-	(*UpdateChatSessionResp)(nil),     // 30: llm.UpdateChatSessionResp
-	(*GetChatSessionReq)(nil),         // 31: llm.GetChatSessionReq
-	(*GetChatSessionByConvIdReq)(nil), // 32: llm.GetChatSessionByConvIdReq
-	(*GetChatSessionResp)(nil),        // 33: llm.GetChatSessionResp
-	(*ListChatSessionFilter)(nil),     // 34: llm.ListChatSessionFilter
-	(*ListChatSessionReq)(nil),        // 35: llm.ListChatSessionReq
-	(*ListChatSessionResp)(nil),       // 36: llm.ListChatSessionResp
-	(*ChatMessage)(nil),               // 37: llm.ChatMessage
-	(*CreateChatMessageReq)(nil),      // 38: llm.CreateChatMessageReq
-	(*CreateChatMessageResp)(nil),     // 39: llm.CreateChatMessageResp
-	(*DeleteChatMessageReq)(nil),      // 40: llm.DeleteChatMessageReq
-	(*DeleteChatMessageResp)(nil),     // 41: llm.DeleteChatMessageResp
-	(*UpdateChatMessageReq)(nil),      // 42: llm.UpdateChatMessageReq
-	(*UpdateChatMessageResp)(nil),     // 43: llm.UpdateChatMessageResp
-	(*GetChatMessageReq)(nil),         // 44: llm.GetChatMessageReq
-	(*GetChatMessageResp)(nil),        // 45: llm.GetChatMessageResp
-	(*ListChatMessageFilter)(nil),     // 46: llm.ListChatMessageFilter
-	(*ListChatMessageReq)(nil),        // 47: llm.ListChatMessageReq
-	(*ListChatMessageResp)(nil),       // 48: llm.ListChatMessageResp
+	(*ToolCallInfo)(nil),              // 3: llm.ToolCallInfo
+	(*ToolCall)(nil),                  // 4: llm.ToolCall
+	(*ChatMsg)(nil),                   // 5: llm.ChatMsg
+	(*ChatReq)(nil),                   // 6: llm.ChatReq
+	(*ChatResp)(nil),                  // 7: llm.ChatResp
+	(*ChatStreamReq)(nil),             // 8: llm.ChatStreamReq
+	(*StreamDelta)(nil),               // 9: llm.StreamDelta
+	(*ChatStreamResp)(nil),            // 10: llm.ChatStreamResp
+	(*ChatConfig)(nil),                // 11: llm.ChatConfig
+	(*CreateConfigReq)(nil),           // 12: llm.CreateConfigReq
+	(*CreateConfigResp)(nil),          // 13: llm.CreateConfigResp
+	(*DeleteConfigReq)(nil),           // 14: llm.DeleteConfigReq
+	(*DeleteConfigResp)(nil),          // 15: llm.DeleteConfigResp
+	(*UpdateConfigReq)(nil),           // 16: llm.UpdateConfigReq
+	(*UpdateConfigResp)(nil),          // 17: llm.UpdateConfigResp
+	(*GetConfigReq)(nil),              // 18: llm.GetConfigReq
+	(*GetConfigResp)(nil),             // 19: llm.GetConfigResp
+	(*ListConfigFilter)(nil),          // 20: llm.ListConfigFilter
+	(*ListConfigReq)(nil),             // 21: llm.ListConfigReq
+	(*ListConfigResp)(nil),            // 22: llm.ListConfigResp
+	(*ChatSession)(nil),               // 23: llm.ChatSession
+	(*CreateChatSessionReq)(nil),      // 24: llm.CreateChatSessionReq
+	(*CreateChatSessionResp)(nil),     // 25: llm.CreateChatSessionResp
+	(*DeleteChatSessionReq)(nil),      // 26: llm.DeleteChatSessionReq
+	(*DeleteChatSessionResp)(nil),     // 27: llm.DeleteChatSessionResp
+	(*UpdateChatSessionReq)(nil),      // 28: llm.UpdateChatSessionReq
+	(*UpdateChatSessionResp)(nil),     // 29: llm.UpdateChatSessionResp
+	(*GetChatSessionReq)(nil),         // 30: llm.GetChatSessionReq
+	(*GetChatSessionByConvIdReq)(nil), // 31: llm.GetChatSessionByConvIdReq
+	(*GetChatSessionResp)(nil),        // 32: llm.GetChatSessionResp
+	(*ListChatSessionFilter)(nil),     // 33: llm.ListChatSessionFilter
+	(*ListChatSessionReq)(nil),        // 34: llm.ListChatSessionReq
+	(*ListChatSessionResp)(nil),       // 35: llm.ListChatSessionResp
+	(*ChatMessage)(nil),               // 36: llm.ChatMessage
+	(*CreateChatMessageReq)(nil),      // 37: llm.CreateChatMessageReq
+	(*CreateChatMessageResp)(nil),     // 38: llm.CreateChatMessageResp
+	(*DeleteChatMessageReq)(nil),      // 39: llm.DeleteChatMessageReq
+	(*DeleteChatMessageResp)(nil),     // 40: llm.DeleteChatMessageResp
+	(*UpdateChatMessageReq)(nil),      // 41: llm.UpdateChatMessageReq
+	(*UpdateChatMessageResp)(nil),     // 42: llm.UpdateChatMessageResp
+	(*GetChatMessageReq)(nil),         // 43: llm.GetChatMessageReq
+	(*GetChatMessageResp)(nil),        // 44: llm.GetChatMessageResp
+	(*ListChatMessageFilter)(nil),     // 45: llm.ListChatMessageFilter
+	(*ListChatMessageReq)(nil),        // 46: llm.ListChatMessageReq
+	(*ListChatMessageResp)(nil),       // 47: llm.ListChatMessageResp
 }
 var file_llmservice_proto_depIdxs = []int32{
 	2,  // 0: llm.LlmConfig.stream_options:type_name -> llm.StreamOptions
-	3,  // 1: llm.ChatMsg.tool_calls:type_name -> llm.ToolCallDelta
-	1,  // 2: llm.ChatReq.llmConfig:type_name -> llm.LlmConfig
-	4,  // 3: llm.ChatReq.messages:type_name -> llm.ChatMsg
-	4,  // 4: llm.ChatResp.respMsg:type_name -> llm.ChatMsg
-	1,  // 5: llm.ChatStreamReq.llmConfig:type_name -> llm.LlmConfig
-	4,  // 6: llm.ChatStreamReq.messages:type_name -> llm.ChatMsg
-	8,  // 7: llm.ChatStreamResp.delta:type_name -> llm.StreamDelta
-	3,  // 8: llm.ChatStreamResp.tool_call:type_name -> llm.ToolCallDelta
-	3,  // 9: llm.ExecuteToolResp.tool_call:type_name -> llm.ToolCallDelta
-	12, // 10: llm.GetConfigResp.config:type_name -> llm.ChatConfig
+	3,  // 1: llm.ToolCall.info:type_name -> llm.ToolCallInfo
+	4,  // 2: llm.ChatMsg.tool_calls:type_name -> llm.ToolCall
+	1,  // 3: llm.ChatReq.llmConfig:type_name -> llm.LlmConfig
+	5,  // 4: llm.ChatReq.messages:type_name -> llm.ChatMsg
+	5,  // 5: llm.ChatResp.respMsg:type_name -> llm.ChatMsg
+	1,  // 6: llm.ChatStreamReq.llmConfig:type_name -> llm.LlmConfig
+	5,  // 7: llm.ChatStreamReq.messages:type_name -> llm.ChatMsg
+	9,  // 8: llm.ChatStreamResp.delta:type_name -> llm.StreamDelta
+	4,  // 9: llm.ChatStreamResp.tool_call:type_name -> llm.ToolCall
+	11, // 10: llm.GetConfigResp.config:type_name -> llm.ChatConfig
 	0,  // 11: llm.ListConfigReq.pageQuery:type_name -> llm.PageQuery
-	21, // 12: llm.ListConfigReq.filter:type_name -> llm.ListConfigFilter
-	12, // 13: llm.ListConfigResp.configs:type_name -> llm.ChatConfig
-	24, // 14: llm.GetChatSessionResp.session:type_name -> llm.ChatSession
+	20, // 12: llm.ListConfigReq.filter:type_name -> llm.ListConfigFilter
+	11, // 13: llm.ListConfigResp.configs:type_name -> llm.ChatConfig
+	23, // 14: llm.GetChatSessionResp.session:type_name -> llm.ChatSession
 	0,  // 15: llm.ListChatSessionReq.pageQuery:type_name -> llm.PageQuery
-	34, // 16: llm.ListChatSessionReq.filter:type_name -> llm.ListChatSessionFilter
-	24, // 17: llm.ListChatSessionResp.sessions:type_name -> llm.ChatSession
-	37, // 18: llm.GetChatMessageResp.message:type_name -> llm.ChatMessage
+	33, // 16: llm.ListChatSessionReq.filter:type_name -> llm.ListChatSessionFilter
+	23, // 17: llm.ListChatSessionResp.sessions:type_name -> llm.ChatSession
+	36, // 18: llm.GetChatMessageResp.message:type_name -> llm.ChatMessage
 	0,  // 19: llm.ListChatMessageReq.pageQuery:type_name -> llm.PageQuery
-	46, // 20: llm.ListChatMessageReq.filter:type_name -> llm.ListChatMessageFilter
-	37, // 21: llm.ListChatMessageResp.messages:type_name -> llm.ChatMessage
-	5,  // 22: llm.LlmChatService.Chat:input_type -> llm.ChatReq
-	7,  // 23: llm.LlmChatService.ChatStream:input_type -> llm.ChatStreamReq
-	10, // 24: llm.LlmChatService.ExecuteTool:input_type -> llm.ExecuteToolReq
-	13, // 25: llm.LlmConfigService.CreateConfig:input_type -> llm.CreateConfigReq
-	15, // 26: llm.LlmConfigService.DeleteConfig:input_type -> llm.DeleteConfigReq
-	17, // 27: llm.LlmConfigService.UpdateConfig:input_type -> llm.UpdateConfigReq
-	19, // 28: llm.LlmConfigService.GetConfig:input_type -> llm.GetConfigReq
-	22, // 29: llm.LlmConfigService.ListConfig:input_type -> llm.ListConfigReq
-	25, // 30: llm.ChatSessionService.CreateChatSession:input_type -> llm.CreateChatSessionReq
-	27, // 31: llm.ChatSessionService.DeleteChatSession:input_type -> llm.DeleteChatSessionReq
-	29, // 32: llm.ChatSessionService.UpdateChatSession:input_type -> llm.UpdateChatSessionReq
-	31, // 33: llm.ChatSessionService.GetChatSession:input_type -> llm.GetChatSessionReq
-	32, // 34: llm.ChatSessionService.GetChatSessionByConvId:input_type -> llm.GetChatSessionByConvIdReq
-	35, // 35: llm.ChatSessionService.ListChatSession:input_type -> llm.ListChatSessionReq
-	38, // 36: llm.ChatMessageService.CreateChatMessage:input_type -> llm.CreateChatMessageReq
-	40, // 37: llm.ChatMessageService.DeleteChatMessage:input_type -> llm.DeleteChatMessageReq
-	42, // 38: llm.ChatMessageService.UpdateChatMessage:input_type -> llm.UpdateChatMessageReq
-	44, // 39: llm.ChatMessageService.GetChatMessage:input_type -> llm.GetChatMessageReq
-	47, // 40: llm.ChatMessageService.ListChatMessage:input_type -> llm.ListChatMessageReq
-	6,  // 41: llm.LlmChatService.Chat:output_type -> llm.ChatResp
-	9,  // 42: llm.LlmChatService.ChatStream:output_type -> llm.ChatStreamResp
-	11, // 43: llm.LlmChatService.ExecuteTool:output_type -> llm.ExecuteToolResp
-	14, // 44: llm.LlmConfigService.CreateConfig:output_type -> llm.CreateConfigResp
-	16, // 45: llm.LlmConfigService.DeleteConfig:output_type -> llm.DeleteConfigResp
-	18, // 46: llm.LlmConfigService.UpdateConfig:output_type -> llm.UpdateConfigResp
-	20, // 47: llm.LlmConfigService.GetConfig:output_type -> llm.GetConfigResp
-	23, // 48: llm.LlmConfigService.ListConfig:output_type -> llm.ListConfigResp
-	26, // 49: llm.ChatSessionService.CreateChatSession:output_type -> llm.CreateChatSessionResp
-	28, // 50: llm.ChatSessionService.DeleteChatSession:output_type -> llm.DeleteChatSessionResp
-	30, // 51: llm.ChatSessionService.UpdateChatSession:output_type -> llm.UpdateChatSessionResp
-	33, // 52: llm.ChatSessionService.GetChatSession:output_type -> llm.GetChatSessionResp
-	33, // 53: llm.ChatSessionService.GetChatSessionByConvId:output_type -> llm.GetChatSessionResp
-	36, // 54: llm.ChatSessionService.ListChatSession:output_type -> llm.ListChatSessionResp
-	39, // 55: llm.ChatMessageService.CreateChatMessage:output_type -> llm.CreateChatMessageResp
-	41, // 56: llm.ChatMessageService.DeleteChatMessage:output_type -> llm.DeleteChatMessageResp
-	43, // 57: llm.ChatMessageService.UpdateChatMessage:output_type -> llm.UpdateChatMessageResp
-	45, // 58: llm.ChatMessageService.GetChatMessage:output_type -> llm.GetChatMessageResp
-	48, // 59: llm.ChatMessageService.ListChatMessage:output_type -> llm.ListChatMessageResp
-	41, // [41:60] is the sub-list for method output_type
-	22, // [22:41] is the sub-list for method input_type
+	45, // 20: llm.ListChatMessageReq.filter:type_name -> llm.ListChatMessageFilter
+	36, // 21: llm.ListChatMessageResp.messages:type_name -> llm.ChatMessage
+	6,  // 22: llm.LlmChatService.Chat:input_type -> llm.ChatReq
+	8,  // 23: llm.LlmChatService.ChatStream:input_type -> llm.ChatStreamReq
+	12, // 24: llm.LlmConfigService.CreateConfig:input_type -> llm.CreateConfigReq
+	14, // 25: llm.LlmConfigService.DeleteConfig:input_type -> llm.DeleteConfigReq
+	16, // 26: llm.LlmConfigService.UpdateConfig:input_type -> llm.UpdateConfigReq
+	18, // 27: llm.LlmConfigService.GetConfig:input_type -> llm.GetConfigReq
+	21, // 28: llm.LlmConfigService.ListConfig:input_type -> llm.ListConfigReq
+	24, // 29: llm.ChatSessionService.CreateChatSession:input_type -> llm.CreateChatSessionReq
+	26, // 30: llm.ChatSessionService.DeleteChatSession:input_type -> llm.DeleteChatSessionReq
+	28, // 31: llm.ChatSessionService.UpdateChatSession:input_type -> llm.UpdateChatSessionReq
+	30, // 32: llm.ChatSessionService.GetChatSession:input_type -> llm.GetChatSessionReq
+	31, // 33: llm.ChatSessionService.GetChatSessionByConvId:input_type -> llm.GetChatSessionByConvIdReq
+	34, // 34: llm.ChatSessionService.ListChatSession:input_type -> llm.ListChatSessionReq
+	37, // 35: llm.ChatMessageService.CreateChatMessage:input_type -> llm.CreateChatMessageReq
+	39, // 36: llm.ChatMessageService.DeleteChatMessage:input_type -> llm.DeleteChatMessageReq
+	41, // 37: llm.ChatMessageService.UpdateChatMessage:input_type -> llm.UpdateChatMessageReq
+	43, // 38: llm.ChatMessageService.GetChatMessage:input_type -> llm.GetChatMessageReq
+	46, // 39: llm.ChatMessageService.ListChatMessage:input_type -> llm.ListChatMessageReq
+	7,  // 40: llm.LlmChatService.Chat:output_type -> llm.ChatResp
+	10, // 41: llm.LlmChatService.ChatStream:output_type -> llm.ChatStreamResp
+	13, // 42: llm.LlmConfigService.CreateConfig:output_type -> llm.CreateConfigResp
+	15, // 43: llm.LlmConfigService.DeleteConfig:output_type -> llm.DeleteConfigResp
+	17, // 44: llm.LlmConfigService.UpdateConfig:output_type -> llm.UpdateConfigResp
+	19, // 45: llm.LlmConfigService.GetConfig:output_type -> llm.GetConfigResp
+	22, // 46: llm.LlmConfigService.ListConfig:output_type -> llm.ListConfigResp
+	25, // 47: llm.ChatSessionService.CreateChatSession:output_type -> llm.CreateChatSessionResp
+	27, // 48: llm.ChatSessionService.DeleteChatSession:output_type -> llm.DeleteChatSessionResp
+	29, // 49: llm.ChatSessionService.UpdateChatSession:output_type -> llm.UpdateChatSessionResp
+	32, // 50: llm.ChatSessionService.GetChatSession:output_type -> llm.GetChatSessionResp
+	32, // 51: llm.ChatSessionService.GetChatSessionByConvId:output_type -> llm.GetChatSessionResp
+	35, // 52: llm.ChatSessionService.ListChatSession:output_type -> llm.ListChatSessionResp
+	38, // 53: llm.ChatMessageService.CreateChatMessage:output_type -> llm.CreateChatMessageResp
+	40, // 54: llm.ChatMessageService.DeleteChatMessage:output_type -> llm.DeleteChatMessageResp
+	42, // 55: llm.ChatMessageService.UpdateChatMessage:output_type -> llm.UpdateChatMessageResp
+	44, // 56: llm.ChatMessageService.GetChatMessage:output_type -> llm.GetChatMessageResp
+	47, // 57: llm.ChatMessageService.ListChatMessage:output_type -> llm.ListChatMessageResp
+	40, // [40:58] is the sub-list for method output_type
+	22, // [22:40] is the sub-list for method input_type
 	22, // [22:22] is the sub-list for extension type_name
 	22, // [22:22] is the sub-list for extension extendee
 	0,  // [0:22] is the sub-list for field type_name
@@ -3776,7 +3689,7 @@ func file_llmservice_proto_init() {
 	if File_llmservice_proto != nil {
 		return
 	}
-	file_llmservice_proto_msgTypes[9].OneofWrappers = []any{
+	file_llmservice_proto_msgTypes[10].OneofWrappers = []any{
 		(*ChatStreamResp_Delta)(nil),
 		(*ChatStreamResp_ToolCall)(nil),
 		(*ChatStreamResp_Error)(nil),
@@ -3787,7 +3700,7 @@ func file_llmservice_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_llmservice_proto_rawDesc), len(file_llmservice_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   49,
+			NumMessages:   48,
 			NumExtensions: 0,
 			NumServices:   4,
 		},

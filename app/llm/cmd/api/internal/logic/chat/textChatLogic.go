@@ -87,7 +87,7 @@ func (l *TextChatLogic) TextChat(req *types.TextChatReq) (resp *types.TextChatRe
 
 	// 直接使用http response返回响应消息
 	return &types.TextChatResp{
-		ConversationId: chatResp.GetId(),
+		ConversationId: chatResp.GetConversationId(),
 		Messages:       respMessages,
 	}, nil
 }
