@@ -76,13 +76,14 @@ func newToolRegistry(svcCtx *ServiceContext) map[string]toolcall.Tool {
 	timeTool := toolcall.NewTimeTool()
 	registry[timeTool.Name()] = timeTool
 
-	emailCfg := svcCtx.Config.Toolcall.Email
-	if emailCfg.Host != "" && emailCfg.Port != "" && emailCfg.Username != "" && emailCfg.Password != "" {
-		emailTool := toolcall.NewEmailTool(emailCfg.Host, emailCfg.Port, emailCfg.Username, emailCfg.Password)
-		registry[emailTool.Name()] = emailTool
-	} else {
-		logx.Infof("email tool is not registered because SMTP config is incomplete")
-	}
+	weatherTool := toolcall.NewWeatherTool()
+	registry[weatherTool.Name()] = weatherTool
+
+	currencyTool := toolcall.NewCurrencyTool()
+	registry[currencyTool.Name()] = currencyTool
+
+	windowsTool := toolcall.NewWindowsTool()
+	registry[windowsTool.Name()] = windowsTool
 
 	return registry
 }
