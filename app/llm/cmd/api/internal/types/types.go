@@ -157,9 +157,18 @@ type PageQuery struct {
 	OrderBy  string `json:"orderBy"`
 }
 
+type StreamChatResp struct {
+	ConversationId string          `json:"conversationId"`
+	Message        TextChatMessage `json:"message,optional"`
+	Error          string          `json:"error,optional"`
+	IsComplete     bool            `json:"isComplete,optional"`
+}
+
 type TextChatMessage struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
+	Role       string     `json:"role"`
+	Content    string     `json:"content"`
+	ToolCalls  []ToolCall `json:"toolCalls,optional"`
+	ToolCallId string     `json:"toolCallId,optional"`
 }
 
 type TextChatReq struct {
@@ -176,6 +185,19 @@ type TextChatReq struct {
 type TextChatResp struct {
 	ConversationId string            `json:"conversationId"`
 	Messages       []TextChatMessage `json:"messages"`
+}
+
+type ToolCall struct {
+	Info   ToolCallInfo `json:"info"`
+	Status string       `json:"status"`
+}
+
+type ToolCallInfo struct {
+	Id                   string `json:"id"`
+	Name                 string `json:"name"`
+	ArgumentsJson        string `json:"argumentsJson"`
+	Scope                string `json:"scope"`
+	RequiresConfirmation bool   `json:"requiresConfirmation"`
 }
 
 type UpdateConfigReq struct {

@@ -37,7 +37,7 @@ func (l *TextChatLogic) TextChat(req *types.TextChatReq) (resp *types.TextChatRe
 	if err := l.validReq(req); err != nil {
 		return nil, err
 	}
-	
+
 	fetchLlmConfig, err := l.fetchAndValidLlmConfig(req.ConfigId, req.UserId)
 	if err != nil {
 		return nil, err
@@ -79,9 +79,29 @@ func (l *TextChatLogic) TextChat(req *types.TextChatReq) (resp *types.TextChatRe
 		if msg == nil {
 			continue
 		}
+
+		var toolCalls []types.ToolCall
+		if len(msg.ToolCalls) > 0 {
+			toolCalls = make([]types.ToolCall, len(msg.ToolCalls))
+			for i, tc := range msg.ToolCalls {
+				toolCalls[i] = types.ToolCall{
+					Info: types.ToolCallInfo{
+						Id:                   tc.Info.Id,
+						Name:                 tc.Info.Name,
+						ArgumentsJson:        tc.Info.ArgumentsJson,
+						Scope:                tc.Info.Scope,
+						RequiresConfirmation: tc.Info.RequiresConfirmation,
+					},
+					Status: tc.Status,
+				}
+			}
+		}
+
 		respMessages = append(respMessages, types.TextChatMessage{
-			Role:    msg.Role,
-			Content: msg.Content,
+			Role:       msg.Role,
+			Content:    msg.Content,
+			ToolCalls:  toolCalls,
+			ToolCallId: msg.ToolCallId,
 		})
 	}
 
@@ -138,7 +158,6 @@ func (l *TextChatLogic) validReq(req *types.TextChatReq) error {
 	if req.ConfigId <= 0 {
 		return errors.New("configId must be greater than 0")
 	}
-	
 
 	return nil
 }

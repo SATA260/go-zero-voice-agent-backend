@@ -398,8 +398,17 @@
                 "conversationId": {
                   "type": "string"
                 },
+                "isStream": {
+                  "type": "boolean"
+                },
                 "message": {
                   "type": "string"
+                },
+                "ragFileIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
                 },
                 "systemPrompt": {
                   "type": "string"
@@ -431,6 +440,51 @@
                       },
                       "role": {
                         "type": "string"
+                      },
+                      "toolCallId": {
+                        "type": "string"
+                      },
+                      "toolCalls": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "info",
+                            "status"
+                          ],
+                          "properties": {
+                            "info": {
+                              "type": "object",
+                              "required": [
+                                "id",
+                                "name",
+                                "argumentsJson",
+                                "scope",
+                                "requiresConfirmation"
+                              ],
+                              "properties": {
+                                "argumentsJson": {
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "requiresConfirmation": {
+                                  "type": "boolean"
+                                },
+                                "scope": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "status": {
+                              "type": "string"
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -938,7 +992,7 @@
       }
     }
   },
-  "x-date": "2025-11-26 11:49:04",
+  "x-date": "2025-12-13 21:38:59",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",
