@@ -247,11 +247,12 @@ func GetOrCreateSession(ctx context.Context, svcCtx *svc.ServiceContext, convers
 		title := ""
 		if len(messages) > 0 {
 			content := messages[0].GetContent()
-			if len(content) > 10 {
-				title = content[:10]
-			} else {
-				title = content
-			}
+			runes := []rune(content)
+            if len(runes) > 10 {
+                title = string(runes[:10])
+            } else {
+                title = content
+            }
 		}
 
 		newSession := &model.ChatSession{

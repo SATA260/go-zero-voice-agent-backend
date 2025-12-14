@@ -99,6 +99,8 @@ func (l *ChatStreamLogic) ChatStream(in *pb.ChatStreamReq, stream pb.LlmChatServ
 					ToolCallId: msg.GetToolCallId(),
 				})
 
+				l.Logger.Infof("Tool %s executed with result: %s", toolCall.Info.Name, content)
+
 			} else if toolCall.Status == consts.TOOL_CALLING_REJECTED {
 				// 用户拒绝工具调用，记录拒绝信息
 				l.Logger.Infof("User rejected tool execution: %s", toolCall.Info.Name)

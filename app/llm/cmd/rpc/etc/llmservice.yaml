@@ -4,6 +4,8 @@ Etcd:
   Hosts:
   - ${ETCD_HOST}
   Key: llmservice.rpc
+Timeout: 30000
+
 DB:
   DataSource: ${LLM_DB_DSN}
 
