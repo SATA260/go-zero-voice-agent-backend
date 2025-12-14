@@ -135,8 +135,9 @@ func (l *SyncChatMsgToDbLogic) persistMessages(sessionID int64, messages []*pb.C
 				record.Content = sql.NullString{String: msg.Content, Valid: true}
 			}
 			if msg.ToolCallId != "" {
-				record.Content = sql.NullString{String: msg.ToolCallId, Valid: true}
+				record.ToolCallId = sql.NullString{String: msg.ToolCallId, Valid: true}
 			}
+			
 			if len(msg.ToolCalls) > 0 {
 				toolCallsBytes, err := json.Marshal(msg.ToolCalls)
 				if err != nil {
