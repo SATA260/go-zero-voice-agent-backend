@@ -167,7 +167,7 @@ func (svc *ServiceContext) CacheConversation(conversationId string, userMsgs []*
 
 	// 使用 TaskID 确保同一会话在短时间内只有一个同步任务在队列中
 	// 延迟 5 秒执行，让 Redis 积累几条消息后，由消费者一次性批量同步到 MySQL
-	taskID := "sync:chat:" + conversationId
+	taskID := "sync:chat:" + conversationId + time.Now().String()
 	if _, err = svc.AsynqClient.Enqueue(
 		task,
 		asynq.TaskID(taskID),
