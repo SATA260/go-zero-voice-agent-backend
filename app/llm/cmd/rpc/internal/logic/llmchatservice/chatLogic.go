@@ -7,7 +7,6 @@ import (
 	"go-zero-voice-agent/app/llm/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
 	"go-zero-voice-agent/app/llm/model"
-	"go-zero-voice-agent/app/llm/pkg/consts"
 	chatconsts "go-zero-voice-agent/app/llm/pkg/consts"
 
 	"github.com/sashabaranov/go-openai"
@@ -65,7 +64,7 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 
 	// 获取工具调用相关，并处理工具调用
 	for _, msg := range in.Messages {
-		if msg.GetRole() != consts.ChatMessageRoleTool {
+		if msg.GetRole() != chatconsts.ChatMessageRoleTool {
 			// 普通消息，直接加入历史
 			historyMsgs = append(historyMsgs, msg)
 			go l.svcCtx.CacheConversation(chatSession.ConvId, nil, msg)
@@ -78,7 +77,7 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 		}
 
 		for _, toolCall := range msg.ToolCalls {
-			if toolCall.Status == consts.TOOL_CALLING_CONFIRMED {
+			if toolCall.Status == chatconsts.TOOL_CALLING_CONFIRMED {
 				// 用户确认工具调用，执行它，并将结果加入历史消息
 				tool, ok := l.svcCtx.ToolRegistry[toolCall.Info.Name]
 				if !ok {
@@ -101,14 +100,14 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 					ToolCallId: msg.GetToolCallId(),
 				})
 
-			} else if toolCall.Status == consts.TOOL_CALLING_REJECTED {
+			} else if toolCall.Status == chatconsts.TOOL_CALLING_REJECTED {
 				l.Logger.Infof("User rejected tool execution: %s", toolCall.Info.Name)
 				historyMsgs = append(historyMsgs, &pb.ChatMsg{
 					Role:       chatconsts.ChatMessageRoleTool,
 					Content:    "Tool execution was rejected by the user.",
 					ToolCallId: msg.GetToolCallId(),
 				})
-			} else if toolCall.Status == consts.TOOL_CALLING_FINISHED {
+			} else if toolCall.Status == chatconsts.TOOL_CALLING_FINISHED {
 				// 工具调用已完成，直接加入历史
 				historyMsgs = append(historyMsgs, msg)
 			}
@@ -223,11 +222,11 @@ func (l *ChatLogic) handleChatInteraction(
 				Scope:                tool.Scope(),
 				RequiresConfirmation: tool.RequiresConfirmation(),
 			},
-			Status: consts.TOOL_CALLING_START,
+			Status: chatconsts.TOOL_CALLING_START,
 		}
 
 		// 在客户端执行的tool调用，直接放入confimMsg返回前端
-		if tool.Scope() == consts.TOOL_CALLING_SCOPE_CLIENT {
+		if tool.Scope() == chatconsts.TOOL_CALLING_SCOPE_CLIENT {
 			confirmMsg.ToolCalls = append(confirmMsg.ToolCalls, toolCallMsg)
 			continue
 		}
@@ -235,14 +234,14 @@ func (l *ChatLogic) handleChatInteraction(
 		// 服务端执行的调用
 		// 需要确认的工具调用，放入confirmMsg返回前端
 		if tool.RequiresConfirmation() {
-			toolCallMsg.Status = consts.TOOL_CALLING_WAITING_CONFIRMATION
+			toolCallMsg.Status = chatconsts.TOOL_CALLING_WAITING_CONFIRMATION
 			confirmMsg.ToolCalls = append(confirmMsg.ToolCalls, toolCallMsg)
 			continue
 		}
 
 		// 不需要确认的工具调用，直接执行
 		// 如果是rag工具，注入用户ID和文件ID列表
-		if toolCall.Function.Name == consts.TOOL_CALLING_SELF_RAG {
+		if toolCall.Function.Name == chatconsts.TOOL_CALLING_SELF_RAG {
 			var argsMap map[string]interface{}
 			err := json.Unmarshal([]byte(toolCall.Function.Arguments), &argsMap)
 			if err != nil {
