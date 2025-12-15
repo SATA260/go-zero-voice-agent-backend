@@ -52,6 +52,7 @@ func (l *ListChatMessageLogic) ListChatMessage(in *pb.ListChatMessageReq) (*pb.L
 	}
 
 	builder := l.svcCtx.ChatMessageModel.SelectBuilder()
+	
 
 	if filter := in.GetFilter(); filter != nil {
 		if filter.GetId() > 0 {
@@ -63,6 +64,7 @@ func (l *ListChatMessageLogic) ListChatMessage(in *pb.ListChatMessageReq) (*pb.L
 		if role := strings.TrimSpace(filter.GetRole()); role != "" {
 			builder = builder.Where(squirrel.Eq{"role": role})
 		}
+		builder = builder.Where(squirrel.NotEq{"role": "tool"})
 	}
 
 	records, total, err := l.svcCtx.ChatMessageModel.FindPageListByPageWithTotal(l.ctx, builder, page, pageSize, orderBy)
