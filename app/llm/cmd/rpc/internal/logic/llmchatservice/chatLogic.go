@@ -187,10 +187,9 @@ func (l *ChatLogic) handleChatInteraction(
 
 	// 没有工具调用，直接返回文本响应
 	if len(choice.Message.ToolCalls) == 0 {
-		respMsgs := []*pb.ChatMsg{assistantMsg}
 		return &pb.ChatResp{
 			ConversationId: chatSession.ConvId,
-			RespMsg:        respMsgs,
+			RespMsg:        assistantMsg,
 		}, nil
 	}
 
@@ -289,7 +288,7 @@ func (l *ChatLogic) handleChatInteraction(
 	if len(confirmMsg.ToolCalls) > 0 {
 		return &pb.ChatResp{
 			ConversationId: chatSession.ConvId,
-			RespMsg:        []*pb.ChatMsg{confirmMsg},
+			RespMsg:        confirmMsg,
 		}, nil
 	}
 

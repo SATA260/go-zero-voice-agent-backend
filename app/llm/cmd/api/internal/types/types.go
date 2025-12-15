@@ -186,8 +186,8 @@ type TextChatReq struct {
 }
 
 type TextChatResp struct {
-	ConversationId string            `json:"conversationId"`
-	Messages       []TextChatMessage `json:"messages"`
+	ConversationId string          `json:"conversationId"`
+	Message        TextChatMessage `json:"message"`
 }
 
 type ToolCall struct {

@@ -21,8 +21,8 @@ type (
 		IsStream        bool    `json:"isStream,optional"`
 	}
 	TextChatResp {
-		ConversationId string            `json:"conversationId"`
-		Messages       []TextChatMessage `json:"messages"`
+		ConversationId string          `json:"conversationId"`
+		Message        TextChatMessage `json:"message"`
 	}
 	StreamChatResp {
 		ConversationId string          `json:"conversationId"`

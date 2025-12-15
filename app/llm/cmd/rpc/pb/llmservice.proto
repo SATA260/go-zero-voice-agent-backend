@@ -92,7 +92,7 @@ message ChatReq {
 
 message ChatResp {
     string conversationId = 1;
-    repeated ChatMsg respMsg = 2;
+    ChatMsg respMsg = 2;
 }
 
 message ChatStreamReq {

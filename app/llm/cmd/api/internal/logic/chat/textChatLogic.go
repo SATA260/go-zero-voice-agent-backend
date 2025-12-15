@@ -73,44 +73,35 @@ func (l *TextChatLogic) TextChat(req *types.TextChatReq) (resp *types.TextChatRe
 		return nil, errors.New("empty response from chat service")
 	}
 
-	respMessages := make([]types.TextChatMessage, 0, 1+len(chatResp.GetRespMsg()))
-
-	for _, msg := range chatResp.GetRespMsg() {
-		if msg == nil {
-			continue
-		}
-
-		var toolCalls []types.ToolCall
-		if len(msg.ToolCalls) > 0 {
-			toolCalls = make([]types.ToolCall, len(msg.ToolCalls))
-			for i, tc := range msg.ToolCalls {
-				toolCalls[i] = types.ToolCall{
-					Info: types.ToolCallInfo{
-						Id:                   tc.Info.Id,
-						Name:                 tc.Info.Name,
-						ArgumentsJson:        tc.Info.ArgumentsJson,
-						Scope:                tc.Info.Scope,
-						RequiresConfirmation: tc.Info.RequiresConfirmation,
-					},
-					Status: tc.Status,
-					Result: tc.Result,
-					Error:  tc.Error,
-				}
+	msg := chatResp.GetRespMsg()
+	var toolCalls []types.ToolCall
+	if len(msg.ToolCalls) > 0 {
+		toolCalls = make([]types.ToolCall, len(msg.ToolCalls))
+		for i, tc := range msg.ToolCalls {
+			toolCalls[i] = types.ToolCall{
+				Info: types.ToolCallInfo{
+					Id:                   tc.Info.Id,
+					Name:                 tc.Info.Name,
+					ArgumentsJson:        tc.Info.ArgumentsJson,
+					Scope:                tc.Info.Scope,
+					RequiresConfirmation: tc.Info.RequiresConfirmation,
+				},
+				Status: tc.Status,
+				Result: tc.Result,
+				Error:  tc.Error,
 			}
 		}
-
-		respMessages = append(respMessages, types.TextChatMessage{
-			Role:       msg.Role,
-			Content:    msg.Content,
-			ToolCalls:  toolCalls,
-			ToolCallId: msg.ToolCallId,
-		})
 	}
 
 	// 直接使用http response返回响应消息
 	return &types.TextChatResp{
 		ConversationId: chatResp.GetConversationId(),
-		Messages:       respMessages,
+		Message: types.TextChatMessage{
+			Role:       msg.Role,
+			Content:    msg.Content,
+			ToolCalls:  toolCalls,
+			ToolCallId: msg.ToolCallId,
+		},
 	}, nil
 }
 

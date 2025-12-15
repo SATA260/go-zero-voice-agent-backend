@@ -300,7 +300,7 @@ func (s *SignalingClient) handleAsrFinal(evt EventMessage) {
 	s.LlmConversationID = chatResp.ConversationId
 
 	// 发送 TTS 消息
-	llmMsg := chatResp.RespMsg[len(chatResp.RespMsg)-1].Content
+	llmMsg := chatResp.GetRespMsg().Content
 	s.sendTTSMessage(llmMsg)
 
 	// 发送ai回复到前端

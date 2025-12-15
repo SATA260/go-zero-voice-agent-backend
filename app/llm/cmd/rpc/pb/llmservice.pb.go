@@ -607,7 +607,7 @@ func (x *ChatReq) GetRagFileIds() []string {
 type ChatResp struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	ConversationId string                 `protobuf:"bytes,1,opt,name=conversationId,proto3" json:"conversationId,omitempty"`
-	RespMsg        []*ChatMsg             `protobuf:"bytes,2,rep,name=respMsg,proto3" json:"respMsg,omitempty"`
+	RespMsg        *ChatMsg               `protobuf:"bytes,2,opt,name=respMsg,proto3" json:"respMsg,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -649,7 +649,7 @@ func (x *ChatResp) GetConversationId() string {
 	return ""
 }
 
-func (x *ChatResp) GetRespMsg() []*ChatMsg {
+func (x *ChatResp) GetRespMsg() *ChatMsg {
 	if x != nil {
 		return x.RespMsg
 	}
@@ -3241,7 +3241,7 @@ const file_llmservice_proto_rawDesc = "" +
 	"ragFileIds\"Z\n" +
 	"\bChatResp\x12&\n" +
 	"\x0econversationId\x18\x01 \x01(\tR\x0econversationId\x12&\n" +
-	"\arespMsg\x18\x02 \x03(\v2\f.llm.ChatMsgR\arespMsg\"\xf1\x01\n" +
+	"\arespMsg\x18\x02 \x01(\v2\f.llm.ChatMsgR\arespMsg\"\xf1\x01\n" +
 	"\rChatStreamReq\x12&\n" +
 	"\x0econversationId\x18\x01 \x01(\tR\x0econversationId\x12\x16\n" +
 	"\x06userId\x18\x02 \x01(\x03R\x06userId\x12,\n" +
