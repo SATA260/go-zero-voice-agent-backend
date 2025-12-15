@@ -49,12 +49,8 @@ func (l *UpdateChatMessageLogic) UpdateChatMessage(in *pb.UpdateChatMessageReq) 
 
 	message.Content = toNullString(in.GetContent())
 	message.Extra = toNullString(in.GetExtra())
-
-	version := in.GetVersion()
-	if version == 0 {
-		version = message.Version
-	}
-	message.Version = version
+	message.ToolCalls = toolCallsToModel(in.GetToolCalls())
+	message.ToolCallId = toNullString(in.GetToolCallId())
 
 	if err := l.svcCtx.ChatMessageModel.UpdateWithVersion(l.ctx, nil, message); err != nil {
 		return nil, errors.Wrapf(err, "update chat message failed, id: %d", in.GetId())

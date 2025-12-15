@@ -41,10 +41,12 @@ func (l *CreateChatMessageLogic) CreateChatMessage(in *pb.CreateChatMessageReq) 
 	}
 
 	message := &model.ChatMessage{
-		SessionId: in.GetSessionId(),
-		Role:      role,
-		Content:   toNullString(in.GetContent()),
-		Extra:     toNullString(in.GetExtra()),
+		SessionId:  in.GetSessionId(),
+		Role:       role,
+		Content:    toNullString(in.GetContent()),
+		Extra:      toNullString(in.GetExtra()),
+		ToolCalls:  toolCallsToModel(in.GetToolCalls()),
+		ToolCallId: toNullString(in.GetToolCallId()),
 	}
 
 	result, err := l.svcCtx.ChatMessageModel.Insert(l.ctx, nil, message)

@@ -60,9 +60,6 @@ func (l *ListChatMessageLogic) ListChatMessage(in *pb.ListChatMessageReq) (*pb.L
 		if filter.GetSessionId() > 0 {
 			builder = builder.Where(squirrel.Eq{"session_id": filter.GetSessionId()})
 		}
-		if filter.GetConfigId() > 0 {
-			builder = builder.Where(squirrel.Eq{"config_id": filter.GetConfigId()})
-		}
 		if role := strings.TrimSpace(filter.GetRole()); role != "" {
 			builder = builder.Where(squirrel.Eq{"role": role})
 		}

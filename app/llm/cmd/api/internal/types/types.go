@@ -31,11 +31,14 @@ type ChatConfigQueryFilter struct {
 }
 
 type ChatMessage struct {
-	Id         int64  `json:"id"`
-	SessionId  int64  `json:"sessionId"`
-	Role       string `json:"role"`
-	Content    string `json:"content"`
-	CreateTime int64  `json:"createTime"`
+	Id         int64      `json:"id"`
+	SessionId  int64      `json:"sessionId"`
+	Role       string     `json:"role"`
+	Content    string     `json:"content"`
+	ToolCalls  []ToolCall `json:"toolCalls"`
+	ToolCallId string     `json:"toolCallId"`
+	Extra      string     `json:"extra"`
+	CreateTime int64      `json:"createTime"`
 }
 
 type ChatSession struct {
@@ -190,6 +193,8 @@ type TextChatResp struct {
 type ToolCall struct {
 	Info   ToolCallInfo `json:"info"`
 	Status string       `json:"status"`
+	Result string       `json:"result"`
+	Error  string       `json:"error"`
 }
 
 type ToolCallInfo struct {

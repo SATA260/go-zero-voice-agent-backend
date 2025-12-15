@@ -2,12 +2,15 @@ package chatmessageservicelogic
 
 import (
 	"database/sql"
+	"encoding/json"
 	"strings"
 	"time"
 
 	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
 	"go-zero-voice-agent/app/llm/model"
 	"go-zero-voice-agent/pkg/tool"
+
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 func chatMessageToPb(message *model.ChatMessage) *pb.ChatMessage {
@@ -21,11 +24,9 @@ func chatMessageToPb(message *model.ChatMessage) *pb.ChatMessage {
 		Role:       message.Role,
 		Content:    tool.NullStringToString(message.Content),
 		Extra:      tool.NullStringToString(message.Extra),
-		Version:    message.Version,
-		DelState:   message.DelState,
+		ToolCalls:  toolCallsToPb(message.ToolCalls),
+		ToolCallId: tool.NullStringToString(message.ToolCallId),
 		CreateTime: timeToUnix(message.CreateTime),
-		UpdateTime: timeToUnix(message.UpdateTime),
-		DeleteTime: nullTimeToUnix(message.DeleteTime),
 	}
 }
 
@@ -56,4 +57,28 @@ func toNullInt64(value int64) sql.NullInt64 {
 		return sql.NullInt64{}
 	}
 	return sql.NullInt64{Int64: value, Valid: true}
+}
+
+func toolCallsToModel(toolCalls []*pb.ToolCall) sql.NullString {
+	if len(toolCalls) == 0 {
+		return sql.NullString{}
+	}
+	bytes, err := json.Marshal(toolCalls)
+	if err != nil {
+		logx.Errorf("marshal tool calls failed: %v", err)
+		return sql.NullString{}
+	}
+	return sql.NullString{String: string(bytes), Valid: true}
+}
+
+func toolCallsToPb(ns sql.NullString) []*pb.ToolCall {
+	if !ns.Valid || ns.String == "" {
+		return nil
+	}
+	var toolCalls []*pb.ToolCall
+	if err := json.Unmarshal([]byte(ns.String), &toolCalls); err != nil {
+		logx.Errorf("unmarshal tool calls failed: %v, data: %s", err, ns.String)
+		return nil
+	}
+	return toolCalls
 }

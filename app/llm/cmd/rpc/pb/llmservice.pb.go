@@ -2483,16 +2483,13 @@ func (x *ListChatSessionResp) GetSessions() []*ChatSession {
 type ChatMessage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	SessionId     int64                  `protobuf:"varint,2,opt,name=sessionId,proto3" json:"sessionId,omitempty"`
-	ConfigId      int64                  `protobuf:"varint,3,opt,name=configId,proto3" json:"configId,omitempty"`
+	CreateTime    int64                  `protobuf:"varint,2,opt,name=createTime,proto3" json:"createTime,omitempty"`
+	SessionId     int64                  `protobuf:"varint,3,opt,name=sessionId,proto3" json:"sessionId,omitempty"`
 	Role          string                 `protobuf:"bytes,4,opt,name=role,proto3" json:"role,omitempty"`
 	Content       string                 `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
-	Extra         string                 `protobuf:"bytes,6,opt,name=extra,proto3" json:"extra,omitempty"`
-	Version       int64                  `protobuf:"varint,7,opt,name=version,proto3" json:"version,omitempty"`
-	DelState      int64                  `protobuf:"varint,8,opt,name=delState,proto3" json:"delState,omitempty"`
-	CreateTime    int64                  `protobuf:"varint,9,opt,name=createTime,proto3" json:"createTime,omitempty"`
-	UpdateTime    int64                  `protobuf:"varint,10,opt,name=updateTime,proto3" json:"updateTime,omitempty"`
-	DeleteTime    int64                  `protobuf:"varint,11,opt,name=deleteTime,proto3" json:"deleteTime,omitempty"`
+	ToolCalls     []*ToolCall            `protobuf:"bytes,6,rep,name=toolCalls,proto3" json:"toolCalls,omitempty"`
+	ToolCallId    string                 `protobuf:"bytes,7,opt,name=toolCallId,proto3" json:"toolCallId,omitempty"`
+	Extra         string                 `protobuf:"bytes,8,opt,name=extra,proto3" json:"extra,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2534,16 +2531,16 @@ func (x *ChatMessage) GetId() int64 {
 	return 0
 }
 
-func (x *ChatMessage) GetSessionId() int64 {
+func (x *ChatMessage) GetCreateTime() int64 {
 	if x != nil {
-		return x.SessionId
+		return x.CreateTime
 	}
 	return 0
 }
 
-func (x *ChatMessage) GetConfigId() int64 {
+func (x *ChatMessage) GetSessionId() int64 {
 	if x != nil {
-		return x.ConfigId
+		return x.SessionId
 	}
 	return 0
 }
@@ -2562,6 +2559,20 @@ func (x *ChatMessage) GetContent() string {
 	return ""
 }
 
+func (x *ChatMessage) GetToolCalls() []*ToolCall {
+	if x != nil {
+		return x.ToolCalls
+	}
+	return nil
+}
+
+func (x *ChatMessage) GetToolCallId() string {
+	if x != nil {
+		return x.ToolCallId
+	}
+	return ""
+}
+
 func (x *ChatMessage) GetExtra() string {
 	if x != nil {
 		return x.Extra
@@ -2569,48 +2580,15 @@ func (x *ChatMessage) GetExtra() string {
 	return ""
 }
 
-func (x *ChatMessage) GetVersion() int64 {
-	if x != nil {
-		return x.Version
-	}
-	return 0
-}
-
-func (x *ChatMessage) GetDelState() int64 {
-	if x != nil {
-		return x.DelState
-	}
-	return 0
-}
-
-func (x *ChatMessage) GetCreateTime() int64 {
-	if x != nil {
-		return x.CreateTime
-	}
-	return 0
-}
-
-func (x *ChatMessage) GetUpdateTime() int64 {
-	if x != nil {
-		return x.UpdateTime
-	}
-	return 0
-}
-
-func (x *ChatMessage) GetDeleteTime() int64 {
-	if x != nil {
-		return x.DeleteTime
-	}
-	return 0
-}
-
 type CreateChatMessageReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	SessionId     int64                  `protobuf:"varint,1,opt,name=sessionId,proto3" json:"sessionId,omitempty"`
-	ConfigId      int64                  `protobuf:"varint,2,opt,name=configId,proto3" json:"configId,omitempty"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	SessionId     int64                  `protobuf:"varint,2,opt,name=sessionId,proto3" json:"sessionId,omitempty"`
 	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
 	Content       string                 `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
-	Extra         string                 `protobuf:"bytes,5,opt,name=extra,proto3" json:"extra,omitempty"`
+	ToolCalls     []*ToolCall            `protobuf:"bytes,5,rep,name=toolCalls,proto3" json:"toolCalls,omitempty"`
+	ToolCallId    string                 `protobuf:"bytes,6,opt,name=toolCallId,proto3" json:"toolCallId,omitempty"`
+	Extra         string                 `protobuf:"bytes,7,opt,name=extra,proto3" json:"extra,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2645,16 +2623,16 @@ func (*CreateChatMessageReq) Descriptor() ([]byte, []int) {
 	return file_llmservice_proto_rawDescGZIP(), []int{36}
 }
 
-func (x *CreateChatMessageReq) GetSessionId() int64 {
+func (x *CreateChatMessageReq) GetId() int64 {
 	if x != nil {
-		return x.SessionId
+		return x.Id
 	}
 	return 0
 }
 
-func (x *CreateChatMessageReq) GetConfigId() int64 {
+func (x *CreateChatMessageReq) GetSessionId() int64 {
 	if x != nil {
-		return x.ConfigId
+		return x.SessionId
 	}
 	return 0
 }
@@ -2669,6 +2647,20 @@ func (x *CreateChatMessageReq) GetRole() string {
 func (x *CreateChatMessageReq) GetContent() string {
 	if x != nil {
 		return x.Content
+	}
+	return ""
+}
+
+func (x *CreateChatMessageReq) GetToolCalls() []*ToolCall {
+	if x != nil {
+		return x.ToolCalls
+	}
+	return nil
+}
+
+func (x *CreateChatMessageReq) GetToolCallId() string {
+	if x != nil {
+		return x.ToolCallId
 	}
 	return ""
 }
@@ -2816,11 +2808,11 @@ type UpdateChatMessageReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	SessionId     int64                  `protobuf:"varint,2,opt,name=sessionId,proto3" json:"sessionId,omitempty"`
-	ConfigId      int64                  `protobuf:"varint,3,opt,name=configId,proto3" json:"configId,omitempty"`
-	Role          string                 `protobuf:"bytes,4,opt,name=role,proto3" json:"role,omitempty"`
-	Content       string                 `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
-	Extra         string                 `protobuf:"bytes,6,opt,name=extra,proto3" json:"extra,omitempty"`
-	Version       int64                  `protobuf:"varint,7,opt,name=version,proto3" json:"version,omitempty"`
+	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
+	Content       string                 `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
+	ToolCalls     []*ToolCall            `protobuf:"bytes,5,rep,name=toolCalls,proto3" json:"toolCalls,omitempty"`
+	ToolCallId    string                 `protobuf:"bytes,6,opt,name=toolCallId,proto3" json:"toolCallId,omitempty"`
+	Extra         string                 `protobuf:"bytes,7,opt,name=extra,proto3" json:"extra,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2869,13 +2861,6 @@ func (x *UpdateChatMessageReq) GetSessionId() int64 {
 	return 0
 }
 
-func (x *UpdateChatMessageReq) GetConfigId() int64 {
-	if x != nil {
-		return x.ConfigId
-	}
-	return 0
-}
-
 func (x *UpdateChatMessageReq) GetRole() string {
 	if x != nil {
 		return x.Role
@@ -2890,18 +2875,25 @@ func (x *UpdateChatMessageReq) GetContent() string {
 	return ""
 }
 
+func (x *UpdateChatMessageReq) GetToolCalls() []*ToolCall {
+	if x != nil {
+		return x.ToolCalls
+	}
+	return nil
+}
+
+func (x *UpdateChatMessageReq) GetToolCallId() string {
+	if x != nil {
+		return x.ToolCallId
+	}
+	return ""
+}
+
 func (x *UpdateChatMessageReq) GetExtra() string {
 	if x != nil {
 		return x.Extra
 	}
 	return ""
-}
-
-func (x *UpdateChatMessageReq) GetVersion() int64 {
-	if x != nil {
-		return x.Version
-	}
-	return 0
 }
 
 type UpdateChatMessageResp struct {
@@ -3032,8 +3024,7 @@ type ListChatMessageFilter struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	SessionId     int64                  `protobuf:"varint,2,opt,name=sessionId,proto3" json:"sessionId,omitempty"`
-	ConfigId      int64                  `protobuf:"varint,3,opt,name=configId,proto3" json:"configId,omitempty"`
-	Role          string                 `protobuf:"bytes,4,opt,name=role,proto3" json:"role,omitempty"`
+	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3078,13 +3069,6 @@ func (x *ListChatMessageFilter) GetId() int64 {
 func (x *ListChatMessageFilter) GetSessionId() int64 {
 	if x != nil {
 		return x.SessionId
-	}
-	return 0
-}
-
-func (x *ListChatMessageFilter) GetConfigId() int64 {
-	if x != nil {
-		return x.ConfigId
 	}
 	return 0
 }
@@ -3403,56 +3387,55 @@ const file_llmservice_proto_rawDesc = "" +
 	"\x06filter\x18\x02 \x01(\v2\x1a.llm.ListChatSessionFilterR\x06filter\"Y\n" +
 	"\x13ListChatSessionResp\x12\x14\n" +
 	"\x05total\x18\x01 \x01(\x03R\x05total\x12,\n" +
-	"\bsessions\x18\x02 \x03(\v2\x10.llm.ChatSessionR\bsessions\"\xb1\x02\n" +
+	"\bsessions\x18\x02 \x03(\v2\x10.llm.ChatSessionR\bsessions\"\xec\x01\n" +
 	"\vChatMessage\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1c\n" +
-	"\tsessionId\x18\x02 \x01(\x03R\tsessionId\x12\x1a\n" +
-	"\bconfigId\x18\x03 \x01(\x03R\bconfigId\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1e\n" +
+	"\n" +
+	"createTime\x18\x02 \x01(\x03R\n" +
+	"createTime\x12\x1c\n" +
+	"\tsessionId\x18\x03 \x01(\x03R\tsessionId\x12\x12\n" +
 	"\x04role\x18\x04 \x01(\tR\x04role\x12\x18\n" +
-	"\acontent\x18\x05 \x01(\tR\acontent\x12\x14\n" +
-	"\x05extra\x18\x06 \x01(\tR\x05extra\x12\x18\n" +
-	"\aversion\x18\a \x01(\x03R\aversion\x12\x1a\n" +
-	"\bdelState\x18\b \x01(\x03R\bdelState\x12\x1e\n" +
+	"\acontent\x18\x05 \x01(\tR\acontent\x12+\n" +
+	"\ttoolCalls\x18\x06 \x03(\v2\r.llm.ToolCallR\ttoolCalls\x12\x1e\n" +
 	"\n" +
-	"createTime\x18\t \x01(\x03R\n" +
-	"createTime\x12\x1e\n" +
-	"\n" +
-	"updateTime\x18\n" +
-	" \x01(\x03R\n" +
-	"updateTime\x12\x1e\n" +
-	"\n" +
-	"deleteTime\x18\v \x01(\x03R\n" +
-	"deleteTime\"\x94\x01\n" +
-	"\x14CreateChatMessageReq\x12\x1c\n" +
-	"\tsessionId\x18\x01 \x01(\x03R\tsessionId\x12\x1a\n" +
-	"\bconfigId\x18\x02 \x01(\x03R\bconfigId\x12\x12\n" +
+	"toolCallId\x18\a \x01(\tR\n" +
+	"toolCallId\x12\x14\n" +
+	"\x05extra\x18\b \x01(\tR\x05extra\"\xd5\x01\n" +
+	"\x14CreateChatMessageReq\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1c\n" +
+	"\tsessionId\x18\x02 \x01(\x03R\tsessionId\x12\x12\n" +
 	"\x04role\x18\x03 \x01(\tR\x04role\x12\x18\n" +
-	"\acontent\x18\x04 \x01(\tR\acontent\x12\x14\n" +
-	"\x05extra\x18\x05 \x01(\tR\x05extra\"'\n" +
+	"\acontent\x18\x04 \x01(\tR\acontent\x12+\n" +
+	"\ttoolCalls\x18\x05 \x03(\v2\r.llm.ToolCallR\ttoolCalls\x12\x1e\n" +
+	"\n" +
+	"toolCallId\x18\x06 \x01(\tR\n" +
+	"toolCallId\x12\x14\n" +
+	"\x05extra\x18\a \x01(\tR\x05extra\"'\n" +
 	"\x15CreateChatMessageResp\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"@\n" +
 	"\x14DeleteChatMessageReq\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\x03R\aversion\"\x17\n" +
-	"\x15DeleteChatMessageResp\"\xbe\x01\n" +
+	"\x15DeleteChatMessageResp\"\xd5\x01\n" +
 	"\x14UpdateChatMessageReq\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1c\n" +
-	"\tsessionId\x18\x02 \x01(\x03R\tsessionId\x12\x1a\n" +
-	"\bconfigId\x18\x03 \x01(\x03R\bconfigId\x12\x12\n" +
-	"\x04role\x18\x04 \x01(\tR\x04role\x12\x18\n" +
-	"\acontent\x18\x05 \x01(\tR\acontent\x12\x14\n" +
-	"\x05extra\x18\x06 \x01(\tR\x05extra\x12\x18\n" +
-	"\aversion\x18\a \x01(\x03R\aversion\"\x17\n" +
+	"\tsessionId\x18\x02 \x01(\x03R\tsessionId\x12\x12\n" +
+	"\x04role\x18\x03 \x01(\tR\x04role\x12\x18\n" +
+	"\acontent\x18\x04 \x01(\tR\acontent\x12+\n" +
+	"\ttoolCalls\x18\x05 \x03(\v2\r.llm.ToolCallR\ttoolCalls\x12\x1e\n" +
+	"\n" +
+	"toolCallId\x18\x06 \x01(\tR\n" +
+	"toolCallId\x12\x14\n" +
+	"\x05extra\x18\a \x01(\tR\x05extra\"\x17\n" +
 	"\x15UpdateChatMessageResp\"#\n" +
 	"\x11GetChatMessageReq\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"@\n" +
 	"\x12GetChatMessageResp\x12*\n" +
-	"\amessage\x18\x01 \x01(\v2\x10.llm.ChatMessageR\amessage\"u\n" +
+	"\amessage\x18\x01 \x01(\v2\x10.llm.ChatMessageR\amessage\"Y\n" +
 	"\x15ListChatMessageFilter\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1c\n" +
-	"\tsessionId\x18\x02 \x01(\x03R\tsessionId\x12\x1a\n" +
-	"\bconfigId\x18\x03 \x01(\x03R\bconfigId\x12\x12\n" +
-	"\x04role\x18\x04 \x01(\tR\x04role\"v\n" +
+	"\tsessionId\x18\x02 \x01(\x03R\tsessionId\x12\x12\n" +
+	"\x04role\x18\x03 \x01(\tR\x04role\"v\n" +
 	"\x12ListChatMessageReq\x12,\n" +
 	"\tpageQuery\x18\x01 \x01(\v2\x0e.llm.PageQueryR\tpageQuery\x122\n" +
 	"\x06filter\x18\x02 \x01(\v2\x1a.llm.ListChatMessageFilterR\x06filter\"Y\n" +
@@ -3564,51 +3547,54 @@ var file_llmservice_proto_depIdxs = []int32{
 	0,  // 14: llm.ListChatSessionReq.pageQuery:type_name -> llm.PageQuery
 	32, // 15: llm.ListChatSessionReq.filter:type_name -> llm.ListChatSessionFilter
 	22, // 16: llm.ListChatSessionResp.sessions:type_name -> llm.ChatSession
-	35, // 17: llm.GetChatMessageResp.message:type_name -> llm.ChatMessage
-	0,  // 18: llm.ListChatMessageReq.pageQuery:type_name -> llm.PageQuery
-	44, // 19: llm.ListChatMessageReq.filter:type_name -> llm.ListChatMessageFilter
-	35, // 20: llm.ListChatMessageResp.messages:type_name -> llm.ChatMessage
-	6,  // 21: llm.LlmChatService.Chat:input_type -> llm.ChatReq
-	8,  // 22: llm.LlmChatService.ChatStream:input_type -> llm.ChatStreamReq
-	11, // 23: llm.LlmConfigService.CreateConfig:input_type -> llm.CreateConfigReq
-	13, // 24: llm.LlmConfigService.DeleteConfig:input_type -> llm.DeleteConfigReq
-	15, // 25: llm.LlmConfigService.UpdateConfig:input_type -> llm.UpdateConfigReq
-	17, // 26: llm.LlmConfigService.GetConfig:input_type -> llm.GetConfigReq
-	20, // 27: llm.LlmConfigService.ListConfig:input_type -> llm.ListConfigReq
-	23, // 28: llm.ChatSessionService.CreateChatSession:input_type -> llm.CreateChatSessionReq
-	25, // 29: llm.ChatSessionService.DeleteChatSession:input_type -> llm.DeleteChatSessionReq
-	27, // 30: llm.ChatSessionService.UpdateChatSession:input_type -> llm.UpdateChatSessionReq
-	29, // 31: llm.ChatSessionService.GetChatSession:input_type -> llm.GetChatSessionReq
-	30, // 32: llm.ChatSessionService.GetChatSessionByConvId:input_type -> llm.GetChatSessionByConvIdReq
-	33, // 33: llm.ChatSessionService.ListChatSession:input_type -> llm.ListChatSessionReq
-	36, // 34: llm.ChatMessageService.CreateChatMessage:input_type -> llm.CreateChatMessageReq
-	38, // 35: llm.ChatMessageService.DeleteChatMessage:input_type -> llm.DeleteChatMessageReq
-	40, // 36: llm.ChatMessageService.UpdateChatMessage:input_type -> llm.UpdateChatMessageReq
-	42, // 37: llm.ChatMessageService.GetChatMessage:input_type -> llm.GetChatMessageReq
-	45, // 38: llm.ChatMessageService.ListChatMessage:input_type -> llm.ListChatMessageReq
-	7,  // 39: llm.LlmChatService.Chat:output_type -> llm.ChatResp
-	9,  // 40: llm.LlmChatService.ChatStream:output_type -> llm.ChatStreamResp
-	12, // 41: llm.LlmConfigService.CreateConfig:output_type -> llm.CreateConfigResp
-	14, // 42: llm.LlmConfigService.DeleteConfig:output_type -> llm.DeleteConfigResp
-	16, // 43: llm.LlmConfigService.UpdateConfig:output_type -> llm.UpdateConfigResp
-	18, // 44: llm.LlmConfigService.GetConfig:output_type -> llm.GetConfigResp
-	21, // 45: llm.LlmConfigService.ListConfig:output_type -> llm.ListConfigResp
-	24, // 46: llm.ChatSessionService.CreateChatSession:output_type -> llm.CreateChatSessionResp
-	26, // 47: llm.ChatSessionService.DeleteChatSession:output_type -> llm.DeleteChatSessionResp
-	28, // 48: llm.ChatSessionService.UpdateChatSession:output_type -> llm.UpdateChatSessionResp
-	31, // 49: llm.ChatSessionService.GetChatSession:output_type -> llm.GetChatSessionResp
-	31, // 50: llm.ChatSessionService.GetChatSessionByConvId:output_type -> llm.GetChatSessionResp
-	34, // 51: llm.ChatSessionService.ListChatSession:output_type -> llm.ListChatSessionResp
-	37, // 52: llm.ChatMessageService.CreateChatMessage:output_type -> llm.CreateChatMessageResp
-	39, // 53: llm.ChatMessageService.DeleteChatMessage:output_type -> llm.DeleteChatMessageResp
-	41, // 54: llm.ChatMessageService.UpdateChatMessage:output_type -> llm.UpdateChatMessageResp
-	43, // 55: llm.ChatMessageService.GetChatMessage:output_type -> llm.GetChatMessageResp
-	46, // 56: llm.ChatMessageService.ListChatMessage:output_type -> llm.ListChatMessageResp
-	39, // [39:57] is the sub-list for method output_type
-	21, // [21:39] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	4,  // 17: llm.ChatMessage.toolCalls:type_name -> llm.ToolCall
+	4,  // 18: llm.CreateChatMessageReq.toolCalls:type_name -> llm.ToolCall
+	4,  // 19: llm.UpdateChatMessageReq.toolCalls:type_name -> llm.ToolCall
+	35, // 20: llm.GetChatMessageResp.message:type_name -> llm.ChatMessage
+	0,  // 21: llm.ListChatMessageReq.pageQuery:type_name -> llm.PageQuery
+	44, // 22: llm.ListChatMessageReq.filter:type_name -> llm.ListChatMessageFilter
+	35, // 23: llm.ListChatMessageResp.messages:type_name -> llm.ChatMessage
+	6,  // 24: llm.LlmChatService.Chat:input_type -> llm.ChatReq
+	8,  // 25: llm.LlmChatService.ChatStream:input_type -> llm.ChatStreamReq
+	11, // 26: llm.LlmConfigService.CreateConfig:input_type -> llm.CreateConfigReq
+	13, // 27: llm.LlmConfigService.DeleteConfig:input_type -> llm.DeleteConfigReq
+	15, // 28: llm.LlmConfigService.UpdateConfig:input_type -> llm.UpdateConfigReq
+	17, // 29: llm.LlmConfigService.GetConfig:input_type -> llm.GetConfigReq
+	20, // 30: llm.LlmConfigService.ListConfig:input_type -> llm.ListConfigReq
+	23, // 31: llm.ChatSessionService.CreateChatSession:input_type -> llm.CreateChatSessionReq
+	25, // 32: llm.ChatSessionService.DeleteChatSession:input_type -> llm.DeleteChatSessionReq
+	27, // 33: llm.ChatSessionService.UpdateChatSession:input_type -> llm.UpdateChatSessionReq
+	29, // 34: llm.ChatSessionService.GetChatSession:input_type -> llm.GetChatSessionReq
+	30, // 35: llm.ChatSessionService.GetChatSessionByConvId:input_type -> llm.GetChatSessionByConvIdReq
+	33, // 36: llm.ChatSessionService.ListChatSession:input_type -> llm.ListChatSessionReq
+	36, // 37: llm.ChatMessageService.CreateChatMessage:input_type -> llm.CreateChatMessageReq
+	38, // 38: llm.ChatMessageService.DeleteChatMessage:input_type -> llm.DeleteChatMessageReq
+	40, // 39: llm.ChatMessageService.UpdateChatMessage:input_type -> llm.UpdateChatMessageReq
+	42, // 40: llm.ChatMessageService.GetChatMessage:input_type -> llm.GetChatMessageReq
+	45, // 41: llm.ChatMessageService.ListChatMessage:input_type -> llm.ListChatMessageReq
+	7,  // 42: llm.LlmChatService.Chat:output_type -> llm.ChatResp
+	9,  // 43: llm.LlmChatService.ChatStream:output_type -> llm.ChatStreamResp
+	12, // 44: llm.LlmConfigService.CreateConfig:output_type -> llm.CreateConfigResp
+	14, // 45: llm.LlmConfigService.DeleteConfig:output_type -> llm.DeleteConfigResp
+	16, // 46: llm.LlmConfigService.UpdateConfig:output_type -> llm.UpdateConfigResp
+	18, // 47: llm.LlmConfigService.GetConfig:output_type -> llm.GetConfigResp
+	21, // 48: llm.LlmConfigService.ListConfig:output_type -> llm.ListConfigResp
+	24, // 49: llm.ChatSessionService.CreateChatSession:output_type -> llm.CreateChatSessionResp
+	26, // 50: llm.ChatSessionService.DeleteChatSession:output_type -> llm.DeleteChatSessionResp
+	28, // 51: llm.ChatSessionService.UpdateChatSession:output_type -> llm.UpdateChatSessionResp
+	31, // 52: llm.ChatSessionService.GetChatSession:output_type -> llm.GetChatSessionResp
+	31, // 53: llm.ChatSessionService.GetChatSessionByConvId:output_type -> llm.GetChatSessionResp
+	34, // 54: llm.ChatSessionService.ListChatSession:output_type -> llm.ListChatSessionResp
+	37, // 55: llm.ChatMessageService.CreateChatMessage:output_type -> llm.CreateChatMessageResp
+	39, // 56: llm.ChatMessageService.DeleteChatMessage:output_type -> llm.DeleteChatMessageResp
+	41, // 57: llm.ChatMessageService.UpdateChatMessage:output_type -> llm.UpdateChatMessageResp
+	43, // 58: llm.ChatMessageService.GetChatMessage:output_type -> llm.GetChatMessageResp
+	46, // 59: llm.ChatMessageService.ListChatMessage:output_type -> llm.ListChatMessageResp
+	42, // [42:60] is the sub-list for method output_type
+	24, // [24:42] is the sub-list for method input_type
+	24, // [24:24] is the sub-list for extension type_name
+	24, // [24:24] is the sub-list for extension extendee
+	0,  // [0:24] is the sub-list for field type_name
 }
 
 func init() { file_llmservice_proto_init() }

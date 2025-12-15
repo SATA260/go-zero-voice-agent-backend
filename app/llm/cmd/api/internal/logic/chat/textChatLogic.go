@@ -93,6 +93,8 @@ func (l *TextChatLogic) TextChat(req *types.TextChatReq) (resp *types.TextChatRe
 						RequiresConfirmation: tc.Info.RequiresConfirmation,
 					},
 					Status: tc.Status,
+					Result: tc.Result,
+					Error:  tc.Error,
 				}
 			}
 		}

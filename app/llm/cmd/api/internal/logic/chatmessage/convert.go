@@ -11,8 +11,8 @@ func toRpcGetChatMessageReq(id int64) *chatmessageservice.GetChatMessageReq {
 	return &chatmessageservice.GetChatMessageReq{Id: id}
 }
 
-func toRpcDeleteChatMessageReq(id, version int64) *chatmessageservice.DeleteChatMessageReq {
-	return &chatmessageservice.DeleteChatMessageReq{Id: id, Version: version}
+func toRpcDeleteChatMessageReq(id int64) *chatmessageservice.DeleteChatMessageReq {
+	return &chatmessageservice.DeleteChatMessageReq{Id: id}
 }
 
 func toRpcListChatMessageReq(req *types.ListChatMessageBySessionReq) *chatmessageservice.ListChatMessageReq {
@@ -46,6 +46,38 @@ func toTypesChatMessage(message *chatmessageservice.ChatMessage) types.ChatMessa
 		SessionId:  message.SessionId,
 		Role:       message.Role,
 		Content:    message.Content,
+		ToolCalls:  toTypesToolCalls(message.ToolCalls),
+		ToolCallId: message.ToolCallId,
+		Extra:      message.Extra,
 		CreateTime: message.CreateTime,
+	}
+}
+
+func toTypesToolCalls(toolCalls []*chatmessageservice.ToolCall) []types.ToolCall {
+	res := make([]types.ToolCall, 0, len(toolCalls))
+	for _, tc := range toolCalls {
+		if tc == nil {
+			continue
+		}
+		res = append(res, types.ToolCall{
+			Info:   toTypesToolCallInfo(tc.Info),
+			Status: tc.Status,
+			Result: tc.Result,
+			Error:  tc.Error,
+		})
+	}
+	return res
+}
+
+func toTypesToolCallInfo(info *chatmessageservice.ToolCallInfo) types.ToolCallInfo {
+	if info == nil {
+		return types.ToolCallInfo{}
+	}
+	return types.ToolCallInfo{
+		Id:                   info.Id,
+		Name:                 info.Name,
+		ArgumentsJson:        info.ArgumentsJson,
+		Scope:                info.Scope,
+		RequiresConfirmation: info.RequiresConfirmation,
 	}
 }

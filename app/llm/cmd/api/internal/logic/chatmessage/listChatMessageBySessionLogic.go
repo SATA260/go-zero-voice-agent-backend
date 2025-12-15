@@ -71,7 +71,7 @@ func (l *ListChatMessageBySessionLogic) ListChatMessageBySession(req *types.List
 		messages = append(messages, toTypesChatMessage(msg))
 	}
 
-	if messages[0].Role == consts.ChatMessageRoleSystem {
+	if len(messages) > 0 && messages[0].Role == consts.ChatMessageRoleSystem {
 		messages = messages[1:]
 	}
 

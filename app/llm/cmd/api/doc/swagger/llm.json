@@ -86,6 +86,9 @@
                       "sessionId",
                       "role",
                       "content",
+                      "toolCalls",
+                      "toolCallId",
+                      "extra",
                       "createTime"
                     ],
                     "properties": {
@@ -95,6 +98,9 @@
                       "createTime": {
                         "type": "integer"
                       },
+                      "extra": {
+                        "type": "string"
+                      },
                       "id": {
                         "type": "integer"
                       },
@@ -103,6 +109,59 @@
                       },
                       "sessionId": {
                         "type": "integer"
+                      },
+                      "toolCallId": {
+                        "type": "string"
+                      },
+                      "toolCalls": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "info",
+                            "status",
+                            "result",
+                            "error"
+                          ],
+                          "properties": {
+                            "error": {
+                              "type": "string"
+                            },
+                            "info": {
+                              "type": "object",
+                              "required": [
+                                "id",
+                                "name",
+                                "argumentsJson",
+                                "scope",
+                                "requiresConfirmation"
+                              ],
+                              "properties": {
+                                "argumentsJson": {
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "requiresConfirmation": {
+                                  "type": "boolean"
+                                },
+                                "scope": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "result": {
+                              "type": "string"
+                            },
+                            "status": {
+                              "type": "string"
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -450,9 +509,14 @@
                           "type": "object",
                           "required": [
                             "info",
-                            "status"
+                            "status",
+                            "result",
+                            "error"
                           ],
                           "properties": {
+                            "error": {
+                              "type": "string"
+                            },
                             "info": {
                               "type": "object",
                               "required": [
@@ -479,6 +543,9 @@
                                   "type": "string"
                                 }
                               }
+                            },
+                            "result": {
+                              "type": "string"
                             },
                             "status": {
                               "type": "string"
@@ -992,7 +1059,7 @@
       }
     }
   },
-  "x-date": "2025-12-14 20:37:29",
+  "x-date": "2025-12-15 11:45:09",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

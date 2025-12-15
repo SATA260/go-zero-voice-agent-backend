@@ -58,7 +58,7 @@ func (l *DeleteChatMessageLogic) DeleteChatMessage(req *types.DeleteChatMessageR
 		return nil, errors.New("not authorized to delete this message")
 	}
 
-	_, err = l.svcCtx.ChatMessageRpc.DeleteChatMessage(l.ctx, toRpcDeleteChatMessageReq(req.Id, message.Version))
+	_, err = l.svcCtx.ChatMessageRpc.DeleteChatMessage(l.ctx, toRpcDeleteChatMessageReq(req.Id))
 	if err != nil {
 		return nil, err
 	}

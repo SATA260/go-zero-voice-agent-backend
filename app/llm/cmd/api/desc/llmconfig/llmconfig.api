@@ -7,11 +7,6 @@ info (
 )
 
 type (
-	PageQuery {
-		Page     int64  `json:"page"`
-		PageSize int64  `json:"pageSize"`
-		OrderBy  string `json:"orderBy"`
-	}
 	ChatConfig {
 		Id                int64   `json:"id"`
 		Name              string  `json:"name"`

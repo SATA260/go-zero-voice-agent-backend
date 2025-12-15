@@ -15,6 +15,14 @@ import (
 	"llmchat/llmchat.api"
 )
 
+type (
+	PageQuery {
+		Page     int64  `json:"page"`
+		PageSize int64  `json:"pageSize"`
+		OrderBy  string `json:"orderBy"`
+	}
+)
+
 // Server & Service
 @server (
 	group:  chat

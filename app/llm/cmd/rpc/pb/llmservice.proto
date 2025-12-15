@@ -297,24 +297,23 @@ message ListChatSessionResp {
 
 message ChatMessage {
     int64 id = 1;
-    int64 sessionId = 2;
-    int64 configId = 3;
+    int64 createTime = 2;
+    int64 sessionId = 3;
     string role = 4;
     string content = 5;
-    string extra = 6;
-    int64 version = 7;
-    int64 delState = 8;
-    int64 createTime = 9;
-    int64 updateTime = 10;
-    int64 deleteTime = 11;
+    repeated ToolCall toolCalls = 6;
+    string toolCallId = 7;
+    string extra = 8;
 }
 
 message CreateChatMessageReq {
-    int64 sessionId = 1;
-    int64 configId = 2;
+    int64 id = 1;
+    int64 sessionId = 2;
     string role = 3;
     string content = 4;
-    string extra = 5;
+    repeated ToolCall toolCalls = 5;
+    string toolCallId = 6;
+    string extra = 7;
 }
 
 message CreateChatMessageResp {
@@ -332,11 +331,11 @@ message DeleteChatMessageResp {
 message UpdateChatMessageReq {
     int64 id = 1;
     int64 sessionId = 2;
-    int64 configId = 3;
-    string role = 4;
-    string content = 5;
-    string extra = 6;
-    int64 version = 7;
+    string role = 3;
+    string content = 4;
+    repeated ToolCall toolCalls = 5;
+    string toolCallId = 6;
+    string extra = 7;
 }
 
 message UpdateChatMessageResp {
@@ -353,8 +352,7 @@ message GetChatMessageResp {
 message ListChatMessageFilter {
     int64 id = 1;
     int64 sessionId = 2;
-    int64 configId = 3;
-    string role = 4;
+    string role = 3;
 }
 
 message ListChatMessageReq {

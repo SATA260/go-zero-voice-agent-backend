@@ -1,17 +1,6 @@
 syntax = "v1"
 
 type (
-	ToolCallInfo {
-		Id                   string `json:"id"`
-		Name                 string `json:"name"`
-		ArgumentsJson        string `json:"argumentsJson"`
-		Scope                string `json:"scope"`
-		RequiresConfirmation bool   `json:"requiresConfirmation"`
-	}
-	ToolCall {
-		Info   ToolCallInfo `json:"info"`
-		Status string       `json:"status"`
-	}
 	TextChatMessage {
 		Role       string     `json:"role"`
 		Content    string     `json:"content"`

@@ -1,12 +1,28 @@
 syntax = "v1"
 
 type (
+	ToolCallInfo {
+		Id                   string `json:"id"`
+		Name                 string `json:"name"`
+		ArgumentsJson        string `json:"argumentsJson"`
+		Scope                string `json:"scope"`
+		RequiresConfirmation bool   `json:"requiresConfirmation"`
+	}
+	ToolCall {
+		Info   ToolCallInfo `json:"info"`
+		Status string       `json:"status"`
+		Result string       `json:"result"`
+		Error  string       `json:"error"`
+	}
 	ChatMessage {
-		Id         int64  `json:"id"`
-		SessionId  int64  `json:"sessionId"`
-		Role       string `json:"role"`
-		Content    string `json:"content"`
-		CreateTime int64  `json:"createTime"`
+		Id         int64      `json:"id"`
+		SessionId  int64      `json:"sessionId"`
+		Role       string     `json:"role"`
+		Content    string     `json:"content"`
+		ToolCalls  []ToolCall `json:"toolCalls"`
+		ToolCallId string     `json:"toolCallId"`
+		Extra      string     `json:"extra"`
+		CreateTime int64      `json:"createTime"`
 	}
 )
 
