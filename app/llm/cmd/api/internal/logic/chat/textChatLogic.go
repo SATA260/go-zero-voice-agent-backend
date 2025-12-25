@@ -49,9 +49,9 @@ func (l *TextChatLogic) TextChat(req *types.TextChatReq) (resp *types.TextChatRe
 	trimmedMsg := strings.TrimSpace(req.Message)
 	var messages []*llmchatservice.ChatMsg
 	if systemPrompt != "" && convID == "" {
-		messages = l.createChatMsgs(systemPrompt, trimmedMsg)
+		messages = l.createChatMsgs(systemPrompt, trimmedMsg, req)
 	} else {
-		messages = l.createChatMsgs("", trimmedMsg)
+		messages = l.createChatMsgs("", trimmedMsg, req)
 	}
 
 	// 发起对话请求
@@ -85,6 +85,7 @@ func (l *TextChatLogic) TextChat(req *types.TextChatReq) (resp *types.TextChatRe
 					ArgumentsJson:        tc.Info.ArgumentsJson,
 					Scope:                tc.Info.Scope,
 					RequiresConfirmation: tc.Info.RequiresConfirmation,
+					Description:          tc.Info.Description,
 				},
 				Status: tc.Status,
 				Result: tc.Result,
@@ -121,9 +122,9 @@ func (l *TextChatLogic) TextChatStream(req *types.TextChatReq) (pb.LlmChatServic
 	trimmedMsg := strings.TrimSpace(req.Message)
 	var messages []*llmchatservice.ChatMsg
 	if systemPrompt != "" && convID == "" {
-		messages = l.createChatMsgs(systemPrompt, trimmedMsg)
+		messages = l.createChatMsgs(systemPrompt, trimmedMsg, req)
 	} else {
-		messages = l.createChatMsgs("", trimmedMsg)
+		messages = l.createChatMsgs("", trimmedMsg, req)
 	}
 
 	// 发起流式对话请求，并返回流式响应客户端
@@ -144,8 +145,12 @@ func (l *TextChatLogic) validReq(req *types.TextChatReq) error {
 	}
 
 	trimmedMsg := strings.TrimSpace(req.Message)
-	if trimmedMsg == "" {
+	if trimmedMsg == "" && len(req.ToolCalls) == 0 {
 		return errors.New("message cannot be empty")
+	}
+
+	if strings.TrimSpace(req.Role) == chatconsts.ChatMessageRoleTool && len(req.ToolCalls) == 0 {
+		return errors.New("toolCalls required when role is tool")
 	}
 
 	if req.ConfigId <= 0 {
@@ -208,7 +213,19 @@ func (l *TextChatLogic) buildChatLlmConfig(cfg *llmconfigservice.ChatConfig) *ll
 }
 
 // 创建聊天消息列表
-func (l *TextChatLogic) createChatMsgs(systemPrompt string, message string) []*llmchatservice.ChatMsg {
+func (l *TextChatLogic) createChatMsgs(systemPrompt string, message string, req *types.TextChatReq) []*llmchatservice.ChatMsg {
+	// Tool消息优先处理
+	if len(req.ToolCalls) > 0 {
+		return []*llmchatservice.ChatMsg{
+			{
+				Role:       chatconsts.ChatMessageRoleTool,
+				Content:    "",
+				ToolCalls:  toRpcToolCalls(req.ToolCalls),
+				ToolCallId: strings.TrimSpace(req.ToolCallId),
+			},
+		}
+	}
+
 	messages := make([]*llmchatservice.ChatMsg, 0, 2)
 	if strings.TrimSpace(systemPrompt) != "" {
 		messages = append(messages, &llmchatservice.ChatMsg{
@@ -222,4 +239,29 @@ func (l *TextChatLogic) createChatMsgs(systemPrompt string, message string) []*l
 	})
 
 	return messages
+}
+
+func toRpcToolCalls(toolCalls []types.ToolCall) []*llmchatservice.ToolCall {
+	if len(toolCalls) == 0 {
+		return nil
+	}
+
+	res := make([]*llmchatservice.ToolCall, 0, len(toolCalls))
+	for _, tc := range toolCalls {
+		res = append(res, &llmchatservice.ToolCall{
+			Info: &llmchatservice.ToolCallInfo{
+				Id:                   tc.Info.Id,
+				Name:                 tc.Info.Name,
+				ArgumentsJson:        tc.Info.ArgumentsJson,
+				Scope:                tc.Info.Scope,
+				RequiresConfirmation: tc.Info.RequiresConfirmation,
+				Description:          tc.Info.Description,
+			},
+			Status: tc.Status,
+			Result: tc.Result,
+			Error:  tc.Error,
+		})
+	}
+
+	return res
 }

@@ -175,14 +175,17 @@ type TextChatMessage struct {
 }
 
 type TextChatReq struct {
-	UserId          int64   `header:"X-User-Id"`
-	ConfigId        int64   `json:"configId"`
-	ConversationId  string  `json:"conversationId,optional"`
-	RagFileIds      []int64 `json:"ragFileIds,optional"`
-	Message         string  `json:"message"`
-	SystemPrompt    string  `json:"systemPrompt,optional"`
-	AutoFillHistory bool    `json:"autoFillHistory,optional"`
-	IsStream        bool    `json:"isStream,optional"`
+	UserId          int64      `header:"X-User-Id"`
+	ConfigId        int64      `json:"configId"`
+	ConversationId  string     `json:"conversationId,optional"`
+	RagFileIds      []int64    `json:"ragFileIds,optional"`
+	Message         string     `json:"message"`
+	Role            string     `json:"role,optional"`
+	ToolCalls       []ToolCall `json:"toolCalls,optional"`
+	ToolCallId      string     `json:"toolCallId,optional"`
+	SystemPrompt    string     `json:"systemPrompt,optional"`
+	AutoFillHistory bool       `json:"autoFillHistory,optional"`
+	IsStream        bool       `json:"isStream,optional"`
 }
 
 type TextChatResp struct {
@@ -203,6 +206,7 @@ type ToolCallInfo struct {
 	ArgumentsJson        string `json:"argumentsJson"`
 	Scope                string `json:"scope"`
 	RequiresConfirmation bool   `json:"requiresConfirmation"`
+	Description          string `json:"description"`
 }
 
 type UpdateConfigReq struct {

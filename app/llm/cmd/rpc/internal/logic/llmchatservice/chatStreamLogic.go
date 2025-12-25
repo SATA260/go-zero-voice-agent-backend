@@ -74,8 +74,30 @@ func (l *ChatStreamLogic) ChatStream(in *pb.ChatStreamReq, stream pb.LlmChatServ
 			continue
 		}
 
+		// 标记需要落库的工具调用消息
+		shouldCacheToolMsg := false
+		var updatedAssistantMsg *pb.ChatMsg
+
 		// 处理工具调用状态
 		for _, toolCall := range msg.ToolCalls {
+			// 找到最近的 assistant 消息并更新其中的 toolCalls
+			if updatedAssistantMsg == nil {
+				for i := len(historyMsgs) - 1; i >= 0; i-- {
+					exist := historyMsgs[i]
+					if exist.GetRole() != consts.ChatMessageRoleAssistant || len(exist.GetToolCalls()) == 0 {
+						continue
+					}
+					for _, existingTc := range exist.ToolCalls {
+						if existingTc.GetInfo() != nil && existingTc.GetInfo().GetId() == toolCall.GetInfo().GetId() {
+							updatedAssistantMsg = exist
+							break
+						}
+					}
+					if updatedAssistantMsg != nil {
+						break
+					}
+				}
+			}
 			if toolCall.Status == consts.TOOL_CALLING_CONFIRMED {
 				// 用户确认工具调用，执行它，并将结果加入历史消息
 				tool, ok := l.svcCtx.ToolRegistry[toolCall.Info.Name]
@@ -85,33 +107,65 @@ func (l *ChatStreamLogic) ChatStream(in *pb.ChatStreamReq, stream pb.LlmChatServ
 				}
 				l.Logger.Infof("User confirmed tool execution: %s", toolCall.Info.Name)
 				content := ""
+				toolCall.Status = consts.TOOL_CALLING_EXECUTING
 				toolResult, err := tool.Execute(l.ctx, toolCall.Info.ArgumentsJson)
 				if err != nil {
 					content = "Error: " + err.Error()
+					toolCall.Status = consts.TOOL_CALLING_FAILED
+					toolCall.Error = err.Error()
 				} else {
 					content = toolResult
+					toolCall.Status = consts.TOOL_CALLING_FINISHED
+					toolCall.Result = toolResult
 				}
 
-				// 将执行结果作为 Tool 消息加入历史
-				historyMsgs = append(historyMsgs, &pb.ChatMsg{
-					Role:       consts.ChatMessageRoleTool,
-					Content:    content,
-					ToolCallId: msg.GetToolCallId(),
-				})
+				// 将执行结果更新回 assistant 消息
+				if updatedAssistantMsg != nil {
+					for _, existingTc := range updatedAssistantMsg.ToolCalls {
+						if existingTc.GetInfo() != nil && existingTc.GetInfo().GetId() == toolCall.GetInfo().GetId() {
+							existingTc.Status = toolCall.Status
+							existingTc.Result = toolCall.Result
+							existingTc.Error = toolCall.Error
+						}
+					}
+				}
 
 				l.Logger.Infof("Tool %s executed with result: %s", toolCall.Info.Name, content)
+				shouldCacheToolMsg = true
 
 			} else if toolCall.Status == consts.TOOL_CALLING_REJECTED {
 				// 用户拒绝工具调用，记录拒绝信息
 				l.Logger.Infof("User rejected tool execution: %s", toolCall.Info.Name)
-				historyMsgs = append(historyMsgs, &pb.ChatMsg{
-					Role:       consts.ChatMessageRoleTool,
-					Content:    "Tool execution was rejected by the user.",
-					ToolCallId: msg.GetToolCallId(),
-				})
+				toolCall.Status = consts.TOOL_CALLING_REJECTED
+				if updatedAssistantMsg != nil {
+					for _, existingTc := range updatedAssistantMsg.ToolCalls {
+						if existingTc.GetInfo() != nil && existingTc.GetInfo().GetId() == toolCall.GetInfo().GetId() {
+							existingTc.Status = consts.TOOL_CALLING_REJECTED
+							existingTc.Error = toolCall.Error
+						}
+					}
+				}
+				shouldCacheToolMsg = true
 			} else if toolCall.Status == consts.TOOL_CALLING_FINISHED {
-				// 工具调用已完成（可能是客户端执行的），直接加入历史
-				historyMsgs = append(historyMsgs, msg)
+				// 工具调用已完成（可能是客户端执行的），更新 assistant 消息并标记缓存
+				if updatedAssistantMsg != nil {
+					for _, existingTc := range updatedAssistantMsg.ToolCalls {
+						if existingTc.GetInfo() != nil && existingTc.GetInfo().GetId() == toolCall.GetInfo().GetId() {
+							existingTc.Status = consts.TOOL_CALLING_FINISHED
+							existingTc.Result = toolCall.Result
+							existingTc.Error = toolCall.Error
+						}
+					}
+				}
+				shouldCacheToolMsg = true
+			}
+		}
+
+		if shouldCacheToolMsg {
+			if updatedAssistantMsg != nil {
+				go l.svcCtx.UpdateAssistantToolCalls(chatSession.ConvId, updatedAssistantMsg)
+			} else {
+				go l.svcCtx.CacheConversation(chatSession.ConvId, nil, msg)
 			}
 		}
 	}
@@ -147,11 +201,12 @@ func (l *ChatStreamLogic) handleChatStreamInteraction(
 	}
 
 	// 获取不需要确认即可执行的工具列表（用于 OpenAI 请求）
-	OpenaiToolListWithoutConfirm := l.svcCtx.OpenaiToolListWithoutConfirm
+	// OpenaiToolListWithoutConfirm := l.svcCtx.OpenaiToolListWithoutConfirm
+	OpenaiToolList := l.svcCtx.OpenaiToolList
 
 	// 构建并发送聊天完成请求
 	// stream=true 开启流式模式
-	req := BuildChatCompletionRequest(in.LlmConfig, openaiMsgs, true, OpenaiToolListWithoutConfirm)
+	req := BuildChatCompletionRequest(in.LlmConfig, openaiMsgs, true, OpenaiToolList)
 	l.Logger.Infof("OpenAI request (depth %d): %+v", depth, req)
 
 	streamResp, err := client.CreateChatCompletionStream(l.ctx, req)
@@ -246,28 +301,9 @@ func (l *ChatStreamLogic) handleChatStreamInteraction(
 		ToolCalls: []*pb.ToolCall{},
 	}
 
-	// 将 OpenAI 的 ToolCall 转换为内部 Proto 格式，并缓存
-	for _, toolCall := range toolCalls {
-		tool, ok := l.svcCtx.ToolRegistry[toolCall.Function.Name]
-		if !ok {
-			l.Logger.Errorf("unknown tool called: %s", toolCall.Function.Name)
-			continue
-		}
-		toolCallMsg := &pb.ToolCall{
-			Info: &pb.ToolCallInfo{
-				Id:                   toolCall.ID,
-				Name:                 toolCall.Function.Name,
-				ArgumentsJson:        toolCall.Function.Arguments,
-				Scope:                tool.Scope(),
-				RequiresConfirmation: tool.RequiresConfirmation(),
-			},
-		}
-		assistantMsg.ToolCalls = append(assistantMsg.ToolCalls, toolCallMsg)
-	}
-	go l.svcCtx.CacheConversation(chatSession.ConvId, nil, assistantMsg)
-
-	// 如果没有工具调用，说明本次交互结束
+	// 如果没有工具调用，说明本次交互结束，只落一条消息
 	if len(toolCalls) == 0 {
+		go l.svcCtx.CacheConversation(chatSession.ConvId, nil, assistantMsg)
 		return nil
 	}
 
@@ -301,9 +337,13 @@ func (l *ChatStreamLogic) handleChatStreamInteraction(
 				ArgumentsJson:        toolCall.Function.Arguments,
 				Scope:                tool.Scope(),
 				RequiresConfirmation: tool.RequiresConfirmation(),
+				Description:          tool.Description(),
 			},
 			Status: consts.TOOL_CALLING_START,
 		}
+
+		// 记录到待持久化消息，避免重复落库
+		assistantMsg.ToolCalls = append(assistantMsg.ToolCalls, toolCallMsg)
 
 		// 客户端执行的工具，直接加入确认消息列表返回给前端
 		if tool.Scope() == consts.TOOL_CALLING_SCOPE_CLIENT {
@@ -338,12 +378,17 @@ func (l *ChatStreamLogic) handleChatStreamInteraction(
 		}
 
 		l.Logger.Infof("Auto-executing tool: %s", toolCall.Function.Name)
+		toolCallMsg.Status = consts.TOOL_CALLING_EXECUTING
 		content := ""
 		toolResult, err := tool.Execute(l.ctx, toolCall.Function.Arguments)
 		if err != nil {
 			content = "Error: " + err.Error()
+			toolCallMsg.Status = consts.TOOL_CALLING_FAILED
+			toolCallMsg.Error = err.Error()
 		} else {
 			content = toolResult
+			toolCallMsg.Status = consts.TOOL_CALLING_FINISHED
+			toolCallMsg.Result = toolResult
 		}
 
 		// 将工具执行结果加入 OpenAI 消息历史
@@ -353,14 +398,10 @@ func (l *ChatStreamLogic) handleChatStreamInteraction(
 			ToolCallID: toolCall.ID,
 		})
 
-		// 缓存工具执行结果消息
-		toolMsg := &pb.ChatMsg{
-			Role:       consts.ChatMessageRoleTool,
-			Content:    content,
-			ToolCallId: toolCall.ID,
-		}
-		go l.svcCtx.CacheConversation(chatSession.ConvId, nil, toolMsg)
 	}
+
+	// 仅持久化一条包含工具调用状态/结果的消息
+	go l.svcCtx.CacheConversation(chatSession.ConvId, nil, assistantMsg)
 
 	// 如果有需要确认的工具调用，发送给客户端并结束本次流
 	if len(confirmMsg.ToolCalls) > 0 {

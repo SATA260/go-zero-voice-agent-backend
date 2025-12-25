@@ -25,7 +25,7 @@ func (t *TimeTool) ArgumentsJson() string {
 }
 
 func (t *TimeTool) RequiresConfirmation() bool {
-	return false
+	return true
 }
 
 func (t *TimeTool) Scope() string {

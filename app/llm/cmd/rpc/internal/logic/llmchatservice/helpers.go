@@ -130,7 +130,7 @@ func NewOpenAIClient(cfg *pb.LlmConfig) (*openai.Client, error) {
 
 // BuildOpenAIMessages 转换消息格式
 func BuildOpenAIMessages(msgs []*pb.ChatMsg) []openai.ChatCompletionMessage {
-	result := make([]openai.ChatCompletionMessage, 0, len(msgs))
+	result := make([]openai.ChatCompletionMessage, 0, len(msgs)*2)
 	for _, msg := range msgs {
 		if msg == nil {
 			continue
@@ -145,25 +145,48 @@ func BuildOpenAIMessages(msgs []*pb.ChatMsg) []openai.ChatCompletionMessage {
 			openaiMsg.ToolCallID = msg.ToolCallId
 		}
 
-		if len(msg.ToolCalls) > 0 {
-			openaiToolCalls := make([]openai.ToolCall, 0, len(msg.ToolCalls))
-			for _, tc := range msg.ToolCalls {
-				if tc.Info == nil {
-					continue
-				}
-				openaiToolCalls = append(openaiToolCalls, openai.ToolCall{
-					ID:   tc.Info.Id,
-					Type: openai.ToolTypeFunction,
-					Function: openai.FunctionCall{
-						tc.Info.Name,
-						tc.Info.ArgumentsJson,
-					},
-				})
+		openaiToolCalls := make([]openai.ToolCall, 0, len(msg.ToolCalls))
+		for _, tc := range msg.ToolCalls {
+			if tc == nil || tc.Info == nil {
+				continue
 			}
+			openaiToolCalls = append(openaiToolCalls, openai.ToolCall{
+				ID:   tc.Info.Id,
+				Type: openai.ToolTypeFunction,
+				Function: openai.FunctionCall{
+					tc.Info.Name,
+					tc.Info.ArgumentsJson,
+				},
+			})
+		}
+		if len(openaiToolCalls) > 0 {
 			openaiMsg.ToolCalls = openaiToolCalls
 		}
 
 		result = append(result, openaiMsg)
+
+		// 如果消息中包含工具调用结果（或错误），展开为 Tool 消息补充上下文
+		for _, tc := range msg.ToolCalls {
+			if tc == nil || tc.Info == nil {
+				continue
+			}
+
+			// 仅在状态已结束或存在结果/错误时追加 Tool 消息
+			if tc.Result == "" && tc.Error == "" && tc.Status != chatconsts.TOOL_CALLING_FINISHED && tc.Status != chatconsts.TOOL_CALLING_FAILED && tc.Status != chatconsts.TOOL_CALLING_CONFIRMED && tc.Status != chatconsts.TOOL_CALLING_REJECTED {
+				continue
+			}
+
+			content := tc.Result
+			if content == "" && tc.Error != "" {
+				content = "Error: " + tc.Error
+			}
+
+			result = append(result, openai.ChatCompletionMessage{
+				Role:       openai.ChatMessageRoleTool,
+				Content:    content,
+				ToolCallID: tc.Info.Id,
+			})
+		}
 	}
 	return result
 }
@@ -248,11 +271,11 @@ func GetOrCreateSession(ctx context.Context, svcCtx *svc.ServiceContext, convers
 		if len(messages) > 0 {
 			content := messages[0].GetContent()
 			runes := []rune(content)
-            if len(runes) > 10 {
-                title = string(runes[:10])
-            } else {
-                title = content
-            }
+			if len(runes) > 10 {
+				title = string(runes[:10])
+			} else {
+				title = content
+			}
 		}
 
 		newSession := &model.ChatSession{

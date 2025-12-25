@@ -76,7 +76,29 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 			continue
 		}
 
+		// 记录需要落库的工具调用消息
+		shouldCacheToolMsg := false
+		var updatedAssistantMsg *pb.ChatMsg
+
 		for _, toolCall := range msg.ToolCalls {
+			// 找到最近的 assistant 消息并更新其中的 toolCalls
+			if updatedAssistantMsg == nil {
+				for i := len(historyMsgs) - 1; i >= 0; i-- {
+					exist := historyMsgs[i]
+					if exist.GetRole() != chatconsts.ChatMessageRoleAssistant || len(exist.GetToolCalls()) == 0 {
+						continue
+					}
+					for _, existingTc := range exist.ToolCalls {
+						if existingTc.GetInfo() != nil && existingTc.GetInfo().GetId() == toolCall.GetInfo().GetId() {
+							updatedAssistantMsg = exist
+							break
+						}
+					}
+					if updatedAssistantMsg != nil {
+						break
+					}
+				}
+			}
 			if toolCall.Status == chatconsts.TOOL_CALLING_CONFIRMED {
 				// 用户确认工具调用，执行它，并将结果加入历史消息
 				tool, ok := l.svcCtx.ToolRegistry[toolCall.Info.Name]
@@ -85,31 +107,60 @@ func (l *ChatLogic) Chat(in *pb.ChatReq) (*pb.ChatResp, error) {
 					continue
 				}
 				l.Logger.Infof("User confirmed tool execution: %s", toolCall.Info.Name)
-				content := ""
+				toolCall.Status = chatconsts.TOOL_CALLING_EXECUTING
 				toolResult, err := tool.Execute(l.ctx, toolCall.Info.ArgumentsJson)
 				if err != nil {
-					content = "Error: " + err.Error()
+					toolCall.Status = chatconsts.TOOL_CALLING_FAILED
+					toolCall.Error = err.Error()
 				} else {
-					content = toolResult
+					toolCall.Status = chatconsts.TOOL_CALLING_FINISHED
+					toolCall.Result = toolResult
 				}
 
-				// 将执行结果作为 Tool 消息加入历史
-				historyMsgs = append(historyMsgs, &pb.ChatMsg{
-					Role:       chatconsts.ChatMessageRoleTool,
-					Content:    content,
-					ToolCallId: msg.GetToolCallId(),
-				})
+				// 将执行结果更新回 assistant 消息
+				if updatedAssistantMsg != nil {
+					for _, existingTc := range updatedAssistantMsg.ToolCalls {
+						if existingTc.GetInfo() != nil && existingTc.GetInfo().GetId() == toolCall.GetInfo().GetId() {
+							existingTc.Status = toolCall.Status
+							existingTc.Result = toolCall.Result
+							existingTc.Error = toolCall.Error
+						}
+					}
+				}
+				shouldCacheToolMsg = true
 
 			} else if toolCall.Status == chatconsts.TOOL_CALLING_REJECTED {
 				l.Logger.Infof("User rejected tool execution: %s", toolCall.Info.Name)
-				historyMsgs = append(historyMsgs, &pb.ChatMsg{
-					Role:       chatconsts.ChatMessageRoleTool,
-					Content:    "Tool execution was rejected by the user.",
-					ToolCallId: msg.GetToolCallId(),
-				})
+				toolCall.Status = chatconsts.TOOL_CALLING_REJECTED
+				if updatedAssistantMsg != nil {
+					for _, existingTc := range updatedAssistantMsg.ToolCalls {
+						if existingTc.GetInfo() != nil && existingTc.GetInfo().GetId() == toolCall.GetInfo().GetId() {
+							existingTc.Status = chatconsts.TOOL_CALLING_REJECTED
+							existingTc.Error = toolCall.Error
+						}
+					}
+				}
+				shouldCacheToolMsg = true
 			} else if toolCall.Status == chatconsts.TOOL_CALLING_FINISHED {
-				// 工具调用已完成，直接加入历史
-				historyMsgs = append(historyMsgs, msg)
+				// 工具调用已完成，更新 assistant 消息并准备缓存
+				if updatedAssistantMsg != nil {
+					for _, existingTc := range updatedAssistantMsg.ToolCalls {
+						if existingTc.GetInfo() != nil && existingTc.GetInfo().GetId() == toolCall.GetInfo().GetId() {
+							existingTc.Status = chatconsts.TOOL_CALLING_FINISHED
+							existingTc.Result = toolCall.Result
+							existingTc.Error = toolCall.Error
+						}
+					}
+				}
+				shouldCacheToolMsg = true
+			}
+		}
+
+		if shouldCacheToolMsg {
+			if updatedAssistantMsg != nil {
+				go l.svcCtx.UpdateAssistantToolCalls(chatSession.ConvId, updatedAssistantMsg)
+			} else {
+				go l.svcCtx.CacheConversation(chatSession.ConvId, nil, msg)
 			}
 		}
 
@@ -162,37 +213,18 @@ func (l *ChatLogic) handleChatInteraction(
 
 	// 先缓存llm响应
 	assistantMsg := &pb.ChatMsg{
-		Role:    chatconsts.ChatMessageRoleAssistant,
-		Content: choice.Message.Content,
+		Role:      chatconsts.ChatMessageRoleAssistant,
+		Content:   choice.Message.Content,
 		ToolCalls: []*pb.ToolCall{},
 	}
-	for _, toolCall := range choice.Message.ToolCalls {
-		tool, ok := l.svcCtx.ToolRegistry[toolCall.Function.Name]
-		if !ok {
-			l.Logger.Errorf("unknown tool called: %s", toolCall.Function.Name)
-			continue
-		}
-		toolCallMsg := &pb.ToolCall{
-			Info: &pb.ToolCallInfo{
-				Id:                   toolCall.ID,
-				Name:                 toolCall.Function.Name,
-				ArgumentsJson:        toolCall.Function.Arguments,
-				Scope:                tool.Scope(), 
-				RequiresConfirmation: tool.RequiresConfirmation(),                           
-			},
-		}
-		assistantMsg.ToolCalls = append(assistantMsg.ToolCalls, toolCallMsg)
-	}
-	go l.svcCtx.CacheConversation(chatSession.ConvId, nil, assistantMsg)
-
-	// 没有工具调用，直接返回文本响应
+	// 没有工具调用，直接返回文本响应，同时仅存一条消息
 	if len(choice.Message.ToolCalls) == 0 {
+		go l.svcCtx.CacheConversation(chatSession.ConvId, nil, assistantMsg)
 		return &pb.ChatResp{
 			ConversationId: chatSession.ConvId,
 			RespMsg:        assistantMsg,
 		}, nil
 	}
-
 
 	// 有工具调用
 	// 将响应消息放入历史消息
@@ -220,9 +252,13 @@ func (l *ChatLogic) handleChatInteraction(
 				ArgumentsJson:        toolCall.Function.Arguments,
 				Scope:                tool.Scope(),
 				RequiresConfirmation: tool.RequiresConfirmation(),
+				Description:          tool.Description(),
 			},
 			Status: chatconsts.TOOL_CALLING_START,
 		}
+
+		// 记录到待持久化消息，保证后续只落一条记录
+		assistantMsg.ToolCalls = append(assistantMsg.ToolCalls, toolCallMsg)
 
 		// 在客户端执行的tool调用，直接放入confimMsg返回前端
 		if tool.Scope() == chatconsts.TOOL_CALLING_SCOPE_CLIENT {
@@ -259,12 +295,17 @@ func (l *ChatLogic) handleChatInteraction(
 
 		// 自动执行工具调用
 		l.Logger.Infof("Auto-executing tool: %s", toolCall.Function.Name)
+		toolCallMsg.Status = chatconsts.TOOL_CALLING_EXECUTING
 		content := ""
 		toolResult, err := tool.Execute(l.ctx, toolCall.Function.Arguments)
 		if err != nil {
 			content = "Error: " + err.Error()
+			toolCallMsg.Status = chatconsts.TOOL_CALLING_FAILED
+			toolCallMsg.Error = err.Error()
 		} else {
 			content = toolResult
+			toolCallMsg.Status = chatconsts.TOOL_CALLING_FINISHED
+			toolCallMsg.Result = toolResult
 		}
 
 		// 将执行结果作为 Tool 消息加入历史
@@ -273,16 +314,10 @@ func (l *ChatLogic) handleChatInteraction(
 			Content:    content,
 			ToolCallID: toolCall.ID,
 		})
-
-		// 存储 Tool 执行结果
-		toolMsg := &pb.ChatMsg{
-			Role:       chatconsts.ChatMessageRoleTool,
-			Content:    content,
-			ToolCallId: toolCall.ID,
-		}
-		go l.svcCtx.CacheConversation(chatSession.ConvId, nil, toolMsg)
-
 	}
+
+	// 仅存储一条包含工具调用状态与结果的消息
+	go l.svcCtx.CacheConversation(chatSession.ConvId, nil, assistantMsg)
 
 	// 如果有需要确认的工具调用，优先返回给前端
 	if len(confirmMsg.ToolCalls) > 0 {

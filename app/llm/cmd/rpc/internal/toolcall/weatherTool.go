@@ -46,7 +46,7 @@ func (t *WeatherTool) ArgumentsJson() string {
 }
 
 func (t *WeatherTool) RequiresConfirmation() bool {
-	return false
+	return true
 }
 
 func (t *WeatherTool) Scope() string {

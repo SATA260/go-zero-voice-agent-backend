@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v6.32.0
-// source: llmservice.proto
+// source: app/llm/cmd/rpc/pb/llmservice.proto
 
 package pb
 
@@ -159,7 +159,7 @@ var LlmChatService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "llmservice.proto",
+	Metadata: "app/llm/cmd/rpc/pb/llmservice.proto",
 }
 
 const (
@@ -413,7 +413,7 @@ var LlmConfigService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "llmservice.proto",
+	Metadata: "app/llm/cmd/rpc/pb/llmservice.proto",
 }
 
 const (
@@ -705,7 +705,7 @@ var ChatSessionService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "llmservice.proto",
+	Metadata: "app/llm/cmd/rpc/pb/llmservice.proto",
 }
 
 const (
@@ -959,5 +959,5 @@ var ChatMessageService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "llmservice.proto",
+	Metadata: "app/llm/cmd/rpc/pb/llmservice.proto",
 }

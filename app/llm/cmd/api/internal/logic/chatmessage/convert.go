@@ -79,5 +79,6 @@ func toTypesToolCallInfo(info *chatmessageservice.ToolCallInfo) types.ToolCallIn
 		ArgumentsJson:        info.ArgumentsJson,
 		Scope:                info.Scope,
 		RequiresConfirmation: info.RequiresConfirmation,
+		Description:          info.Description,
 	}
 }

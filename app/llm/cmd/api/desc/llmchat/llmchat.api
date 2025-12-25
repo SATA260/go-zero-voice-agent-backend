@@ -11,14 +11,17 @@ type (
 
 type (
 	TextChatReq {
-		UserId          int64   `header:"X-User-Id"`
-		ConfigId        int64   `json:"configId"`
-		ConversationId  string  `json:"conversationId,optional"`
-		RagFileIds      []int64 `json:"ragFileIds,optional"`
-		Message         string  `json:"message"`
-		SystemPrompt    string  `json:"systemPrompt,optional"`
-		AutoFillHistory bool    `json:"autoFillHistory,optional"`
-		IsStream        bool    `json:"isStream,optional"`
+		UserId          int64      `header:"X-User-Id"`
+		ConfigId        int64      `json:"configId"`
+		ConversationId  string     `json:"conversationId,optional"`
+		RagFileIds      []int64    `json:"ragFileIds,optional"`
+		Message         string     `json:"message"`
+		Role            string     `json:"role,optional"`
+		ToolCalls       []ToolCall `json:"toolCalls,optional"`
+		ToolCallId      string     `json:"toolCallId,optional"`
+		SystemPrompt    string     `json:"systemPrompt,optional"`
+		AutoFillHistory bool       `json:"autoFillHistory,optional"`
+		IsStream        bool       `json:"isStream,optional"`
 	}
 	TextChatResp {
 		ConversationId string          `json:"conversationId"`

@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"context"
 	"encoding/json"
 	"go-zero-voice-agent/app/llm/cmd/rpc/internal/config"
 	"go-zero-voice-agent/app/llm/cmd/rpc/internal/toolcall"
@@ -33,8 +34,8 @@ type ServiceContext struct {
 
 	RagRpc ragservice.RagService
 
-	ToolRegistry   map[string]toolcall.Tool
-	OpenaiToolList []openai.Tool
+	ToolRegistry                 map[string]toolcall.Tool
+	OpenaiToolList               []openai.Tool
 	OpenaiToolListWithoutConfirm []openai.Tool
 }
 
@@ -72,8 +73,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 func newToolRegistry(svcCtx *ServiceContext) map[string]toolcall.Tool {
 	registry := make(map[string]toolcall.Tool)
 
-	ragTool := toolcall.NewRagTool(svcCtx.RagRpc)
-	registry[ragTool.Name()] = ragTool
+	// ragTool := toolcall.NewRagTool(svcCtx.RagRpc)
+	// registry[ragTool.Name()] = ragTool
 
 	timeTool := toolcall.NewTimeTool()
 	registry[timeTool.Name()] = timeTool
@@ -84,8 +85,8 @@ func newToolRegistry(svcCtx *ServiceContext) map[string]toolcall.Tool {
 	currencyTool := toolcall.NewCurrencyTool()
 	registry[currencyTool.Name()] = currencyTool
 
-	windowsTool := toolcall.NewWindowsTool()
-	registry[windowsTool.Name()] = windowsTool
+	// windowsTool := toolcall.NewWindowsTool()
+	// registry[windowsTool.Name()] = windowsTool
 
 	return registry
 }
@@ -178,4 +179,81 @@ func (svc *ServiceContext) CacheConversation(conversationId string, userMsgs []*
 			logx.Infof("failed to enqueue sync task for conversation %s, err: %v", conversationId, err)
 		}
 	}
+}
+
+// UpdateAssistantToolCalls 更新缓存中已有的 assistant 消息（按 toolCallId 匹配），避免重复新增消息
+func (svc *ServiceContext) UpdateAssistantToolCalls(conversationId string, updatedAssistant *pb.ChatMsg) {
+	if updatedAssistant == nil || len(updatedAssistant.ToolCalls) == 0 {
+		return
+	}
+
+	cacheKey := publicconsts.ChatCacheKeyPrefix + conversationId
+	dirtyKey := cacheKey + ":dirty"
+
+	// 尝试找到包含相同 toolCallId 的 assistant 消息并原地更新
+	values, err := svc.RedisClient.Lrange(cacheKey, 0, -1)
+	if err != nil {
+		logx.Errorf("failed to read cached conversation for update, key: %s, err: %v", cacheKey, err)
+		return
+	}
+
+	findMatch := func(candidate []*pb.ToolCall) bool {
+		for _, tc := range candidate {
+			if tc == nil || tc.Info == nil {
+				continue
+			}
+			for _, utc := range updatedAssistant.ToolCalls {
+				if utc == nil || utc.Info == nil {
+					continue
+				}
+				if tc.Info.Id == utc.Info.Id {
+					return true
+				}
+			}
+		}
+		return false
+	}
+
+	targetIdx := int64(-1)
+	for idx, raw := range values {
+		var cached pb.ChatMsg
+		if err := json.Unmarshal([]byte(raw), &cached); err != nil {
+			logx.Errorf("decode cached message failed during update, key: %s, index: %d, err: %v", cacheKey, idx, err)
+			continue
+		}
+		if cached.GetRole() != chatconsts.ChatMessageRoleAssistant || len(cached.ToolCalls) == 0 {
+			continue
+		}
+		if findMatch(cached.ToolCalls) {
+			targetIdx = int64(idx)
+			break
+		}
+	}
+
+	payload, err := json.Marshal(updatedAssistant)
+	if err != nil {
+		logx.Errorf("marshal updated assistant failed, conv: %s, err: %v", conversationId, err)
+		return
+	}
+
+	if targetIdx >= 0 {
+		// go-zero redis 没有 LSET 封装，使用 Lua 调用原生命令
+		script := "return redis.call('LSET', KEYS[1], ARGV[1], ARGV[2])"
+		if _, err := svc.RedisClient.EvalCtx(context.Background(), script, []string{cacheKey}, targetIdx, string(payload)); err != nil {
+			logx.Errorf("failed to update cached assistant at index %d, key: %s, err: %v", targetIdx, cacheKey, err)
+			return
+		}
+		// 刷新过期时间，保持会话活跃
+		svc.RedisClient.Expire(cacheKey, chatconsts.ChatCacheExpireSeconds)
+		svc.RedisClient.Setex(dirtyKey, "1", chatconsts.ChatCacheExpireSeconds)
+		return
+	}
+
+	// 没找到则降级为追加，避免状态丢失
+	if _, err := svc.RedisClient.Rpush(cacheKey, string(payload)); err != nil {
+		logx.Errorf("failed to append assistant message as fallback, key: %s, err: %v", cacheKey, err)
+		return
+	}
+	svc.RedisClient.Expire(cacheKey, chatconsts.ChatCacheExpireSeconds)
+	svc.RedisClient.Setex(dirtyKey, "1", chatconsts.ChatCacheExpireSeconds)
 }

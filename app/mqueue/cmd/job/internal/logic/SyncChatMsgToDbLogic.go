@@ -45,26 +45,49 @@ func (l *SyncChatMsgToDbLogic) Sync(payload *jobtype.SyncChatMsgPayload) error {
 		return err
 	}
 
-	// 3. 查询数据库中已存在的消息数量
+	cacheKey := publicconsts.ChatCacheKeyPrefix + payload.ConversationID
+	dirtyKey := cacheKey + ":dirty"
+
+	// 优先处理脏标记：存在表示列表中有更新过的旧消息，需要全量重放
+	if dirty, _ := l.svcCtx.RedisClient.Exists(dirtyKey); dirty {
+		values, err := l.svcCtx.RedisClient.Lrange(cacheKey, 0, -1)
+		if err != nil {
+			return errors.Wrapf(err, "read conversation cache failed for dirty resync, key: %s", cacheKey)
+		}
+
+		allMessages := make([]*pb.ChatMsg, 0, len(values))
+		for idx, raw := range values {
+			var msg pb.ChatMsg
+			if err := json.Unmarshal([]byte(raw), &msg); err != nil {
+				return errors.Wrapf(err, "decode cached message failed (dirty resync), key: %s, index: %d", cacheKey, idx)
+			}
+			allMessages = append(allMessages, &msg)
+		}
+
+		if err := l.persistAll(sessionID, allMessages); err != nil {
+			return errors.Wrapf(err, "failed to resync all messages for session %d", sessionID)
+		}
+
+		// 清除脏标记
+		l.svcCtx.RedisClient.Del(dirtyKey)
+		logx.Infof("resynced %d messages for conversation %s due to dirty flag", len(allMessages), payload.ConversationID)
+		return nil
+	}
+
+	// 正常增量同步
 	existingCount, err := l.countExistingMessages(sessionID)
 	if err != nil {
 		return err
 	}
-
-	// 4. 只从 Redis 读取新增的消息 (Offset = existingCount)
-	// 优化：避免拉取全量数据，只拉取 DB 中没有的部分
-	cacheKey := publicconsts.ChatCacheKeyPrefix + payload.ConversationID
 	values, err := l.svcCtx.RedisClient.Lrange(cacheKey, int(existingCount), -1)
 	if err != nil {
 		return errors.Wrapf(err, "read conversation cache failed, key: %s", cacheKey)
 	}
 
-	// 5. 如果没有新消息，直接返回
 	if len(values) == 0 {
 		return nil
 	}
 
-	// 6. 反序列化新增消息
 	newMessages := make([]*pb.ChatMsg, 0, len(values))
 	for idx, raw := range values {
 		var msg pb.ChatMsg
@@ -74,15 +97,48 @@ func (l *SyncChatMsgToDbLogic) Sync(payload *jobtype.SyncChatMsgPayload) error {
 		newMessages = append(newMessages, &msg)
 	}
 
-	// 7. 批量持久化新增消息
 	if err := l.persistMessages(sessionID, newMessages); err != nil {
 		return errors.Wrapf(err, "failed to persist new messages for session %d", sessionID)
 	}
 
-	// 8. 日志记录同步结果
 	logx.Infof("successfully synced %d new messages for conversation %s", len(newMessages), payload.ConversationID)
 
 	return nil
+}
+
+// persistAll 全量重放：先删除该会话已有消息，再按缓存顺序重写
+func (l *SyncChatMsgToDbLogic) persistAll(sessionID int64, messages []*pb.ChatMsg) error {
+	return l.svcCtx.ChatMessageModel.Trans(l.ctx, func(ctx context.Context, session sqlx.Session) error {
+		if _, err := session.ExecCtx(ctx, "delete from chat_message where session_id = ?", sessionID); err != nil {
+			return errors.Wrapf(err, "delete existing messages failed, session_id: %d", sessionID)
+		}
+
+		for idx, msg := range messages {
+			record := &model.ChatMessage{
+				SessionId: sessionID,
+				Role:      msg.Role,
+			}
+			if msg.Content != "" {
+				record.Content = sql.NullString{String: msg.Content, Valid: true}
+			}
+			if msg.ToolCallId != "" {
+				record.ToolCallId = sql.NullString{String: msg.ToolCallId, Valid: true}
+			}
+			if len(msg.ToolCalls) > 0 {
+				toolCallsBytes, err := json.Marshal(msg.ToolCalls)
+				if err != nil {
+					return errors.Wrapf(err, "marshal tool calls failed (resync), session_id: %d, index: %d", sessionID, idx)
+				}
+				record.ToolCalls = sql.NullString{String: string(toolCallsBytes), Valid: true}
+			}
+
+			if _, err := l.svcCtx.ChatMessageModel.Insert(ctx, session, record); err != nil {
+				return errors.Wrapf(err, "insert chat message failed (resync), session_id: %d, index: %d", sessionID, idx)
+			}
+		}
+
+		return nil
+	})
 }
 
 // ensureSession 确保数据库中有该会话，没有则新建，返回 sessionID
@@ -137,7 +193,7 @@ func (l *SyncChatMsgToDbLogic) persistMessages(sessionID int64, messages []*pb.C
 			if msg.ToolCallId != "" {
 				record.ToolCallId = sql.NullString{String: msg.ToolCallId, Valid: true}
 			}
-			
+
 			if len(msg.ToolCalls) > 0 {
 				toolCallsBytes, err := json.Marshal(msg.ToolCalls)
 				if err != nil {
