@@ -83,8 +83,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 func newToolRegistry(svcCtx *ServiceContext) map[string]toolcall.Tool {
 	registry := make(map[string]toolcall.Tool)
 
-	// ragTool := toolcall.NewRagTool(svcCtx.RagRpc)
-	// registry[ragTool.Name()] = ragTool
+	ragTool := toolcall.NewRagTool(svcCtx.RagRpc)
+	registry[ragTool.Name()] = ragTool
 
 	timeTool := toolcall.NewTimeTool()
 	registry[timeTool.Name()] = timeTool

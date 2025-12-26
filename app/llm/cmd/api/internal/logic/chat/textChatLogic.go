@@ -5,6 +5,7 @@ package chat
 
 import (
 	"context"
+	"strconv"
 	"strings"
 
 	"go-zero-voice-agent/app/llm/cmd/api/internal/svc"
@@ -61,6 +62,7 @@ func (l *TextChatLogic) TextChat(req *types.TextChatReq) (resp *types.TextChatRe
 		LlmConfig:       llmCfg,
 		Messages:        messages,
 		AutoFillHistory: req.AutoFillHistory,
+		RagFileIds:      int64SliceToStringSlice(req.RagFileIds),
 	}
 
 	chatResp, err := l.svcCtx.LlmChatRpc.Chat(l.ctx, chatReq)
@@ -134,6 +136,7 @@ func (l *TextChatLogic) TextChatStream(req *types.TextChatReq) (pb.LlmChatServic
 		LlmConfig:       llmCfg,
 		Messages:        messages,
 		AutoFillHistory: req.AutoFillHistory,
+		RagFileIds:      int64SliceToStringSlice(req.RagFileIds),
 	})
 	return chatStreamClient, err
 }
@@ -264,4 +267,16 @@ func toRpcToolCalls(toolCalls []types.ToolCall) []*llmchatservice.ToolCall {
 	}
 
 	return res
+}
+
+// 将 []int64 转换为 []string
+func int64SliceToStringSlice(ids []int64) []string {
+	if len(ids) == 0 {
+		return nil
+	}
+	result := make([]string, len(ids))
+	for i, id := range ids {
+		result[i] = strconv.FormatInt(id, 10)
+	}
+	return result
 }

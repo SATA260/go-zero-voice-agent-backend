@@ -6,6 +6,7 @@ import (
 
 	"go-zero-voice-agent/app/rag/cmd/rpc/internal/config"
 	docserviceServer "go-zero-voice-agent/app/rag/cmd/rpc/internal/server/docservice"
+	ragserviceServer "go-zero-voice-agent/app/rag/cmd/rpc/internal/server/ragservice"
 	"go-zero-voice-agent/app/rag/cmd/rpc/internal/svc"
 	"go-zero-voice-agent/app/rag/cmd/rpc/pb"
 
@@ -33,6 +34,7 @@ func main() {
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		pb.RegisterDocServiceServer(grpcServer, docserviceServer.NewDocServiceServer(ctx))
+		pb.RegisterRagServiceServer(grpcServer, ragserviceServer.NewRagServiceServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
