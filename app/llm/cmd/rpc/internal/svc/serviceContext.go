@@ -255,7 +255,7 @@ func (svc *ServiceContext) enqueueSyncChatTask(conversationId string) {
 	if _, err = svc.AsynqClient.Enqueue(
 		task,
 		asynq.TaskID(taskID),
-		asynq.ProcessIn(5*time.Second),
+		asynq.ProcessIn(10*time.Second),
 	); err != nil && err != asynq.ErrTaskIDConflict {
 		logx.Infof("failed to enqueue sync task for conversation %s, err: %v", conversationId, err)
 	}

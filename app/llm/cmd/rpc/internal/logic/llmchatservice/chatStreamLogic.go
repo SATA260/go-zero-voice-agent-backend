@@ -229,7 +229,19 @@ func (l *ChatStreamLogic) handleChatStreamInteraction(
 			break
 		}
 		if err != nil {
-			l.Logger.Errorf("Stream Recv error: %v", err)
+			l.Logger.Errorf("Stream Recv error at depth %d: %v", depth, err)
+			// 如果已经接收到部分内容，需要缓存
+			if fullContent.Len() > 0 {
+				l.Logger.Infof("Caching partial response due to stream error, depth %d, content length: %d",
+					depth, fullContent.Len())
+				assistantMsg := &pb.ChatMsg{
+					Role:      consts.ChatMessageRoleAssistant,
+					Content:   fullContent.String(),
+					ToolCalls: []*pb.ToolCall{},
+				}
+				assistantMsg.MessageId = uniqueid.GenId()
+				go l.svcCtx.CacheConversation(chatSession.ConvId, nil, assistantMsg)
+			}
 			return err
 		}
 
@@ -295,6 +307,9 @@ func (l *ChatStreamLogic) handleChatStreamInteraction(
 		}
 	}
 
+	l.Logger.Infof("Received response at depth %d: toolCalls count = %d, content length = %d",
+		depth, len(toolCalls), len(fullContent.String()))
+
 	// 构建完整的 Assistant 消息
 	assistantMsg := &pb.ChatMsg{
 		Role:      consts.ChatMessageRoleAssistant,
@@ -305,11 +320,15 @@ func (l *ChatStreamLogic) handleChatStreamInteraction(
 
 	// 如果没有工具调用，说明本次交互结束，只落一条消息
 	if len(toolCalls) == 0 {
+		l.Logger.Infof("Caching final assistant message for conversation %s, depth %d, content length: %d",
+			chatSession.ConvId, depth, len(fullContent.String()))
 		go l.svcCtx.CacheConversation(chatSession.ConvId, nil, assistantMsg)
 		return nil
 	}
 
 	// 处理工具调用逻辑
+	l.Logger.Infof("Processing %d tool calls at depth %d for conversation %s",
+		len(toolCalls), depth, chatSession.ConvId)
 
 	// 将 Assistant 消息加入历史，为下一轮（可能的）递归做准备
 	openaiMsgs = append(openaiMsgs, openai.ChatCompletionMessage{
