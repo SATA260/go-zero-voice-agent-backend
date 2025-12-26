@@ -10,9 +10,11 @@ import (
 	"go-zero-voice-agent/app/mqueue/cmd/job/internal/svc"
 	"go-zero-voice-agent/app/mqueue/cmd/job/jobtype"
 	publicconsts "go-zero-voice-agent/pkg/consts"
+	"go-zero-voice-agent/pkg/uniqueid"
 
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -46,35 +48,8 @@ func (l *SyncChatMsgToDbLogic) Sync(payload *jobtype.SyncChatMsgPayload) error {
 	}
 
 	cacheKey := publicconsts.ChatCacheKeyPrefix + payload.ConversationID
-	dirtyKey := cacheKey + ":dirty"
 
-	// 优先处理脏标记：存在表示列表中有更新过的旧消息，需要全量重放
-	if dirty, _ := l.svcCtx.RedisClient.Exists(dirtyKey); dirty {
-		values, err := l.svcCtx.RedisClient.Lrange(cacheKey, 0, -1)
-		if err != nil {
-			return errors.Wrapf(err, "read conversation cache failed for dirty resync, key: %s", cacheKey)
-		}
-
-		allMessages := make([]*pb.ChatMsg, 0, len(values))
-		for idx, raw := range values {
-			var msg pb.ChatMsg
-			if err := json.Unmarshal([]byte(raw), &msg); err != nil {
-				return errors.Wrapf(err, "decode cached message failed (dirty resync), key: %s, index: %d", cacheKey, idx)
-			}
-			allMessages = append(allMessages, &msg)
-		}
-
-		if err := l.persistAll(sessionID, allMessages); err != nil {
-			return errors.Wrapf(err, "failed to resync all messages for session %d", sessionID)
-		}
-
-		// 清除脏标记
-		l.svcCtx.RedisClient.Del(dirtyKey)
-		logx.Infof("resynced %d messages for conversation %s due to dirty flag", len(allMessages), payload.ConversationID)
-		return nil
-	}
-
-	// 正常增量同步
+	// 增量同步
 	existingCount, err := l.countExistingMessages(sessionID)
 	if err != nil {
 		return err
@@ -85,7 +60,7 @@ func (l *SyncChatMsgToDbLogic) Sync(payload *jobtype.SyncChatMsgPayload) error {
 	}
 
 	if len(values) == 0 {
-		return nil
+		return l.applyToolCallUpdates(payload.ConversationID)
 	}
 
 	newMessages := make([]*pb.ChatMsg, 0, len(values))
@@ -103,7 +78,7 @@ func (l *SyncChatMsgToDbLogic) Sync(payload *jobtype.SyncChatMsgPayload) error {
 
 	logx.Infof("successfully synced %d new messages for conversation %s", len(newMessages), payload.ConversationID)
 
-	return nil
+	return l.applyToolCallUpdates(payload.ConversationID)
 }
 
 // persistAll 全量重放：先删除该会话已有消息，再按缓存顺序重写
@@ -114,7 +89,12 @@ func (l *SyncChatMsgToDbLogic) persistAll(sessionID int64, messages []*pb.ChatMs
 		}
 
 		for idx, msg := range messages {
+			if msg.MessageId == 0 {
+				msg.MessageId = uniqueid.GenId()
+			}
+
 			record := &model.ChatMessage{
+				Id:        msg.MessageId,
 				SessionId: sessionID,
 				Role:      msg.Role,
 			}
@@ -132,7 +112,7 @@ func (l *SyncChatMsgToDbLogic) persistAll(sessionID int64, messages []*pb.ChatMs
 				record.ToolCalls = sql.NullString{String: string(toolCallsBytes), Valid: true}
 			}
 
-			if _, err := l.svcCtx.ChatMessageModel.Insert(ctx, session, record); err != nil {
+			if _, err := l.svcCtx.ChatMessageModel.InsertWithId(ctx, session, record); err != nil {
 				return errors.Wrapf(err, "insert chat message failed (resync), session_id: %d, index: %d", sessionID, idx)
 			}
 		}
@@ -183,7 +163,11 @@ func (l *SyncChatMsgToDbLogic) persistMessages(sessionID int64, messages []*pb.C
 
 	return l.svcCtx.ChatMessageModel.Trans(l.ctx, func(ctx context.Context, session sqlx.Session) error {
 		for idx, msg := range messages {
+			if msg.MessageId == 0 {
+				msg.MessageId = uniqueid.GenId()
+			}
 			record := &model.ChatMessage{
+				Id:        msg.MessageId,
 				SessionId: sessionID,
 				Role:      msg.Role,
 			}
@@ -202,10 +186,66 @@ func (l *SyncChatMsgToDbLogic) persistMessages(sessionID int64, messages []*pb.C
 				record.ToolCalls = sql.NullString{String: string(toolCallsBytes), Valid: true}
 			}
 			// 插入每条消息
-			if _, err := l.svcCtx.ChatMessageModel.Insert(ctx, session, record); err != nil {
+			if _, err := l.svcCtx.ChatMessageModel.InsertWithId(ctx, session, record); err != nil {
 				return errors.Wrapf(err, "insert chat message failed, session_id: %d, index: %d", sessionID, idx)
 			}
 		}
 		return nil
 	})
+}
+
+// applyToolCallUpdates updates tool_calls of the latest assistant message using cached incremental patches.
+func (l *SyncChatMsgToDbLogic) applyToolCallUpdates(conversationID string) error {
+	updateKey := publicconsts.ChatToolCallUpdateKeyPrefix + conversationID
+	raw, err := l.svcCtx.RedisClient.Get(updateKey)
+	if err != nil {
+		if err == redis.Nil {
+			return nil
+		}
+		return errors.Wrapf(err, "read pending toolcall update failed, key: %s", updateKey)
+	}
+	if raw == "" {
+		return nil
+	}
+
+	var updated pb.ChatMsg
+	if err := json.Unmarshal([]byte(raw), &updated); err != nil {
+		return errors.Wrapf(err, "decode pending toolcall update failed, key: %s", updateKey)
+	}
+	if len(updated.ToolCalls) == 0 || updated.MessageId == 0 {
+		l.safeDeleteUpdateKey(updateKey, raw)
+		return nil
+	}
+
+	toolCallsBytes, err := json.Marshal(updated.ToolCalls)
+	if err != nil {
+		return errors.Wrapf(err, "marshal pending toolcalls failed, key: %s", updateKey)
+	}
+
+	if err := l.svcCtx.ChatMessageModel.UpdateToolCallsById(l.ctx, updated.MessageId, string(toolCallsBytes)); err != nil {
+		return errors.Wrapf(err, "apply toolcall update failed, message_id: %d", updated.MessageId)
+	}
+
+	l.safeDeleteUpdateKey(updateKey, raw)
+
+	return nil
+}
+
+// safeDeleteUpdateKey removes the update key only if it still holds the processed payload to avoid racing writers.
+func (l *SyncChatMsgToDbLogic) safeDeleteUpdateKey(updateKey, processedVal string) {
+	const lua = `
+local key = KEYS[1]
+local expected = ARGV[1]
+local current = redis.call('GET', key)
+if not current then
+    return 0
+end
+if current == expected then
+    return redis.call('DEL', key)
+end
+return 0`
+
+	if _, err := l.svcCtx.RedisClient.EvalCtx(l.ctx, lua, []string{updateKey}, processedVal); err != nil {
+		logx.Errorf("failed to conditionally delete update key %s, err: %v", updateKey, err)
+	}
 }

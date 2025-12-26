@@ -69,10 +69,11 @@ message ToolCall {
 }
 
 message ChatMsg {
-    string role = 1; //System,User,Assistant,tool
-    string content = 2;
-    repeated ToolCall toolCalls = 3;
-    string toolCallId = 4;
+    int64 messageId = 1; 
+    string role = 2; //System,User,Assistant,tool
+    string content = 3;
+    repeated ToolCall toolCalls = 4;
+    string toolCallId = 5;
 }
 
 // 创建聊天请求

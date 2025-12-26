@@ -8,6 +8,7 @@ import (
 	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
 	"go-zero-voice-agent/app/llm/model"
 	chatconsts "go-zero-voice-agent/app/llm/pkg/consts"
+	"go-zero-voice-agent/pkg/uniqueid"
 
 	"github.com/sashabaranov/go-openai"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -217,6 +218,7 @@ func (l *ChatLogic) handleChatInteraction(
 		Content:   choice.Message.Content,
 		ToolCalls: []*pb.ToolCall{},
 	}
+	assistantMsg.MessageId = uniqueid.GenId()
 	// 没有工具调用，直接返回文本响应，同时仅存一条消息
 	if len(choice.Message.ToolCalls) == 0 {
 		go l.svcCtx.CacheConversation(chatSession.ConvId, nil, assistantMsg)
@@ -236,6 +238,7 @@ func (l *ChatLogic) handleChatInteraction(
 		Content:   choice.Message.Content,
 		ToolCalls: []*pb.ToolCall{},
 	}
+	confirmMsg.MessageId = assistantMsg.MessageId
 
 	// 先执行不需要确认的工具调用, 收集需要确认的工具调用
 	for _, toolCall := range choice.Message.ToolCalls {

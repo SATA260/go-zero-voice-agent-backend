@@ -9,6 +9,7 @@ import (
 	"go-zero-voice-agent/app/llm/model"
 	"go-zero-voice-agent/app/mqueue/cmd/job/jobtype"
 	"go-zero-voice-agent/app/rag/cmd/rpc/client/ragservice"
+	"go-zero-voice-agent/pkg/uniqueid"
 	"time"
 
 	"github.com/hibiken/asynq"
@@ -37,6 +38,15 @@ type ServiceContext struct {
 	ToolRegistry                 map[string]toolcall.Tool
 	OpenaiToolList               []openai.Tool
 	OpenaiToolListWithoutConfirm []openai.Tool
+}
+
+func assignMessageID(msg *pb.ChatMsg) {
+	if msg == nil {
+		return
+	}
+	if msg.MessageId == 0 {
+		msg.MessageId = uniqueid.GenId()
+	}
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -144,6 +154,10 @@ func (svc *ServiceContext) CacheConversation(conversationId string, userMsgs []*
 	}
 
 	for _, msg := range msgsToAppend {
+		assignMessageID(msg)
+	}
+
+	for _, msg := range msgsToAppend {
 		msgBytes, err := json.Marshal(msg)
 		if err != nil {
 			logx.Errorf("failed to marshal message, err: %v", err)
@@ -160,25 +174,7 @@ func (svc *ServiceContext) CacheConversation(conversationId string, userMsgs []*
 	svc.RedisClient.Expire(cacheKey, chatconsts.ChatCacheExpireSeconds)
 
 	// 2. 异步同步任务 (防抖)
-	task, err := jobtype.NewSyncChatMsgTask(conversationId)
-	if err != nil {
-		logx.Errorf("failed to create sync task for conversation %s, err: %v", conversationId, err)
-		return
-	}
-
-	// 使用 TaskID 确保同一会话在短时间内只有一个同步任务在队列中
-	// 延迟 5 秒执行，让 Redis 积累几条消息后，由消费者一次性批量同步到 MySQL
-	taskID := "sync:chat:" + conversationId
-	if _, err = svc.AsynqClient.Enqueue(
-		task,
-		asynq.TaskID(taskID),
-		asynq.ProcessIn(5*time.Second),
-	); err != nil {
-		// 如果错误是 TaskID 冲突，说明已有任务在排队，这是预期的，忽略即可
-		if err != asynq.ErrTaskIDConflict {
-			logx.Infof("failed to enqueue sync task for conversation %s, err: %v", conversationId, err)
-		}
-	}
+	svc.enqueueSyncChatTask(conversationId)
 }
 
 // UpdateAssistantToolCalls 更新缓存中已有的 assistant 消息（按 toolCallId 匹配），避免重复新增消息
@@ -186,48 +182,34 @@ func (svc *ServiceContext) UpdateAssistantToolCalls(conversationId string, updat
 	if updatedAssistant == nil || len(updatedAssistant.ToolCalls) == 0 {
 		return
 	}
+	assignMessageID(updatedAssistant)
 
 	cacheKey := publicconsts.ChatCacheKeyPrefix + conversationId
-	dirtyKey := cacheKey + ":dirty"
+	updateKey := publicconsts.ChatToolCallUpdateKeyPrefix + conversationId
 
-	// 尝试找到包含相同 toolCallId 的 assistant 消息并原地更新
+	// 尝试找到包含相同 toolCallId 的最近一条 assistant 消息并原地更新
 	values, err := svc.RedisClient.Lrange(cacheKey, 0, -1)
 	if err != nil {
 		logx.Errorf("failed to read cached conversation for update, key: %s, err: %v", cacheKey, err)
 		return
 	}
 
-	findMatch := func(candidate []*pb.ToolCall) bool {
-		for _, tc := range candidate {
-			if tc == nil || tc.Info == nil {
-				continue
-			}
-			for _, utc := range updatedAssistant.ToolCalls {
-				if utc == nil || utc.Info == nil {
-					continue
-				}
-				if tc.Info.Id == utc.Info.Id {
-					return true
-				}
-			}
-		}
-		return false
-	}
-
 	targetIdx := int64(-1)
-	for idx, raw := range values {
+	for idx := len(values) - 1; idx >= 0; idx-- {
 		var cached pb.ChatMsg
-		if err := json.Unmarshal([]byte(raw), &cached); err != nil {
+		if err := json.Unmarshal([]byte(values[idx]), &cached); err != nil {
 			logx.Errorf("decode cached message failed during update, key: %s, index: %d, err: %v", cacheKey, idx, err)
 			continue
 		}
 		if cached.GetRole() != chatconsts.ChatMessageRoleAssistant || len(cached.ToolCalls) == 0 {
 			continue
 		}
-		if findMatch(cached.ToolCalls) {
+		if cached.MessageId == updatedAssistant.MessageId {
 			targetIdx = int64(idx)
 			break
 		}
+		// 只更新最近一条 assistant 消息
+		break
 	}
 
 	payload, err := json.Marshal(updatedAssistant)
@@ -243,17 +225,38 @@ func (svc *ServiceContext) UpdateAssistantToolCalls(conversationId string, updat
 			logx.Errorf("failed to update cached assistant at index %d, key: %s, err: %v", targetIdx, cacheKey, err)
 			return
 		}
-		// 刷新过期时间，保持会话活跃
-		svc.RedisClient.Expire(cacheKey, chatconsts.ChatCacheExpireSeconds)
-		svc.RedisClient.Setex(dirtyKey, "1", chatconsts.ChatCacheExpireSeconds)
+	} else {
+		// 没找到则降级为追加，避免状态丢失
+		if _, err := svc.RedisClient.Rpush(cacheKey, string(payload)); err != nil {
+			logx.Errorf("failed to append assistant message as fallback, key: %s, err: %v", cacheKey, err)
+			return
+		}
+	}
+
+	// 刷新过期时间并单独记录 toolCalls 更新，便于后续增量更新 DB
+	svc.RedisClient.Expire(cacheKey, chatconsts.ChatCacheExpireSeconds)
+	if err := svc.RedisClient.Setex(updateKey, string(payload), chatconsts.ChatCacheExpireSeconds); err != nil {
+		logx.Errorf("failed to cache toolcall update, key: %s, err: %v", updateKey, err)
+	}
+
+	svc.enqueueSyncChatTask(conversationId)
+}
+
+func (svc *ServiceContext) enqueueSyncChatTask(conversationId string) {
+	task, err := jobtype.NewSyncChatMsgTask(conversationId)
+	if err != nil {
+		logx.Errorf("failed to create sync task for conversation %s, err: %v", conversationId, err)
 		return
 	}
 
-	// 没找到则降级为追加，避免状态丢失
-	if _, err := svc.RedisClient.Rpush(cacheKey, string(payload)); err != nil {
-		logx.Errorf("failed to append assistant message as fallback, key: %s, err: %v", cacheKey, err)
-		return
+	// 使用 TaskID 确保同一会话在短时间内只有一个同步任务在队列中
+	// 延迟 5 秒执行，让 Redis 积累几条消息后，由消费者一次性批量同步到 MySQL
+	taskID := "sync:chat:" + conversationId
+	if _, err = svc.AsynqClient.Enqueue(
+		task,
+		asynq.TaskID(taskID),
+		asynq.ProcessIn(5*time.Second),
+	); err != nil && err != asynq.ErrTaskIDConflict {
+		logx.Infof("failed to enqueue sync task for conversation %s, err: %v", conversationId, err)
 	}
-	svc.RedisClient.Expire(cacheKey, chatconsts.ChatCacheExpireSeconds)
-	svc.RedisClient.Setex(dirtyKey, "1", chatconsts.ChatCacheExpireSeconds)
 }

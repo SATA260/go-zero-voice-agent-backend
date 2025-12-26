@@ -11,6 +11,7 @@ import (
 	"go-zero-voice-agent/app/llm/cmd/rpc/pb"
 	"go-zero-voice-agent/app/llm/model"
 	"go-zero-voice-agent/app/llm/pkg/consts"
+	"go-zero-voice-agent/pkg/uniqueid"
 
 	"github.com/sashabaranov/go-openai"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -300,6 +301,7 @@ func (l *ChatStreamLogic) handleChatStreamInteraction(
 		Content:   fullContent.String(),
 		ToolCalls: []*pb.ToolCall{},
 	}
+	assistantMsg.MessageId = uniqueid.GenId()
 
 	// 如果没有工具调用，说明本次交互结束，只落一条消息
 	if len(toolCalls) == 0 {
@@ -322,6 +324,7 @@ func (l *ChatStreamLogic) handleChatStreamInteraction(
 		Content:   fullContent.String(),
 		ToolCalls: []*pb.ToolCall{},
 	}
+	confirmMsg.MessageId = assistantMsg.MessageId
 
 	// 遍历所有工具调用，决定是自动执行还是请求确认
 	for _, toolCall := range toolCalls {

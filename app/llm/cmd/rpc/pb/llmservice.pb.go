@@ -459,6 +459,7 @@ type ChatMsg struct {
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
 	ToolCalls     []*ToolCall            `protobuf:"bytes,3,rep,name=toolCalls,proto3" json:"toolCalls,omitempty"`
 	ToolCallId    string                 `protobuf:"bytes,4,opt,name=toolCallId,proto3" json:"toolCallId,omitempty"`
+	MessageId     int64                  `protobuf:"varint,5,opt,name=messageId,proto3" json:"messageId,omitempty"` //雪花ID，服务端生成
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -519,6 +520,13 @@ func (x *ChatMsg) GetToolCallId() string {
 		return x.ToolCallId
 	}
 	return ""
+}
+
+func (x *ChatMsg) GetMessageId() int64 {
+	if x != nil {
+		return x.MessageId
+	}
+	return 0
 }
 
 // 创建聊天请求
@@ -3231,14 +3239,15 @@ const file_app_llm_cmd_rpc_pb_llmservice_proto_rawDesc = "" +
 	"\x04info\x18\x01 \x01(\v2\x11.llm.ToolCallInfoR\x04info\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x16\n" +
 	"\x06result\x18\x03 \x01(\tR\x06result\x12\x14\n" +
-	"\x05error\x18\x04 \x01(\tR\x05error\"\x84\x01\n" +
+	"\x05error\x18\x04 \x01(\tR\x05error\"\xa2\x01\n" +
 	"\aChatMsg\x12\x12\n" +
 	"\x04role\x18\x01 \x01(\tR\x04role\x12\x18\n" +
 	"\acontent\x18\x02 \x01(\tR\acontent\x12+\n" +
 	"\ttoolCalls\x18\x03 \x03(\v2\r.llm.ToolCallR\ttoolCalls\x12\x1e\n" +
 	"\n" +
 	"toolCallId\x18\x04 \x01(\tR\n" +
-	"toolCallId\"\xeb\x01\n" +
+	"toolCallId\x12\x1c\n" +
+	"\tmessageId\x18\x05 \x01(\x03R\tmessageId\"\xeb\x01\n" +
 	"\aChatReq\x12&\n" +
 	"\x0econversationId\x18\x01 \x01(\tR\x0econversationId\x12\x16\n" +
 	"\x06userId\x18\x02 \x01(\x03R\x06userId\x12,\n" +
