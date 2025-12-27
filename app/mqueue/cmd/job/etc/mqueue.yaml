@@ -1,9 +1,16 @@
 Name: mqueue.job
 Mode: ${MQUEUE_MODE}
+
+# 日志配置
 Log:
-  ServiceName: mqueue.job
-  Mode: ${MQUEUE_LOG_MODE}
-  Encoding: ${MQUEUE_LOG_ENCODING}
+  ServiceName: mqueue-job
+  Mode: file
+  Path: logs
+  Level: info
+  Encoding: json
+  KeepDays: 7
+  Compress: true
+
 Redis:
   Host: ${REDIS_HOST}
   Type: node

@@ -1,5 +1,16 @@
 Name: rag.rpc
 ListenOn: ${RAG_RPC_LISTEN}
+
+# 日志配置
+Log:
+  ServiceName: rag-rpc
+  Mode: file
+  Path: logs
+  Level: info
+  Encoding: json
+  KeepDays: 7
+  Compress: true
+
 Etcd:
   Hosts:
   - ${ETCD_HOST}

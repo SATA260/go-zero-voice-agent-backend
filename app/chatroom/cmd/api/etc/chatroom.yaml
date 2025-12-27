@@ -2,6 +2,16 @@ Name: chatroom
 Host: ${CHATROOM_API_HOST}
 Port: ${CHATROOM_API_PORT}
 
+# 日志配置
+Log:
+  ServiceName: chatroom-api
+  Mode: file
+  Path: logs
+  Level: info
+  Encoding: json
+  KeepDays: 7
+  Compress: true
+
 ChatroomRpcConf:
   Etcd:
     Hosts:

@@ -1,5 +1,16 @@
 Name: usercenter.rpc
 ListenOn: ${USERCENTER_RPC_LISTEN}
+
+# 日志配置
+Log:
+  ServiceName: usercenter-rpc
+  Mode: file
+  Path: logs
+  Level: info
+  Encoding: json
+  KeepDays: 7
+  Compress: true
+
 Etcd:
   Hosts:
   - ${ETCD_HOST}
@@ -11,6 +22,12 @@ Cache:
   - Host: ${REDIS_HOST}
     Type: node
     Pass: ${REDIS_PASS}
+
+Redis:
+  Host: ${REDIS_HOST}
+  Type: node
+  Pass: ${REDIS_PASS}
+  Key: usercenter
 
 JwtAuth:
   AccessSecret: ${JWT_ACCESS_SECRET}

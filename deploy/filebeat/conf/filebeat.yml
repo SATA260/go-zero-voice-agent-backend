@@ -1,0 +1,42 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      # 收集所有 Go 应用的日志文件
+      - /home/zhang/go-zero-voice-agent/go-zero-voice-agent-backend/logs/*.log
+      - /home/zhang/go-zero-voice-agent/go-zero-voice-agent-backend/logs/*/*.log
+    # JSON 格式解析
+    json.keys_under_root: true
+    json.overwrite_keys: true
+    json.message_key: content  # go-zero 日志的消息字段
+    # 添加字段标识日志来源
+    fields:
+      log_source: go-zero-voice-agent
+      environment: production
+    fields_under_root: true
+    # 排除 filebeat 自己的日志
+    exclude_files: ['filebeat.*']
+
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+  - drop_fields:
+      fields: ["agent.ephemeral_id", "agent.id", "ecs.version", "input.type", "log.offset"]
+      ignore_missing: true
+
+output.kafka:
+  enabled: true
+  hosts: ["kafka:9092"]
+  #要提前创建topic
+  topic: "looklook-log"
+  partition.hash:
+    reachable_only: true
+  compression: gzip
+  max_message_bytes: 1000000
+  required_acks: 1

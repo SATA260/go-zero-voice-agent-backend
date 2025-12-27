@@ -1,5 +1,16 @@
 Name: llmservice.rpc
 ListenOn: ${LLM_RPC_LISTEN}
+
+# 日志配置
+Log:
+  ServiceName: llm-rpc
+  Mode: file
+  Path: logs
+  Level: info
+  Encoding: json
+  KeepDays: 7
+  Compress: true
+
 Etcd:
   Hosts:
   - ${ETCD_HOST}

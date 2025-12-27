@@ -2,6 +2,16 @@ Name: voiceChat
 Host: ${VOICECHAT_API_HOST}
 Port: ${VOICECHAT_API_PORT}
 
+# 日志配置
+Log:
+  ServiceName: voicechat-api
+  Mode: file
+  Path: logs
+  Level: info
+  Encoding: json
+  KeepDays: 7
+  Compress: true
+
 LlmRpcConf:
   Etcd:
     Hosts:

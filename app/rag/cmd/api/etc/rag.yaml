@@ -2,6 +2,16 @@ Name: rag
 Host: ${RAG_API_HOST}
 Port: ${RAG_API_PORT}
 
+# 日志配置
+Log:
+  ServiceName: rag-api
+  Mode: file
+  Path: logs
+  Level: info
+  Encoding: json
+  KeepDays: 7
+  Compress: true
+
 RagRpcConf:
   Etcd:
     Hosts:

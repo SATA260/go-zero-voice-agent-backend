@@ -2,6 +2,16 @@ Name: usercenter
 Host: ${USERCENTER_API_HOST}
 Port: ${USERCENTER_API_PORT}
 
+# 日志配置
+Log:
+  ServiceName: usercenter-api
+  Mode: file
+  Path: logs
+  Level: info
+  Encoding: json
+  KeepDays: 7
+  Compress: true
+
 UsercenterRpcConf:
   Etcd:
     Hosts:

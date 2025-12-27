@@ -1,0 +1,21 @@
+Name: usercenter
+Host: ${USERCENTER_API_HOST}
+Port: ${USERCENTER_API_PORT}
+
+# 日志配置
+Log:
+  ServiceName: usercenter-api
+  Mode: file              # 输出到文件
+  Path: logs              # 日志目录（相对路径，基于项目根目录）
+  Level: info             # 日志级别：debug, info, error, severe
+  Encoding: json          # 日志格式：json 或 plain
+  KeepDays: 7             # 日志保留天数
+  Compress: true          # 是否压缩旧日志
+  # 可选：同时输出到控制台
+  # Mode: console         # 或者使用 console 在开发环境
+
+UsercenterRpcConf:
+  Etcd:
+    Hosts:
+    - ${ETCD_HOST}
+    Key: usercenter.rpc

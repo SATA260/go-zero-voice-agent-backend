@@ -1,0 +1,46 @@
+Clusters:
+- Input:
+    Kafka:
+      Name: go-zero-voice-agent
+      Log:
+        Mode: console
+      Brokers:
+      - "kafka:9092"
+      Topics:
+      - looklook-log
+      Group: go-stash
+      Consumers: 1
+      Processors: 1
+  Filters:
+  - Action: drop
+    Conditions:
+      - Key: k8s_container_name
+        Value: "-rpc"
+        Type: contains
+      - Key: level
+        Value: info
+        Type: match
+        Op: and
+  - Action: remove_field
+    Fields:
+    # 移除不需要的字段
+    - ecs
+    - log
+    - agent
+    - host
+    - input
+    - "@metadata"
+  Output:
+    ElasticSearch:
+      Hosts:
+      - "http://elasticsearch:9200"
+      Index: "go-zero-voice-agent-{{yyyy-MM-dd}}"
+      # 索引文档 ID 的字段映射
+      # DocId: "id"
+      # 最大块大小，用于批量操作
+      MaxChunkBytes: 5242880
+      # GracePeriod 是 ES 客户端等待关闭的时间
+      GracePeriod: 10s
+      Compress: false
+      # 每批次的最大文档数
+      TimeZone: UTC

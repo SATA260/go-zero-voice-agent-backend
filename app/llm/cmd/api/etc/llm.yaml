@@ -2,6 +2,16 @@ Name: llm
 Host: ${LLM_API_HOST}
 Port: ${LLM_API_PORT}
 
+# 日志配置
+Log:
+  ServiceName: llm-api
+  Mode: file
+  Path: logs
+  Level: info
+  Encoding: json
+  KeepDays: 7
+  Compress: true
+
 LlmRpcConf:
   Etcd:
     Hosts:

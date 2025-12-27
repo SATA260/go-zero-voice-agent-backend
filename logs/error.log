@@ -1,0 +1,3 @@
+{"@timestamp":"2025-12-27T18:17:20.649+08:00","caller":"internal/discovbuilder.go:35","content":"bad resolver state","level":"error"}
+{"@timestamp":"2025-12-27T18:23:04.672+08:00","caller":"clientinterceptors/durationinterceptor.go:35","content":"fail - etcd:/localhost:2379/usercenter.rpc/pb.Usercenter/Login - authType:\"email\"  authKey:\"j.bvjfxwun@qq.com\"  password:\"exercitation sint Lorem occaecat ex\" - rpc error: code = Unknown desc = 用户不存在, email: j.bvjfxwun@qq.com: ErrCode:100001，ErrMsg:用户不存在","duration":"40.3ms","level":"error","span":"408d898edbdbcdd6","trace":"2338937421aed27fbf287de859995e2d"}
+resolver state","level":"error"}
